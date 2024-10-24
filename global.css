@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /** light mode */
+  :root {
+    --primary: #2c7075; /* general bg color*/
+    --primary-foreground: #444444; /* general text color*/
+    --secondary: #ffffff;
+    --secondary-foreground: #757575; /* for checking */
+    --muted: #9d9a9a; /* for placeholder and icons*/
+    --danger: #ff473e; /*errors*/
+  }
+}
