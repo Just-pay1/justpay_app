@@ -8,6 +8,13 @@ module.exports = {
       fontFamily: {
         Nunito: ["Nunito"],
         RobotoSlab: ["RobotoSlab"],
+        Nunitosemi: ["Nunitosemi"],
+      },
+      flex: {
+        2: "2",
+        3: "3",
+        4: "4",
+        5: "5",
       },
     },
     colors: {
@@ -25,6 +32,12 @@ module.exports = {
       danger: {
         DEFAULT: "var(--danger)",
       },
+    },
+    borderWidth: {
+      DEFAULT: "1px",
+      1.5: "1.5px",
+      2: "2px",
+      3: "3px",
     },
   },
   plugins: [],
