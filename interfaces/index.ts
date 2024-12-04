@@ -9,3 +9,18 @@ export interface ICustomButton extends PressableProps {
   width?: string;
   styled?: StyleProp<ViewStyle>;
 }
+export interface IRegisterInput {
+  name: "name" | "email" | "phone" | "password";
+  placeholder: string;
+  type: string;
+  // validation: {
+  //   required?: boolean;
+  //   minLength?: number;
+  //   pattern?: RegExp;
+  // };
+}
+export interface ILoginInput {
+  name: "email" | "password";
+  placeholder: string;
+  type: string;
+}

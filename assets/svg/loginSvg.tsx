@@ -1,0 +1,27 @@
+import { Svg, Path } from "react-native-svg";
+import React from "react";
+import { Dimensions } from "react-native";
+
+const LoginSvg = () => {
+  const { width } = Dimensions.get("window");
+  const aspectRatio = 173 / 380;
+  const height = width * aspectRatio;
+
+  return (
+    <Svg
+      width={width}
+      height={height}
+      translateY={-40}
+      viewBox="0 0 380 173"
+      fill="#000000"
+    >
+      <Path
+        opacity="0.7"
+        d="M-25 0 L400 0 L400 120 L400 120 C397.767 131.785 369.453 150.842 332.945 162.285C297.763 173.293 254.96 177.275 217.204 167.233C186.099 158.952 166.526 141.546 128.808 139.099C84.7566 136.213 66.9169 151.074 18.1125 141.368C-1.0779 137.552 -17.5669 130.616 -25.2125 121.186C-25 120 -25 60 -25 0"
+        fill="#000000"
+      />
+    </Svg>
+  );
+};
+
+export default LoginSvg;

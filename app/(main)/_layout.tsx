@@ -4,16 +4,14 @@ export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
+        gestureEnabled: true,
         headerShown: false,
         contentStyle: {
-          backgroundColor: "#ffffff",
+          backgroundColor: "#f2f2f2",
         },
       }}
     >
-      <Stack.Screen name="Welcome" />
-      <Stack.Screen name="Otp" />
-      <Stack.Screen name="Signin" />
-      <Stack.Screen name="Signup" />
+      <Stack.Screen name="home" />
     </Stack>
   );
 }
