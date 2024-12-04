@@ -46,7 +46,6 @@ export default function Signin() {
       await storeStatus("true");
       dispatch(setCredentials({ accessToken, user }));
       dispatch(setLoggedInStatus(true));
-      console.log(data.data);
       Toast.show({
         type: "success",
         text1: `Login successfully!`,
@@ -54,7 +53,6 @@ export default function Signin() {
       });
       router.navigate("/");
     } catch (error) {
-      console.log(error);
       if (axios.isAxiosError(error)) {
         if (error.message === "Network Error") {
           Toast.show({

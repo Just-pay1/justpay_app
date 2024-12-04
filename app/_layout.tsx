@@ -7,11 +7,9 @@ import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
-import { store, useAppDispatch, useAppSelector } from "../store/store";
+import { store, useAppDispatch } from "../store/store";
 import { setCredentials, setLoggedInStatus } from "../store/authSlice";
 import { ActivityIndicator, View } from "react-native";
-import { Text } from "react-native-svg";
-import { NativeBaseProvider } from "native-base";
 import Toast from "react-native-toast-message";
 import toastConfig from "@/config/toast";
 import { getTokens } from "@/config/auth";
@@ -20,7 +18,6 @@ SplashScreen.preventAutoHideAsync();
 
 function NavigationStack() {
   const [dataLoading, setDataLoading] = useState(true);
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const dispatch = useAppDispatch();
   useEffect(() => {
     const loadDataFromStorage = async () => {
@@ -85,12 +82,10 @@ export default function RootLayout() {
   return (
     <SafeAreaView className="flex-1">
       <StatusBar style="dark" backgroundColor="#ffffff" />
-      <NativeBaseProvider>
-        <Provider store={store}>
-          <NavigationStack />
-        </Provider>
-        <Toast config={toastConfig} />
-      </NativeBaseProvider>
+      <Provider store={store}>
+        <NavigationStack />
+      </Provider>
+      <Toast config={toastConfig} />
     </SafeAreaView>
   );
 }
