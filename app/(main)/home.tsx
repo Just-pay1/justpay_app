@@ -8,14 +8,9 @@ import { useAppDispatch } from "@/store/store";
 
 const Home = () => {
   const handlersubmit = async () => {
-    console.log("here again");
     try {
-      console.log("hello");
       const accessToken = await SecureStore.getItemAsync("accessToken");
       const userId = await SecureStore.getItemAsync("userId");
-
-      console.log("accessToken:", accessToken);
-      console.log("userId:", userId);
 
       if (!accessToken || !userId) {
         console.warn("No token or userId found, skipping initial user fetch");
@@ -24,7 +19,6 @@ const Home = () => {
       }
 
       const { data } = await apiClient.get(`/user/${userId}`);
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

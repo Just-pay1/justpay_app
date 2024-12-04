@@ -2,7 +2,6 @@ import { useAppSelector } from "@/store/store";
 import { Redirect } from "expo-router";
 import Home from "../app/(main)/home";
 import WelcomePage from "./(auth)/Welcome";
-import Otp from "./(auth)/Otp";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);

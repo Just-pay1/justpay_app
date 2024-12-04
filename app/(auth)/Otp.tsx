@@ -35,7 +35,6 @@ export default function Otp() {
     return () => backHandler.remove();
   }, []);
   const otpHandler = async () => {
-    console.log("done");
     try {
       setIsLoading(true);
       const { data } = await apiClient.post("/otp/verifyOTP", {
