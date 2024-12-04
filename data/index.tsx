@@ -1,3 +1,5 @@
+import { ILoginInput, IRegisterInput } from "@/interfaces";
+
 export const welcomeSlides = [
   {
     id: "1",
@@ -26,5 +28,39 @@ export const welcomeSlides = [
     title: "Offers",
     description:
       "Unlock exclusive offers and discounts tailored just for you, maximizing your savings while enjoying our services.",
+  },
+];
+export const REGISTER_FORM: IRegisterInput[] = [
+  {
+    name: "name",
+    placeholder: "Username",
+    type: "text",
+  },
+  {
+    name: "email",
+    placeholder: "Email",
+    type: "email",
+  },
+  {
+    name: "phone",
+    placeholder: "Phone",
+    type: "text",
+  },
+  {
+    name: "password",
+    placeholder: "Password",
+    type: "password",
+  },
+];
+export const LOGIN_FORM: ILoginInput[] = [
+  {
+    name: "email",
+    placeholder: "Email",
+    type: "email",
+  },
+  {
+    name: "password",
+    placeholder: "Password",
+    type: "password",
   },
 ];
