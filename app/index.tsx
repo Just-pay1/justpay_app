@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/store/store";
 import { Redirect } from "expo-router";
-import Home from "../app/(main)/home";
+import Home from "./(main)/home";
 import WelcomePage from "./(auth)/Welcome";
 
 const Page = () => {

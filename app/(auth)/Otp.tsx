@@ -6,8 +6,8 @@ import {
   BackHandler,
 } from "react-native";
 import PrimaryButton from "@/components/ui/Custombutton";
-import Otpicon from "../../assets/svg/Otpicon.svg";
-import Otpimage from "../../assets/svg/Optimage.svg";
+import Otpicon from "@/assets/svg/Otpicon.svg";
+import Otpimage from "@/assets/svg/Optimage.svg";
 import { OTPInput } from "@/components/auth/Otpinput";
 import AuthHeader from "@/components/auth/AuthHeader";
 import CustomText from "@/components/ui/CustomText";
