@@ -20,7 +20,16 @@ import { useAppDispatch } from "@/store/store";
 import { ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import { AxiosError } from "axios";
+import OtpTimer from "@/components/auth/OtpTimer";
 export default function Otp() {
+
+  const resendOtp = () => {
+    console.log("OTP Resent!");
+    // Add logic to resend OTP here
+  };
+
+
+
   const [otpCode, setOtpCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -77,6 +86,7 @@ export default function Otp() {
       setIsLoading(false);
       return;
     }
+   
   };
   return (
     <KeyboardAvoidingView
@@ -125,6 +135,10 @@ export default function Otp() {
               </CustomText>
             </View>
           </PrimaryButton>
+          <View>
+      {/* Other OTP UI Components */}
+      <OtpTimer onResend={resendOtp}/>
+    </View>
           <PrimaryButton
             bgColor="bg-transparent"
             borderColor="border-primary"
@@ -132,6 +146,11 @@ export default function Otp() {
           >
             <CustomText className="color-primary">back</CustomText>
           </PrimaryButton>
+          <View>
+      {/* Other OTP UI Components */}
+      <OtpTimer onResend={resendOtp}/>
+    </View>
+          
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
