@@ -27,8 +27,11 @@ import axios from "axios";
 interface IFormInput {
   name: string;
   password: string;
+  confirmPassword: string;
   email: string;
   phone: string;
+  
+  
 }
 
 export default function Signup() {
@@ -106,7 +109,7 @@ export default function Signup() {
               onBlur={onBlur}
               onChangeText={(text) => {
                 onChange(text);
-                if (type === "password") {
+                if (name === "password") {
                   setPassword(text);
                 }
               }}

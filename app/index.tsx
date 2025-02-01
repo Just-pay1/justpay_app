@@ -3,6 +3,8 @@ import { Redirect } from "expo-router";
 import Home from "./(main)/home";
 import WelcomePage from "./(auth)/Welcome";
 import Otp from "./(auth)/Otp";
+import Signup from "./(auth)/Signup";
+import Signin from "./(auth)/Signin";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -10,7 +12,7 @@ const Page = () => {
   if (isLoggedIn) return <Home />;
 
   // return <Redirect href="/(auth)/welcome" />;
-  return <Otp />;
+  return <Signup/>;
 };
 
 export default Page;

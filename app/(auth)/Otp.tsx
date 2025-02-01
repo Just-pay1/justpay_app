@@ -135,10 +135,7 @@ export default function Otp() {
               </CustomText>
             </View>
           </PrimaryButton>
-          <View>
-      {/* Other OTP UI Components */}
-      <OtpTimer onResend={resendOtp}/>
-    </View>
+          
           <PrimaryButton
             bgColor="bg-transparent"
             borderColor="border-primary"

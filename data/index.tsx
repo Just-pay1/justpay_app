@@ -51,6 +51,12 @@ export const REGISTER_FORM: IRegisterInput[] = [
     placeholder: "Password",
     type: "password",
   },
+  {
+    name: "confirmPassword",
+    placeholder: "Confirm Password",
+    type: "password",
+    
+  },// confirm password
 ];
 export const LOGIN_FORM: ILoginInput[] = [
   {

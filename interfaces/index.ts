@@ -10,7 +10,7 @@ export interface ICustomButton extends PressableProps {
   styled?: StyleProp<ViewStyle>;
 }
 export interface IRegisterInput {
-  name: "name" | "email" | "phone" | "password";
+  name: "name" | "email" | "phone" | "password" | "confirmPassword";
   placeholder: string;
   type: string;
   // validation: {

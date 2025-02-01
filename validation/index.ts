@@ -16,6 +16,11 @@ export const userRegisterSchema = Yup.object({
     )
     .max(20, "Password cannot exceed 20 characters"),
 
+    confirmPassword: Yup.string()
+    .required("Confirm Password is required") 
+    .oneOf([Yup.ref("password")], "Passwords must match"), 
+    // Ensures (confirm password) matches the (password) field
+
   email: Yup.string()
     .required("Email is required")
     .matches(
@@ -29,6 +34,7 @@ export const userRegisterSchema = Yup.object({
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number cannot exceed 15 digits"),
 }).required();
+
 export const userLoginSchema = Yup.object({
   email: Yup.string()
     .required("Email is required")
