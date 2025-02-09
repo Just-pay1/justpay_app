@@ -48,6 +48,40 @@ export const userLoginSchema = Yup.object({
     .max(20, "Password cannot exceed 20 characters"),
 }).required();
 
+
+
+/*export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string()
+  .required("Password is required")
+  .min(8, "Use 8 or more characters with a mix of letters, numbers, and symbols")
+  .matches(
+    /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).+$/,
+    "Password must have upper "
+  )
+  .max(20, "Password cannot exceed 20 characters"),
+
+  confirmPassword: Yup.string()
+  .required("Confirm Password is required") 
+  .oneOf([Yup.ref("password")], "Passwords must match"), 
+  // Ensures (confirm password) matches the (password) field
+});*/
+
+
+
+export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Use 8 or more characters with a mix of letters, numbers, and symbols.")
+    .matches(/[A-Z]/, "Password must contain an uppercase letter.")
+    .matches(/[0-9]/, "Password must contain a number.")
+    .matches(/[!@#$%]/, "Password must contain a special character (!@#$%).")
+    .max(20, "Password cannot exceed 20 characters"),
+
+  confirmPassword: Yup.string()
+    .required("Confirm Password is required")
+    .oneOf([Yup.ref("password")], "Both passwords must match"),
+});
+
 export const requirements = [
   {
     text: "Uppercase Letter",

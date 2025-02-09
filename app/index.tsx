@@ -5,6 +5,8 @@ import WelcomePage from "./(auth)/Welcome";
 import Otp from "./(auth)/Otp";
 import Signup from "./(auth)/Signup";
 import Signin from "./(auth)/Signin";
+import ResetPassword from "./(auth)/ResetPassword";
+import ForgotPassword from "./(auth)/ForgotPassword";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -12,7 +14,7 @@ const Page = () => {
   if (isLoggedIn) return <Home />;
 
   // return <Redirect href="/(auth)/welcome" />;
-  return <Signup/>;
+  return <ResetPassword />;
 };
 
 export default Page;

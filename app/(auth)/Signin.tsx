@@ -22,11 +22,24 @@ import axios from "axios";
 import { useState } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import CustomText from "@/components/ui/CustomText";
+import ForgotPasswordButton from "@/components/auth/ForgotPasswordButton";
+
+
+
+
 interface IFormInput {
   email: string;
   password: string;
 }
 export default function Signin() {
+
+
+  const handleForgotPassword = () => {
+    console.log("Forget Password button pressed!");
+    router.push("/(auth)/ForgotPassword"); 
+  }  // for forgot password
+
+
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   const {
@@ -122,6 +135,9 @@ export default function Signin() {
             <View className="gap-y-5 w-[80%] mx-auto">
               {renderRegisterForm}
               <View className="px-4">
+                  {/* forgot password */}
+              <ForgotPasswordButton onForgotPassword={handleForgotPassword}/>
+
                 <PrimaryButton
                   onPress={handleSubmit(onSubmit)}
                   width="w-full"
@@ -152,6 +168,7 @@ export default function Signin() {
                     login with fingerprint
                   </CustomText>
                 </PrimaryButton>
+                
                 <CustomText className="color-primary-foreground p-0">
                   doesn't have an account?
                   <Link href={"/Signup"} className="color-primary">

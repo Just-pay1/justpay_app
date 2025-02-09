@@ -55,8 +55,7 @@ export const REGISTER_FORM: IRegisterInput[] = [
     name: "confirmPassword",
     placeholder: "Confirm Password",
     type: "password",
-    
-  },// confirm password
+  }, // confirm password
 ];
 export const LOGIN_FORM: ILoginInput[] = [
   {
@@ -68,5 +67,21 @@ export const LOGIN_FORM: ILoginInput[] = [
     name: "password",
     placeholder: "Password",
     type: "password",
+  },
+];
+
+// reset password
+export const RESET_PASSWORD_FIELDS = [
+  {
+    name: "password",
+    placeholder: "Password",
+    type: "password",
+    //validationMessage:"Use 8 or more characters with a mix of letters,numbers, and symbols",
+  },
+  {
+    name: "confirmPassword",
+    placeholder: "Confirm Password",
+    type: "password",
+    //validationMessage: "Must match the password.",
   },
 ];

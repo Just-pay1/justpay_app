@@ -43,15 +43,33 @@ export default function Otp() {
     );
     return () => backHandler.remove();
   }, []);
-  const otpHandler = async () => {
+
+
+  
+  
+    /*const otpHandler=()=>{
+      console.log("gggg")
+      //router.navigate("/(auth)/ResetPassword");
+    };
+    */
+      
+
+    const otpHandler = async () => {
+    
     try {
       setIsLoading(true);
+
+
       const { data } = await apiClient.post("/otp/verifyOTP", {
         otp: otpCode,
       });
-      await SecureStore.setItemAsync("isVerified", "true");
+      
+
+      /*await SecureStore.setItemAsync("isVerified", "true");
       dispatch(setLoggedInStatus(true));
-      router.navigate("/");
+
+      router.navigate("/(auth)/ResetPassword");*/
+
       Toast.show({
         type: "success",
         text1: "logged in successfuly!",
@@ -86,8 +104,10 @@ export default function Otp() {
       setIsLoading(false);
       return;
     }
-   
   };
+   
+  
+  
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -118,7 +138,8 @@ export default function Otp() {
           <PrimaryButton
             bgColor="bg-secondary-foreground"
             disabled={otpCode.length !== 6 || isLoading}
-            onPress={otpHandler}
+            //onPress={otpHandler}
+            onPress={() => router.navigate("/(auth)/ResetPassword")}
           >
             <View className="flex-row items-center justify-center">
               <CustomText className="color-secondary">
