@@ -142,6 +142,13 @@ export default function ForgotPassword() {
                     </CustomText>
                   </View>
                 </PrimaryButton>
+                <PrimaryButton
+                  onPress={() => router.push("/(auth)/Signin")}
+                  width="w-full"
+                  borderColor="border-primary"
+                  bgColor="bg-transparent">
+                  <CustomText className="color-primary">Back</CustomText>
+                </PrimaryButton>
               </View>
             </View>
           </View>

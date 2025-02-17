@@ -144,10 +144,10 @@ export default function ResetPassword() {
                   width="w-[95%]"
                   disabled={isLoading}>
                   <View className="flex-row items-center justify-center">
-                    <CustomText className="color-secondary">
+                    <CustomText className="color-secondary ">
                       {isLoading ? (
                         <View className="flex-row items-center">
-                          <CustomText className="p-0 color-secondary">
+                          <CustomText className="p-0 color-secondary ">
                             Resetting...
                           </CustomText>
                           <ActivityIndicator color="white" size={25} />
@@ -157,6 +157,13 @@ export default function ResetPassword() {
                       )}
                     </CustomText>
                   </View>
+                </PrimaryButton>
+                <PrimaryButton
+                  onPress={() => router.push("/(auth)/ForgotPassword")}
+                  width="w-[95%]"
+                  borderColor="border-primary"
+                  bgColor="bg-transparent">
+                  <CustomText className="color-primary">Back</CustomText>
                 </PrimaryButton>
               </View>
             </View>
