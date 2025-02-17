@@ -40,7 +40,7 @@ export default function Signin() {
   const onSubmit: SubmitHandler<IFormInput> = async (dataa) => {
     try {
       setIsLoading(true);
-      const { data } = await apiClient.post("/login", dataa);
+      /*const { data } = await apiClient.post("/login", dataa);
       const { accessToken, refreshToken, user } = data;
       await storeTokens(user, user.id, accessToken, refreshToken);
       await storeStatus("true");
@@ -50,8 +50,9 @@ export default function Signin() {
         type: "success",
         text1: `Login successfully!`,
         position: "bottom",
-      });
-      router.navigate("/");
+      });*/
+      //router.navigate("/(main)/home");
+      router.push("/home");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.message === "Network Error") {
@@ -108,14 +109,12 @@ export default function Signin() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
+      className="flex-1">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+        showsVerticalScrollIndicator={false}>
         <View className="min-h-full">
           <AuthHeader title="sign in" />
           <View className="flex-1">
@@ -125,8 +124,7 @@ export default function Signin() {
                 <PrimaryButton
                   onPress={handleSubmit(onSubmit)}
                   width="w-full"
-                  disabled={isLoading}
-                >
+                  disabled={isLoading}>
                   <View className="flex-row items-center justify-center">
                     <CustomText className="color-secondary">
                       {isLoading ? (
@@ -146,8 +144,7 @@ export default function Signin() {
                   onPress={handleSubmit(onSubmit)}
                   width="w-full"
                   borderColor="border-primary"
-                  bgColor="bg-transparent"
-                >
+                  bgColor="bg-transparent">
                   <CustomText className="color-primary">
                     login with fingerprint
                   </CustomText>

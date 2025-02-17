@@ -2,6 +2,7 @@ import { useAppSelector } from "@/store/store";
 import { Redirect } from "expo-router";
 import Home from "./(main)/home";
 import WelcomePage from "./(auth)/Welcome";
+import HomeLayout from "./(main)/home/_layout";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
