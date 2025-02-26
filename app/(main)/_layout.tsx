@@ -1,5 +1,12 @@
 import { Drawer } from "expo-router/drawer";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from "react-native";
 import {
   DrawerContentScrollView,
   DrawerContentComponentProps,
@@ -8,8 +15,27 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAppDispatch } from "@/store/store";
 import { logoutThunk } from "@/store/authSlice";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
-// Define the types for props
+interface MenuItem {
+  name: string;
+  route: string; // as a prop
+  icon: keyof typeof Ionicons.glyphMap;
+}
+
+const menuItems: MenuItem[] = [
+  { name: "Profile", route: "drawer/profile", icon: "person" },
+  { name: "Settings", route: "drawer/setting", icon: "settings" },
+  {
+    name: "Add Fingerprint",
+    route: "drawer/addFingerPrint",
+    icon: "finger-print",
+  },
+  { name: "Policy", route: "drawer/policy", icon: "document-text" },
+  { name: "Help", route: "drawer/help", icon: "help-circle" },
+  { name: "About", route: "drawer/about", icon: "information-circle" },
+];
+
 function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -20,53 +46,29 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
     router.replace("/(auth)/Signin");
   };
 
+  const { width } = Dimensions.get("window");
+
   return (
     <DrawerContentScrollView {...props} style={styles.container}>
       <View style={styles.userContainer}>
         <Text style={styles.userName}>UserName</Text>
       </View>
+
       <View style={styles.menuContainer}>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => props.navigation.navigate("drawer/profile")}>
-          <Ionicons name="person" size={24} color="#2c7075" />
-          <Text style={styles.menuText}>Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => props.navigation.navigate("drawer/setting")}>
-          <Ionicons name="settings" size={24} color="#2c7075" />
-          <Text style={styles.menuText}>Settings</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => props.navigation.navigate("drawer/addFingerPrint")}>
-          <Ionicons name="finger-print" size={24} color="#2c7075" />
-          <Text style={styles.menuText}>Add Fingerprint</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => props.navigation.navigate("drawer/policy")}>
-          <Ionicons name="document-text" size={24} color="#2c7075" />
-          <Text style={styles.menuText}>Policy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => props.navigation.navigate("drawer/help")}>
-          <Ionicons name="help-circle" size={24} color="#2c7075" />
-          <Text style={styles.menuText}>Help</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => props.navigation.navigate("drawer/about")}>
-          <Ionicons name="information-circle" size={24} color="#2c7075" />
-          <Text style={styles.menuText}>About</Text>
-        </TouchableOpacity>
+        {menuItems.map((item) => (
+          <TouchableOpacity
+            key={item.route}
+            style={styles.menuItem}
+            onPress={() => props.navigation.navigate(item.route)}>
+            <Ionicons name={item.icon} size={24} color="#2c7075" />
+            <Text style={styles.menuText}>{item.name}</Text>
+          </TouchableOpacity>
+        ))}
         <TouchableOpacity
           style={[styles.menuItem, { marginTop: "auto", borderBottomWidth: 0 }]}
           onPress={handleLogout}>
           <Ionicons name="log-out" size={24} color="#2c7075" />
-          <Text style={[styles.menuText, { color: "gray" }]}>Log Out</Text>
+          <Text style={[styles.menuText, { color: "#444444" }]}>Log Out</Text>
         </TouchableOpacity>
       </View>
     </DrawerContentScrollView>
@@ -76,126 +78,29 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
 export default function RootLayout(): JSX.Element {
   return (
     <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen
-        name="home" // default screen
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Drawer.Screen
-        name="drawer/profile"
-        options={{
-          title: "Profile",
-          headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
-          ),
-          drawerLabel: ({ focused }) => (
-            <Text
-              style={{
-                color: focused ? "#2c7075" : "gray",
-                fontWeight: focused ? "bold" : "normal",
-              }}>
-              Profile
-            </Text>
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="drawer/setting"
-        options={{
-          title: "Setting",
-          headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
-          drawerLabel: ({ focused }) => (
-            <Text
-              style={{
-                color: focused ? "#2c7075" : "gray",
-                fontWeight: focused ? "bold" : "normal",
-              }}>
-              Setting
-            </Text>
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="drawer/addFingerPrint"
-        options={{
-          title: "AddFingerPrint",
-          headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="finger-print" size={size} color={color} />
-          ),
-          drawerLabel: ({ focused }) => (
-            <Text
-              style={{
-                color: focused ? "#2c7075" : "gray",
-                fontWeight: focused ? "bold" : "normal",
-              }}>
-              Add Fingerprint
-            </Text>
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="drawer/policy"
-        options={{
-          title: "Policy",
-          headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="document-text" size={size} color={color} />
-          ),
-          drawerLabel: ({ focused }) => (
-            <Text
-              style={{
-                color: focused ? "#2c7075" : "gray",
-                fontWeight: focused ? "bold" : "normal",
-              }}>
-              Policy
-            </Text>
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="drawer/help"
-        options={{
-          title: "Help",
-          headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="help-circle" size={size} color={color} />
-          ),
-          drawerLabel: ({ focused }) => (
-            <Text
-              style={{
-                color: focused ? "#2c7075" : "gray",
-                fontWeight: focused ? "bold" : "normal",
-              }}>
-              Help
-            </Text>
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="drawer/about"
-        options={{
-          title: "About",
-          headerShown: false,
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="information-circle" size={size} color={color} />
-          ),
-          drawerLabel: ({ focused }) => (
-            <Text
-              style={{
-                color: focused ? "#2c7075" : "gray",
-                fontWeight: focused ? "bold" : "normal",
-              }}>
-              About
-            </Text>
-          ),
-        }}
-      />
+      <Drawer.Screen name="home" options={{ headerShown: false }} />
+      {menuItems.map((item) => (
+        <Drawer.Screen
+          key={item.route}
+          name={item.route}
+          options={{
+            title: item.name,
+            headerShown: false,
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name={item.icon} size={size} color={color} />
+            ),
+            drawerLabel: ({ focused }) => (
+              <Text
+                style={{
+                  color: focused ? "#2c7075" : "gray",
+                  fontWeight: focused ? "bold" : "normal",
+                }}>
+                {item.name}
+              </Text>
+            ),
+          }}
+        />
+      ))}
     </Drawer>
   );
 }
@@ -203,18 +108,11 @@ export default function RootLayout(): JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
     paddingHorizontal: 20,
   },
   userContainer: {
     alignItems: "center",
     marginBottom: 30,
-  },
-  userImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
   },
   userName: {
     fontSize: 20,
@@ -227,14 +125,14 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 25,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
   menuText: {
     fontSize: 16,
     marginLeft: 10,
-    color: "gray",
-    fontWeight: "bold",
+    color: "#444444",
+    fontWeight: "black",
   },
 });
