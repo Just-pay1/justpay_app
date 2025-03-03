@@ -81,14 +81,12 @@ export default function Otp() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
+      className="flex-1">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+        showsVerticalScrollIndicator={false}>
         <View className="min-h-full">
           <AuthHeader title="verification" />
           <View className="mx-auto relative items-center justify-center">
@@ -108,8 +106,10 @@ export default function Otp() {
           <PrimaryButton
             bgColor="bg-secondary-foreground"
             disabled={otpCode.length !== 6 || isLoading}
-            onPress={otpHandler}
-          >
+            onPress={() => {
+              //  onPress={otpHandler}          backend
+              router.navigate("/(auth)/UserName");
+            }}>
             <View className="flex-row items-center justify-center">
               <CustomText className="color-secondary">
                 {isLoading ? (
@@ -128,8 +128,7 @@ export default function Otp() {
           <PrimaryButton
             bgColor="bg-transparent"
             borderColor="border-primary"
-            onPress={() => router.navigate("/")}
-          >
+            onPress={() => router.navigate("/")}>
             <CustomText className="color-primary">back</CustomText>
           </PrimaryButton>
         </View>

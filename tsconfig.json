@@ -7,6 +7,7 @@
     }
   },
   "include": [
+    "types/svg.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
