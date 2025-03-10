@@ -1,20 +1,25 @@
 import { useAppSelector } from "@/store/store";
-import { Redirect } from "expo-router";
 import Home from "./(main)/home";
 import WelcomePage from "./(auth)/Welcome";
-import Otp from "./(auth)/Otp";
-import Signup from "./(auth)/Signup";
-import Signin from "./(auth)/Signin";
-import ResetPassword from "./(auth)/ResetPassword";
+import UserNameInfo from "./(auth)/userNameInfo";
+import PinCode from "./(auth)/PinCode";
+import { getItem } from "expo-secure-store";
 import ForgotPassword from "./(auth)/ForgotPassword";
-
+import { Redirect } from "expo-router";
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-  // if (isLoggedIn) return <Redirect href="/(main)/home" />;
-  if (isLoggedIn) return <Home />;
-
-  // return <Redirect href="/(auth)/welcome" />;
-  return <ResetPassword />;
+  const isCompletedInfo = getItem("isCompletedInfo");
+  // if (isLoggedIn) return <Redirect href="/home" />;
+  if (isLoggedIn) {
+    if (isCompletedInfo === "username") {
+      return <UserNameInfo />;
+    } else if (isCompletedInfo === "pincode") {
+      return <PinCode />;
+    } else {
+      return <Home />;
+    }
+  }
+  return <WelcomePage />;
 };
 
 export default Page;

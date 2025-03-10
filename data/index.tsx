@@ -1,4 +1,4 @@
-import { ILoginInput, IRegisterInput } from "@/interfaces";
+import { ILoginInput, IRegisterInput, IResetPass } from "@/interfaces";
 
 export const welcomeSlides = [
   {
@@ -71,17 +71,15 @@ export const LOGIN_FORM: ILoginInput[] = [
 ];
 
 // reset password
-export const RESET_PASSWORD_FIELDS = [
+export const RESET_PASSWORD_FIELDS: IResetPass[] = [
   {
-    name: "password",
+    name: "newPassword",
     placeholder: "Password",
     type: "password",
-    //validationMessage:"Use 8 or more characters with a mix of letters,numbers, and symbols",
   },
   {
-    name: "confirmPassword",
+    name: "confirmedPassword",
     placeholder: "Confirm Password",
     type: "password",
-    //validationMessage: "Must match the password.",
   },
 ];

@@ -55,6 +55,7 @@ export const removeTokens = async () => {
     await SecureStore.deleteItemAsync("userId");
     await SecureStore.deleteItemAsync("user");
     await SecureStore.deleteItemAsync("isVerified");
+    await SecureStore.deleteItemAsync("isCompletedInfo");
     console.log("Tokens removed successfully!");
   } catch (error) {
     console.error("SecureStore Error:", error);

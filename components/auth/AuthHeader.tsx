@@ -14,7 +14,7 @@ const AuthHeader = ({ title }: IProps) => {
     <View>
       <MYicon width={width} height={height} translateY={-30} />
       <View className="absolute top-[50%] -translate-y-1/2 flex flex-row justify-center items-center w-full">
-        <Text className="w-fit font-Nunitosemi text-4xl text-primary-foreground capitalize">
+        <Text className="w-fit font-Nunitosemi text-4xl text-primary-foreground capitalize text-center">
           {title}
         </Text>
       </View>

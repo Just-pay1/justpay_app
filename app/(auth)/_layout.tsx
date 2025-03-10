@@ -1,19 +1,22 @@
-import { Stack } from "expo-router";
+import { Slot, Stack } from "expo-router";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
-export default function RootLayout() {
+export default function AuthLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: "#ffffff",
-        },
-      }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1"
     >
-      <Stack.Screen name="Welcome" />
-      <Stack.Screen name="Otp" />
-      <Stack.Screen name="Signin" />
-      <Stack.Screen name="Signup" />
-    </Stack>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="min-h-full">
+          <Slot />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

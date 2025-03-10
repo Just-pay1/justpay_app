@@ -8,6 +8,8 @@ export interface ICustomButton extends PressableProps {
   borderColor?: TBorderColorOptions | (string & {});
   width?: string;
   styled?: StyleProp<ViewStyle>;
+  loading?: boolean;
+  textLoading?: string;
 }
 export interface IRegisterInput {
   name: "name" | "email" | "phone" | "password" | "confirmPassword";
@@ -23,4 +25,9 @@ export interface ILoginInput {
   name: "email" | "password";
   placeholder: string;
   type: string;
+}
+export interface IResetPass {
+  name: "newPassword" | "confirmedPassword";
+  placeholder: string;
+  type: "password";
 }
