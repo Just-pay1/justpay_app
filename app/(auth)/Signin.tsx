@@ -1,14 +1,8 @@
-import {
-  Text,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { View } from "react-native";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import CustomInput from "@/components/ui/CustomInput";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { userLoginSchema } from "@/validation";
+import { TLoginForm, userLoginSchema } from "@/validation";
 import { LOGIN_FORM } from "@/data";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { apiClient } from "@/config/axios.config";
@@ -18,14 +12,10 @@ import { useAppDispatch } from "@/store/store";
 import { setCredentials, setLoggedInStatus } from "@/store/authSlice";
 import AuthHeader from "@/components/auth/AuthHeader";
 import Toast from "react-native-toast-message";
-import axios from "axios";
 import { useState } from "react";
-import { ActivityIndicator, StyleSheet } from "react-native";
 import CustomText from "@/components/ui/CustomText";
-interface IFormInput {
-  email: string;
-  password: string;
-}
+import CustomErrorToast from "@/components/ui/CustomErrorToast";
+import CustomMsgError from "@/components/ui/CustomMsgError";
 export default function Signin() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
@@ -33,11 +23,11 @@ export default function Signin() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>({
+  } = useForm<TLoginForm>({
     resolver: yupResolver(userLoginSchema),
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = async (dataa) => {
+  const onSubmit: SubmitHandler<TLoginForm> = async (dataa) => {
     try {
       setIsLoading(true);
       const { data } = await apiClient.post("/login", dataa);
@@ -51,32 +41,10 @@ export default function Signin() {
         text1: `Login successfully!`,
         position: "bottom",
       });
-      router.navigate("/");
+      // router.navigate("/");
+      router.back();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.message === "Network Error") {
-          Toast.show({
-            type: "error",
-            text1: `connection problem`,
-            text2: "Please try again later",
-            position: "bottom",
-          });
-        } else if (error.response) {
-          const errorMessage = error.response.data.error || "Login failed";
-          Toast.show({
-            type: "error",
-            text1: errorMessage,
-            position: "bottom",
-          });
-        } else {
-          // Handle other types of errors
-          Toast.show({
-            type: "error",
-            text1: "An unexpected error occurred",
-            position: "bottom",
-          });
-        }
-      }
+      CustomErrorToast(error);
     } finally {
       setIsLoading(false);
     }
@@ -98,72 +66,53 @@ export default function Signin() {
           )}
           name={name}
         />
-        {errors[name] && (
-          <Text className="color-danger ml-2">*{errors[name].message}</Text>
-        )}
+        {errors[name] && <CustomMsgError msg={errors[name].message} />}
       </View>
     )
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View className="min-h-full">
-          <AuthHeader title="sign in" />
-          <View className="flex-1">
-            <View className="gap-y-5 w-[80%] mx-auto">
-              {renderRegisterForm}
-              <View className="px-4">
-                <PrimaryButton
-                  onPress={handleSubmit(onSubmit)}
-                  width="w-full"
-                  disabled={isLoading}
-                >
-                  <View className="flex-row items-center justify-center">
-                    <CustomText className="color-secondary">
-                      {isLoading ? (
-                        <View className="flex-row items-center">
-                          <CustomText className="p-0 color-secondary">
-                            loading{" "}
-                          </CustomText>
-                          <ActivityIndicator color="white" size={25} />
-                        </View>
-                      ) : (
-                        "log in"
-                      )}
-                    </CustomText>
-                  </View>
-                </PrimaryButton>
-                <PrimaryButton
-                  onPress={handleSubmit(onSubmit)}
-                  width="w-full"
-                  borderColor="border-primary"
-                  bgColor="bg-transparent"
-                >
-                  <CustomText className="color-primary">
-                    login with fingerprint
-                  </CustomText>
-                </PrimaryButton>
-                <CustomText className="color-primary-foreground p-0">
-                  doesn't have an account?
-                  <Link href={"/Signup"} className="color-primary">
-                    {" "}
-                    Sign Up
-                  </Link>
-                </CustomText>
-              </View>
-            </View>
+    <View>
+      <AuthHeader title="sign in" />
+      <View className="flex-1">
+        <View className="gap-y-5 w-[80%] mx-auto">
+          {renderRegisterForm}
+          <View className="px-4">
+            <Link
+              href={"/ForgotPassword"}
+              className="color-primary font-RobotoSlabSemi text-sm text-right pt-0 mt-0"
+              replace
+            >
+              Forget Password?
+            </Link>
+            <PrimaryButton
+              onPress={handleSubmit(onSubmit)}
+              width="w-full"
+              loading={isLoading}
+            >
+              <CustomText className="color-secondary">log in</CustomText>
+            </PrimaryButton>
+            <PrimaryButton
+              onPress={handleSubmit(onSubmit)}
+              width="w-full"
+              borderColor="border-primary"
+              bgColor="bg-transparent"
+            >
+              <CustomText className="color-primary">
+                login with fingerprint
+              </CustomText>
+            </PrimaryButton>
+
+            <CustomText className="color-primary-foreground p-0">
+              doesn't have an account?
+              <Link href={"/Signup"} className="color-primary">
+                {" "}
+                Sign Up
+              </Link>
+            </CustomText>
           </View>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }

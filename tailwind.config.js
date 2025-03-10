@@ -8,6 +8,7 @@ module.exports = {
       fontFamily: {
         Nunito: ["Nunito"],
         RobotoSlab: ["RobotoSlab"],
+        RobotoSlabSemi: ["RobotoSlabSemi"],
         Nunitosemi: ["Nunitosemi"],
       },
       flex: {

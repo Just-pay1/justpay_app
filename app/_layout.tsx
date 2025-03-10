@@ -15,7 +15,6 @@ import toastConfig from "@/config/toast";
 import { getTokens } from "@/config/auth";
 
 SplashScreen.preventAutoHideAsync();
-
 function NavigationStack() {
   const [dataLoading, setDataLoading] = useState(true);
   const dispatch = useAppDispatch();
@@ -61,14 +60,13 @@ function NavigationStack() {
     </Stack>
   );
 }
-
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     RobotoSlab: require("../assets/fonts/RobotoSlab-VariableFont_wght.ttf"),
+    RobotoSlabSemi: require("../assets/fonts/RobotoSlab-SemiBold.ttf"),
     Nunito: require("../assets/fonts/Nunito-VariableFont_wght.ttf"),
     Nunitosemi: require("../assets/fonts/Nunito-SemiBold.ttf"),
   });
-
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -78,7 +76,6 @@ export default function RootLayout() {
   if (!fontsLoaded) {
     return null;
   }
-
   return (
     <SafeAreaView className="flex-1">
       <StatusBar style="dark" backgroundColor="#ffffff" />

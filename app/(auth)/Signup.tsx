@@ -1,13 +1,6 @@
-import {
-  Text,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
+import { Text, View } from "react-native";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { requirements } from "@/validation";
+import { requirements, TFormInput } from "@/validation";
 import CustomInput from "@/components/ui/CustomInput";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userRegisterSchema } from "@/validation";
@@ -17,58 +10,54 @@ import PrimaryButton from "@/components/ui/Custombutton";
 import { apiClient } from "@/config/axios.config";
 import { storeTokens } from "@/config/auth";
 import { Link, router } from "expo-router";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useAppDispatch } from "@/store/store";
 import { setCredentials } from "@/store/authSlice";
 import AuthHeader from "@/components/auth/AuthHeader";
 import CustomText from "@/components/ui/CustomText";
 import Toast from "react-native-toast-message";
+import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import axios from "axios";
-
-interface IFormInput {
-  name: string;
-  password: string;
-  email: string;
-  phone: string;
-}
+import CustomMsgError from "@/components/ui/CustomMsgError";
 
 export default function Signup() {
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>({
+  } = useForm<TFormInput>({
     resolver: yupResolver(userRegisterSchema),
   });
-
-  const onSubmit: SubmitHandler<IFormInput> = async (dataa) => {
+  const onSubmit: SubmitHandler<TFormInput> = async (dataa) => {
     try {
+      const onlyDataRequired = {
+        name: dataa.name,
+        email: dataa.email,
+        password: dataa.password,
+        phone: dataa.phone,
+      };
       setIsLoading(true);
-      const { data } = await apiClient.post("/register", dataa);
+      const { data } = await apiClient.post("/register", onlyDataRequired);
       const { accessToken, refreshToken, user } = data;
       dispatch(setCredentials({ accessToken, user }));
       await storeTokens(user, user.id, accessToken, refreshToken);
-      // <Redirect href="/(main)/home" />;
       Toast.show({
         type: "info",
         text1: `check your email!`,
         position: "bottom",
       });
-      router.replace("/Otp");
+      router.replace({
+        pathname: "/Otp",
+        params: { source: "register" },
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        if (error.response) {
-          const errorMessage = error.response.data.error || "Login failed";
-          Toast.show({
-            type: "error",
-            text1: errorMessage,
-            position: "bottom",
-          });
-        }
+        console.log(error.response);
       }
+      console.log("ahmed");
+      CustomErrorToast(error);
     } finally {
       setIsLoading(false);
     }
@@ -106,7 +95,7 @@ export default function Signup() {
               onBlur={onBlur}
               onChangeText={(text) => {
                 onChange(text);
-                if (type === "password") {
+                if (name === "password") {
                   setPassword(text);
                 }
               }}
@@ -116,64 +105,36 @@ export default function Signup() {
           )}
           name={name}
         />
-        {errors[name] && (
-          <Text className="color-danger ml-2">*{errors[name].message}</Text>
-        )}
+        {errors[name] && <CustomMsgError msg={errors[name].message} />}
       </View>
     )
   );
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View className="min-h-full">
-          <AuthHeader title="sign up" />
-          <View className="flex-1">
-            <View className="gap-y-5 w-[80%] mx-auto">
-              {renderRegisterForm}
-              {renderPasswordRequirements()}
-              <View className="px-4">
-                <PrimaryButton
-                  onPress={handleSubmit(onSubmit)}
-                  width="w-full"
-                  disabled={isLoading}
-                  styled={{ marginTop: 0 }}
-                >
-                  <View className="flex-row items-center justify-center">
-                    <CustomText className="color-secondary">
-                      {isLoading ? (
-                        <View className="flex-row items-center">
-                          <CustomText className="p-0 color-secondary">
-                            loading{" "}
-                          </CustomText>
-                          <ActivityIndicator color="white" size={25} />
-                        </View>
-                      ) : (
-                        "Sign up"
-                      )}
-                    </CustomText>
-                  </View>
-                </PrimaryButton>
-                <CustomText className="color-primary-foreground p-0">
-                  Already have an account?
-                  <Link href={"/Signin"} className="color-primary">
-                    {" "}
-                    Log in
-                  </Link>
-                </CustomText>
-              </View>
-            </View>
+    <View>
+      <AuthHeader title="sign up" />
+      <View className="flex-1">
+        <View className="gap-y-5 w-[80%] mx-auto">
+          {renderRegisterForm}
+          {renderPasswordRequirements()}
+          <View className="px-4">
+            <PrimaryButton
+              onPress={handleSubmit(onSubmit)}
+              width="w-full"
+              loading={isLoading}
+              styled={{ marginTop: 0 }}
+            >
+              <CustomText className="color-secondary">Sign up</CustomText>
+            </PrimaryButton>
+            <CustomText className="color-primary-foreground p-0">
+              Already have an account?
+              <Link href={"/Signin"} className="color-primary">
+                {" "}
+                Log in
+              </Link>
+            </CustomText>
           </View>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }

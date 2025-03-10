@@ -34,8 +34,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log(error);
     const originalRequest = error.config;
-    console.log("Response Interceptor Error:", error.response?.status);
+    // console.log("Response Interceptor Error:", error.response?.status);
     if (
       error.response?.status === 402 &&
       !originalRequest._retry &&
