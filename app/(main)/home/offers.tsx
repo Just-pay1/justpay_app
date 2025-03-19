@@ -3,8 +3,10 @@ import React from "react";
 
 const offers = () => {
   return (
-    <View>
-      <Text>offers</Text>
+    <View className="px-6">
+      <Text className="color-primary-foreground text-left text-3xl">
+        offers
+      </Text>
     </View>
   );
 };

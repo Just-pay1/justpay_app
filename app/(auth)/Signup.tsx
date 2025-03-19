@@ -86,8 +86,7 @@ export default function Signup() {
           <Text
             className={`${
               index !== requirements.length - 1 ? "mb-1" : "mb-0"
-            } ${req.test(password) ? "text-primary" : "text-muted"}`}
-          >
+            } ${req.test(password) ? "text-primary" : "text-muted"}`}>
             {req.text}
           </Text>
         </View>
@@ -126,14 +125,12 @@ export default function Signup() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
-    >
+      className="flex-1">
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+        showsVerticalScrollIndicator={false}>
         <View className="min-h-full">
           <AuthHeader title="sign up" />
           <View className="flex-1">
@@ -145,8 +142,7 @@ export default function Signup() {
                   onPress={handleSubmit(onSubmit)}
                   width="w-full"
                   disabled={isLoading}
-                  styled={{ marginTop: 0 }}
-                >
+                  styled={{ marginTop: 0 }}>
                   <View className="flex-row items-center justify-center">
                     <CustomText className="color-secondary">
                       {isLoading ? (

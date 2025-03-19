@@ -6,6 +6,8 @@ import HomeLayout from "./(main)/home/_layout";
 import Otp from "./(auth)/Otp";
 import PinPage from "./(auth)/PinPage";
 import UserName from "./(auth)/UserName";
+import SuccessPage from "./(auth)/SuccessPage";
+import Signup from "./(auth)/Signup";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -13,7 +15,7 @@ const Page = () => {
   if (isLoggedIn) return <Home />;
 
   // return <Redirect href="/(auth)/welcome" />;
-  return <PinPage />;
+  return <SuccessPage />;
 };
 
 export default Page;

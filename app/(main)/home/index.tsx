@@ -8,7 +8,7 @@ import ServicesSection from "@/components/ui/ServicesSection";
 const Home = () => {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, padding: 14 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         <View>
           <View
             style={{
@@ -18,17 +18,17 @@ const Home = () => {
             }}>
             <Image
               source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
-              style={{ width: 40, height: 40, marginRight: 1, marginLeft: 15 }}
+              style={{ width: 40, height: 40, marginRight: 2, marginLeft: 15 }}
             />
             <View>
-              <CustomText className="p-0 color-primary-foreground font-bold text-left  ml-4 text-lg">
+              <Text className="p-0 color-primary-foreground font-bold text-left  ml-4 text-lg">
                 {" "}
                 Hi{" "}
-              </CustomText>
-              <CustomText className="p-0 color-primary-foreground font-bold text-left  ml-4 text-lg">
+              </Text>
+              <Text className="p-0 color-primary-foreground font-bold text-left  ml-4 text-lg">
                 {" "}
                 WelcomeBack!
-              </CustomText>
+              </Text>
             </View>
           </View>
 
