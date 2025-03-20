@@ -8,6 +8,9 @@ import PinPage from "./(auth)/PinPage";
 import UserName from "./(auth)/UserName";
 import SuccessPage from "./(auth)/SuccessPage";
 import Signup from "./(auth)/Signup";
+import Success from "./Services/success";
+import Faild from "./Services/failed";
+import Failed from "./Services/failed";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -15,7 +18,8 @@ const Page = () => {
   if (isLoggedIn) return <Home />;
 
   // return <Redirect href="/(auth)/welcome" />;
-  return <SuccessPage />;
+  // return <SuccessPage />;
+  return <Failed />;
 };
 
 export default Page;
