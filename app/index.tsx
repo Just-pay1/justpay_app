@@ -13,6 +13,7 @@ import Faild from "./Services/failed";
 import Failed from "./Services/failed";
 import ElectricityBilling from "./Services/electricityBilling";
 import PaymentDetails from "./Services/paymentDetails";
+import wallet from "./(main)/home/wallet";
 
 const Page = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -21,7 +22,7 @@ const Page = () => {
 
   // return <Redirect href="/(auth)/welcome" />;
   // return <SuccessPage />;
-  return <ElectricityBilling />;
+  return <PaymentDetails />;
 };
 
 export default Page;

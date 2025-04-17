@@ -41,7 +41,7 @@ const success = () => {
           </CustomText>
         </View>
 
-        <View className="bg-[#F8FDFC] h-[450px] w-[90%] self-center mt-2 pt-8   px-4 rounded-2xl shadow-lg">
+        <View className="bg-[#F8FDFC] h-[450px] w-[90%] self-center mt-16 pt-8   px-4 rounded-2xl shadow-lg">
           <IconBackground
             style={{
               position: "absolute",

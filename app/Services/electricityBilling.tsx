@@ -20,7 +20,7 @@ const ElectricityBilling = () => {
         </View>
       </LinearGradient>
 
-      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-12 pt-8 px-5">
+      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-16 pt-8 px-5">
         {/* Input Section */}
         <View className="mt-10 px-1">
           <CustomText className="color-primary text-left text-xl  mb-2 ">

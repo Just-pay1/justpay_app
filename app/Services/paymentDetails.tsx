@@ -21,7 +21,7 @@ const PaymentDetails = () => {
 
       {/* Payment Details Section */}
 
-      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-12 pt-8 px-5 ">
+      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-16 pt-8 px-5 ">
         <ScrollView
           className="flex-1 pb-20"
           contentContainerStyle={{ flexGrow: 1 }}
