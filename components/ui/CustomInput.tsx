@@ -1,4 +1,5 @@
 import { TextInput, TextInputProps } from "react-native";
+
 interface IProps extends TextInputProps {}
 
 const CustomInput = ({ ...rest }: IProps) => {

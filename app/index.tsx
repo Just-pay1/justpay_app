@@ -1,25 +1,39 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 import { useAppSelector } from "@/store/store";
-import Home from "./(main)/home";
-import WelcomePage from "./(auth)/Welcome";
-import UserNameInfo from "./(auth)/userNameInfo";
-import PinCode from "./(auth)/PinCode";
 import { getItem } from "expo-secure-store";
-import ForgotPassword from "./(auth)/ForgotPassword";
-import { Redirect } from "expo-router";
+import { ActivityIndicator, View } from "react-native";
+
 const Page = () => {
+  const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const isCompletedInfo = getItem("isCompletedInfo");
-  // if (isLoggedIn) return <Redirect href="/home" />;
-  if (isLoggedIn) {
-    if (isCompletedInfo === "username") {
-      return <UserNameInfo />;
-    } else if (isCompletedInfo === "pincode") {
-      return <PinCode />;
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+    if (isLoggedIn) {
+      if (isCompletedInfo === "username") {
+        router.dismissTo("/(auth)/userNameInfo");
+      } else if (isCompletedInfo === "pincode") {
+        router.dismissTo("/(auth)/PinCode");
+      } else {
+        router.dismissTo("/(main)/home");
+      }
     } else {
-      return <Home />;
+      router.dismissTo("/Welcome");
     }
-  }
-  return <WelcomePage />;
+  }, [isLoggedIn, isCompletedInfo, isReady]);
+
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size={50} color="#2c7075" />
+    </View>
+  );
 };
 
 export default Page;

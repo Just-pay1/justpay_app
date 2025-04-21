@@ -26,7 +26,7 @@ const ConfirmPinCode = () => {
         position: "bottom",
       });
       router.dismissAll();
-      router.replace("/");
+      router.replace("/SuccessPage");
     } catch (error) {
       CustomErrorToast(error);
     } finally {
