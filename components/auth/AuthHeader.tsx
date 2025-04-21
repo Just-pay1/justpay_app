@@ -7,7 +7,7 @@ const { width } = Dimensions.get("window");
 const aspectRatio = 173 / 380;
 const height = width * aspectRatio;
 interface IProps {
-  title: string;
+  title: React.ReactNode;
 }
 const AuthHeader = ({ title }: IProps) => {
   return (

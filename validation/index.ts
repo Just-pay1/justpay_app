@@ -103,3 +103,45 @@ export const requirements = [
     test: (pass: string) => /[!@#$%]/.test(pass),
   },
 ];
+
+export const userNameSchema = Yup.object().shape({
+  username: Yup.string()
+    .required("Username is required")
+    .min(3, "Username must be at least 3 characters")
+    .max(12, "Username must not exceed 12 characters")
+    .matches(
+      /^[a-zA-Z0-9]+$/,
+      "Username must contain only letters and numbers"
+    ),
+});
+
+// pinPage
+
+export const isValidPin = (pin: string): boolean => {
+  //  if all numbers are the same (111111 - 999999)
+  if (/^(\d)\1{5}$/.test(pin)) {
+    return false;
+  }
+
+  // full sequence (123456 - 654321)
+  const sequences = [
+    "123456",
+    "234567",
+    "345678",
+    "456789",
+    "987654",
+    "876543",
+    "765432",
+    "654321",
+  ];
+  if (sequences.includes(pin)) {
+    return false;
+  }
+
+  // more than 2 repeated numbers in a row
+  if (/(\d)\1{2,}/.test(pin)) {
+    return false;
+  }
+
+  return true;
+};

@@ -54,9 +54,8 @@ export default function Signup() {
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response);
+        console.log(error.request);
       }
-      console.log("ahmed");
       CustomErrorToast(error);
     } finally {
       setIsLoading(false);
