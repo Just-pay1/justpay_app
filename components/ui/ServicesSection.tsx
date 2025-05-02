@@ -9,27 +9,49 @@ import {
   ActivityIndicator,
 } from "react-native";
 import HeaderSection from "./HeaderSection";
+import { apiClient } from "@/config/axios.config";
 
 interface Service {
   id: string;
   name: string;
-  logo: string; // Image URL
+  logo: string;
 }
 
 const ServiceItem: React.FC<{ item: Service }> = ({ item }) => (
   <TouchableOpacity style={styles.serviceCard}>
-    <Image source={{ uri: item.logo }} style={styles.logo} />
+    <Image
+      source={{ uri: item.logo }}
+      style={styles.logo}
+      resizeMode="contain"
+    />
     <Text style={styles.serviceText}>{item.name}</Text>
   </TouchableOpacity>
 );
 
 const ServicesSection: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingServices, setLoadingServices] = useState<boolean>(true);
+  const [servicesError, setServicesError] = useState<string | null>(null);
 
-  // if data is still loading
-  if (loading) {
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await apiClient.get(
+          "/api/merchants/list-active-merchants"
+        );
+        console.log(response);
+        setServices(response.data);
+      } catch (error) {
+        setServicesError("Failed to load services.");
+      } finally {
+        setLoadingServices(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  if (loadingServices) {
     return (
       <View style={styles.container}>
         <HeaderSection />
@@ -38,17 +60,15 @@ const ServicesSection: React.FC = () => {
     );
   }
 
-  // if an error occurred
-  if (error) {
+  if (servicesError) {
     return (
       <View style={styles.container}>
         <HeaderSection />
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={styles.errorText}>{servicesError}</Text>
       </View>
     );
   }
 
-  // if no services are available
   if (services.length === 0) {
     return (
       <View style={styles.container}>
@@ -64,7 +84,7 @@ const ServicesSection: React.FC = () => {
       <FlatList
         data={services}
         horizontal
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <ServiceItem item={item} />}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.list}
@@ -88,10 +108,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     marginRight: 16,
-    shadowColor: "#000", // ios
-    shadowOpacity: 0.1, // ios
-    shadowRadius: 10, //ios
-    elevation: 5, // for android
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
     height: 140,
     width: 120,
     justifyContent: "center",

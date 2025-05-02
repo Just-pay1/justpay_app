@@ -33,7 +33,7 @@ export const welcomeSlides = [
 export const REGISTER_FORM: IRegisterInput[] = [
   {
     name: "name",
-    placeholder: "Username",
+    placeholder: "Name",
     type: "text",
   },
   {

@@ -1,13 +1,46 @@
 import CustomInput from "@/components/ui/CustomInput";
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Alert } from "react-native";
 import PrimaryButton from "@/components/ui/Custombutton";
 import CustomText from "@/components/ui/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
 
+import { apiClient } from "@/config/axios.config";
+
 const ElectricityBilling = () => {
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const handleContinue = async () => {
+    if (code.length !== 13) {
+      Alert.alert("Invalid Code", "E-Payment Code must be 13 digits.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await apiClient.post("/payment/verify", {
+        paymentCode: code,
+      });
+
+      if (response.status === 200) {
+        router.push("/Services/paymentDetails");
+      } else {
+        Alert.alert("Error", "Invalid E-Payment Code.");
+      }
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert(
+        "Error",
+        error.response?.data?.message ||
+          "Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View className="flex-1 bg-secondary">
       {/* Header Section */}
@@ -29,7 +62,9 @@ const ElectricityBilling = () => {
           <CustomInput
             placeholder="E-Payment Code (13 Digits)"
             keyboardType="numeric"
-            maxLength={12}
+            maxLength={13}
+            value={code}
+            onChangeText={setCode}
             className="border-2 border-primary rounded-full px-4 py-3 text-secondary-foreground"
           />
         </View>
@@ -38,7 +73,7 @@ const ElectricityBilling = () => {
           <PrimaryButton
             width="w-[90%]"
             borderColor="border-primary"
-            onPress={() => router.push("/Services/paymentDetails")}
+            onPress={handleContinue}
             bgColor="bg-primary">
             <CustomText className="color-secondary ">Continue</CustomText>
           </PrimaryButton>

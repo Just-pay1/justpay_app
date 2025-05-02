@@ -13,101 +13,109 @@ import PrimaryButton from "@/components/ui/Custombutton";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { apiClient } from "@/config/axios.config";
-import * as SecureStore from "expo-secure-store";
+import { useFocusEffect } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import TransactionList from "@/components/ui/transactionList";
+import { getItemAsync } from "expo-secure-store";
 
 interface WalletResponse {
   balance: number;
+  idNumber: string;
 }
 
 const Wallet: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
+  const [idHidden, setIdHidden] = useState<string>("");
 
-  // read local balance
+  const [loadingId, setLoadingId] = useState<boolean>(true);
+  const [username, setUsername] = useState<string | null>(null);
+  const [loadingUsername, setLoadingUsername] = useState<boolean>(true);
+
+  // fetch username from securestore
   useEffect(() => {
-    const getStoredBalance = async () => {
-      try {
-        const storedBalance = await SecureStore.getItemAsync("wallet_balance");
-        if (storedBalance) {
-          setBalance(parseFloat(storedBalance));
-        }
-      } catch (e) {
-        console.log("Error reading stored balance:", e);
-      } finally {
-        setInitialLoaded(true);
-      }
+    const fetchUsername = async () => {
+      const storedUsername = await getItemAsync("username");
+      console.log("Username from SecureStore: ", storedUsername);
+      setUsername(storedUsername); // store it in state
+      setLoadingUsername(false);
     };
-    getStoredBalance();
+    fetchUsername();
   }, []);
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      setLoading(true);
-      try {
-        const response = await apiClient.get<WalletResponse>("/api/wallet/");
-        const fetchedBalance = response.data.balance;
-
-        if (initialLoaded && fetchedBalance !== balance) {
-          setBalance(fetchedBalance);
-
-          await SecureStore.setItemAsync(
-            "wallet_balance",
-            fetchedBalance.toString()
-          ); // store
-
+  useFocusEffect(
+    React.useCallback(() => {
+      // Balance
+      const fetchBalance = async () => {
+        if (!username) return;
+        setLoading(true);
+        try {
+          const response = await apiClient.get<WalletResponse>(
+            "/wallet/getBalance",
+            {
+              headers: { "X-User-ID": username || "" },
+            }
+          );
+          setBalance(response.data.balance);
           Toast.show({
             type: "success",
             text1: "Balance updated",
-            text2: `Your new balance is ${fetchedBalance} EGP`,
+            text2: `Your new balance is ${response.data.balance} EGP`,
           });
+        } catch (error) {
+          Toast.show({
+            type: "error",
+            text1: "Connection Error",
+            text2: "Failed to fetch balance. Please try again.",
+            position: "bottom",
+          });
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching balance:", error);
-        Toast.show({
-          type: "error",
-          text1: "Connection Error",
-          text2: "Failed to fetch balance. Please try again.",
-          position: "bottom",
-        });
-      } finally {
-        setLoading(false);
+      };
+
+      if (username) {
+        fetchBalance();
       }
-    };
+    }, [username])
+  );
 
-    fetchBalance();
-  }, [initialLoaded]);
-
-  // Transactions
+  // Fetch transactions and ID
   useEffect(() => {
-    const fetchTransactions = async () => {
+    const fetchTransactionsAndId = async () => {
+      if (!username) return;
       setLoadingTransactions(true);
+      setLoadingId(true);
       try {
-        const response = await apiClient.get("/api/transaction/history");
-
-        // Assuming response is: { transactions: [...] }
-        const fetchedTransactions = response.data.transactions;
-
-        setTransactions(fetchedTransactions);
+        const [transactionRes, idRes] = await Promise.all([
+          apiClient.get("/transaction/history", {
+            headers: { "X-User-ID": username },
+          }),
+          apiClient.get("/wallet/by-user", {
+            headers: { "X-User-ID": username },
+          }),
+        ]);
+        setTransactions(transactionRes.data.transactions);
+        setIdHidden("**** **** **** " + idRes.data.idNumber.slice(-4));
       } catch (error) {
-        console.error("Error fetching transactions:", error);
         Toast.show({
           type: "error",
           text1: "Connection Error",
-          text2: "Failed to fetch transactions. Please try again.",
+          text2: "Failed to fetch data. Please try again.",
           position: "bottom",
         });
       } finally {
         setLoadingTransactions(false);
+        setLoadingId(false);
       }
     };
 
-    fetchTransactions();
-  }, []);
+    if (username) {
+      fetchTransactionsAndId();
+    }
+  }, [username]);
 
   return (
     <ScrollView
@@ -116,31 +124,51 @@ const Wallet: React.FC = () => {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}>
       <View className="flex-1">
-        <View className="px-5">
-          <Text className="color-primary-foreground text-left text-4xl">
-            Wallet
-          </Text>
-        </View>
-
         <View style={styles.container}>
           <LinearGradient
             colors={["#081C1C", "#113E41", "#1A5A60"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
-            style={{ borderRadius: 16, padding: 10 }}>
-            <CustomText className="color-secondary text-left text-md pt-1">
-              Total Balance
-            </CustomText>
+            style={{
+              borderRadius: 20,
+              paddingVertical: 20,
+              paddingHorizontal: 16,
+            }}>
+            {loadingUsername ? (
+              <ActivityIndicator size="large" color="#000" />
+            ) : (
+              <Text className="p-0 color-[rgba(255,255,255,0.8)]  text-xl font-bold  text-left pb-4 ">
+                {username || "Guest"}@justpay
+              </Text>
+            )}
+
             {loading ? (
               <ActivityIndicator size="large" color="#fff" />
             ) : (
-              <Text className="color-secondary text-left text-3xl pt-3 p-3 ">
-                {balance} EGP
+              <View className="flex-row items-baseline px-4 mt-2 flex-nowrap">
+                <Text
+                  className=" color-secondary text-4xl font-extrabold"
+                  numberOfLines={1}>
+                  {Number(balance).toLocaleString("en-EG", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Text>
+                <Text
+                  className="color-secondary text-4xl font-semibold ml-1"
+                  numberOfLines={1}>
+                  EGP
+                </Text>
+              </View>
+            )}
+
+            {loadingId ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text className="color-secondary text-right text-sm pt-8 ">
+                {"**** **** **** " + idHidden.slice(-4)}
               </Text>
             )}
-            <Text className="color-secondary text-right text-sm pt-3 p-4 ">
-              **** **** ****
-            </Text>
           </LinearGradient>
         </View>
 
@@ -168,9 +196,9 @@ const Wallet: React.FC = () => {
 
         <View className="items-center">
           <View className="flex-row items-center justify-between w-full px-5">
-            <CustomText className="color-primary-foreground text-3xl">
-              Transation
-            </CustomText>
+            <Text className="color-primary-foreground text-3xl font-bold">
+              Transaction
+            </Text>
             <TouchableOpacity>
               <CustomText className="color-muted text-xl">See All</CustomText>
             </TouchableOpacity>
