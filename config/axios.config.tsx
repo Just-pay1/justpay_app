@@ -6,8 +6,8 @@ import { Alert } from "react-native";
 import { logout } from "@/store/authSlice";
 import { router } from "expo-router";
 export const apiClient = axios.create({
-  baseURL: "http://192.168.1.12:3000",
-  // baseURL: "https://identity0.azurewebsites.net",
+  // baseURL: "http://192.168.1.12:3000",
+  baseURL: "https://identity0.azurewebsites.net",
 });
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig<any> {
   skipAuthRefresh?: boolean;
