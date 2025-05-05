@@ -26,36 +26,45 @@ interface WalletResponse {
 const Wallet: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
-  const [idHidden, setIdHidden] = useState<string>("");
 
+  const [idHidden, setIdHidden] = useState<string>("");
   const [loadingId, setLoadingId] = useState<boolean>(true);
+
   const [username, setUsername] = useState<string | null>(null);
   const [loadingUsername, setLoadingUsername] = useState<boolean>(true);
 
-  // fetch username from securestore
+  const [userId, setUserId] = useState<string | null>(null);
+  const [loadingUserId, setLoadingUserId] = useState(true);
+
+  // fetch username , userid  from securestore
   useEffect(() => {
-    const fetchUsername = async () => {
+    const fetchUserData = async () => {
+      const storedId = await getItemAsync("userId");
       const storedUsername = await getItemAsync("username");
-      console.log("Username from SecureStore: ", storedUsername);
-      setUsername(storedUsername); // store it in state
+
+      if (storedId) setUserId(storedId); // Only set userId if it exists
+      if (storedUsername) setUsername(storedUsername); // Only set username if it exists
+
+      setLoadingUserId(false);
       setLoadingUsername(false);
     };
-    fetchUsername();
+    fetchUserData();
   }, []);
 
+  // Fetch balance when userId is available
   useFocusEffect(
     React.useCallback(() => {
-      // Balance
+      if (!userId) return; // If userId is not available, don't proceed
       const fetchBalance = async () => {
-        if (!username) return;
         setLoading(true);
         try {
           const response = await apiClient.get<WalletResponse>(
             "/wallet/getBalance",
             {
-              headers: { "X-User-ID": username || "" },
+              headers: { "X-User-ID": userId },
             }
           );
           setBalance(response.data.balance);
@@ -76,25 +85,27 @@ const Wallet: React.FC = () => {
         }
       };
 
-      if (username) {
+      if (userId) {
         fetchBalance();
       }
-    }, [username])
+    }, [userId]) // run when userid changes
   );
 
-  // Fetch transactions and ID
+  // Fetch transactions and ID Number when userId is available
   useEffect(() => {
     const fetchTransactionsAndId = async () => {
-      if (!username) return;
+      if (!userId) return; // If userId is not available, don't proceed
+
       setLoadingTransactions(true);
       setLoadingId(true);
+
       try {
         const [transactionRes, idRes] = await Promise.all([
           apiClient.get("/transaction/history", {
-            headers: { "X-User-ID": username },
+            headers: { "X-User-ID": userId },
           }),
           apiClient.get("/wallet/by-user", {
-            headers: { "X-User-ID": username },
+            headers: { "X-User-ID": userId },
           }),
         ]);
         setTransactions(transactionRes.data.transactions);
@@ -112,10 +123,10 @@ const Wallet: React.FC = () => {
       }
     };
 
-    if (username) {
+    if (userId) {
       fetchTransactionsAndId();
     }
-  }, [username]);
+  }, [userId]);
 
   return (
     <ScrollView
