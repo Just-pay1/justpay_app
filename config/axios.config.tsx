@@ -5,10 +5,31 @@ import { store } from "../store/store";
 import { Alert } from "react-native";
 import { logout } from "@/store/authSlice";
 import { router } from "expo-router";
+
 export const apiClient = axios.create({
   // baseURL: "http://192.168.1.12:3000",
   baseURL: "https://identity0.azurewebsites.net",
 });
+export const apiWallet = axios.create({
+  baseURL: "https://e-wallet.azurewebsites.net",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+apiWallet.interceptors.request.use(
+  (config) => {
+    const userId = SecureStore.getItem("userId");
+    if (userId) {
+      config.headers["X-User-ID"] = userId;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig<any> {
   skipAuthRefresh?: boolean;
 }
