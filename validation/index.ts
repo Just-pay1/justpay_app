@@ -86,7 +86,13 @@ export const ForgotPasswordSchema = Yup.object().shape({
 export const UserNameSchema = Yup.object().shape({
   username: Yup.string()
     .required("Username is required")
-    .min(3, "Username must be at least 3 characters"),
+    .min(4, "Username must be at least 4 characters")
+    .max(15,"Username must not exceed 15 characters")
+    .matches(
+      /^[a-z0-9]+$/,
+      "Username must contain only lowercase letters and numbers"
+    ),
+
 });
 
 export const requirements = [
@@ -104,16 +110,7 @@ export const requirements = [
   },
 ];
 
-export const userNameSchema = Yup.object().shape({
-  username: Yup.string()
-    .required("Username is required")
-    .min(3, "Username must be at least 3 characters")
-    .max(12, "Username must not exceed 12 characters")
-    .matches(
-      /^[a-zA-Z0-9]+$/,
-      "Username must contain only letters and numbers"
-    ),
-});
+
 
 // pinPage
 

@@ -10,15 +10,24 @@ import { deleteItemAsync } from "expo-secure-store";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { setItemAsync } from "expo-secure-store";
 const ConfirmPinCode = () => {
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const PinCodeHandler = async () => {
     try {
       setIsLoading(true);
       const { data } = await apiClient.post("/walletConfig/confirmPinCode", {
         pin_code: pin,
       });
+
+      // store username in securestore
+      if (data?.username) {
+        await setItemAsync("username", data.username);
+        console.log("Username stored:", data.username);
+      }
+
       await deleteItemAsync("isCompletedInfo");
       Toast.show({
         type: "success",
@@ -37,12 +46,10 @@ const ConfirmPinCode = () => {
   return (
     <LinearGradient
       colors={["#1A5A60", "#113E41", "#081C1C"]}
-      className="flex-1 pt-20 justify-around"
-    >
+      className="flex-1 pt-20 justify-around">
       <Pressable
         className="absolute top-4 left-4 z-10"
-        onPress={() => router.back()}
-      >
+        onPress={() => router.back()}>
         <Ionicons name="chevron-back-outline" size={32} color="white" />
       </Pressable>
       <View className="mt-16 mb-6">
@@ -57,8 +64,7 @@ const ConfirmPinCode = () => {
           disabled={pin.length !== 6 || isLoading}
           loading={isLoading}
           onPress={PinCodeHandler}
-          textLoading="verifying"
-        >
+          textLoading="verifying">
           <CustomText className="color-secondary">next</CustomText>
         </PrimaryButton>
       </View>

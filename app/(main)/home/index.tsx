@@ -4,6 +4,7 @@ import CustomInput from "@/components/ui/CustomInput";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import CustomText from "@/components/ui/CustomText";
 import ServicesSection from "@/components/ui/ServicesSection";
+import Services from "@/components/ui/StaticServices";
 
 const Home = () => {
   return (
@@ -53,6 +54,7 @@ const Home = () => {
             />
           </View>
           <View style={{ marginTop: 30 }}>
+            {/*<Services />*/}
             <ServicesSection />
           </View>
         </View>

@@ -25,7 +25,7 @@ const Page = () => {
         router.dismissTo("/(main)/home");
       }
     } else {
-      router.dismissTo("/Welcome");
+      router.dismissTo("/(main)/home");
     }
   }, [isLoggedIn, isCompletedInfo, isReady]);
 

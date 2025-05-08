@@ -1,13 +1,14 @@
 import { Tabs } from "expo-router";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Keyboard, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { useState, useEffect } from "react";
 import { Dimensions } from "react-native";
 import MYicon from "@/assets/svg/icon.svg";
 import Logo from "@/assets/svg/justpay_logo.svg";
+
 const { width } = Dimensions.get("window");
 const aspectRatio = 173 / 380;
 const height = width * aspectRatio;
@@ -16,6 +17,27 @@ type RootDrawerParamList = {};
 export default function HomeLayout() {
   const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamList>>();
   const insets = useSafeAreaInsets();
+
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       <View>
@@ -27,8 +49,7 @@ export default function HomeLayout() {
         </View>
         <TouchableOpacity
           onPress={() => navigation.toggleDrawer()}
-          style={{ position: "absolute", top: 25, left: 20 }}
-        >
+          style={{ position: "absolute", top: 25, left: 20 }}>
           <Ionicons name="menu" size={30} color="#444444" />
         </TouchableOpacity>
 
@@ -37,8 +58,7 @@ export default function HomeLayout() {
             // navigate to
             console.log("!!!!!!!!!!!!!!");
           }}
-          style={{ position: "absolute", top: 30, right: 20 }}
-        >
+          style={{ position: "absolute", top: 30, right: 20 }}>
           <Ionicons name="notifications" size={30} color="#444444" />
         </TouchableOpacity>
       </View>
@@ -46,12 +66,14 @@ export default function HomeLayout() {
         screenOptions={{
           tabBarActiveTintColor: "#2c7075",
           tabBarInactiveTintColor: "#808080",
-          tabBarStyle: {
-            paddingBottom: insets.bottom,
-            height: 65,
-          },
-        }}
-      >
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: keyboardVisible
+            ? { display: "none" }
+            : {
+                paddingBottom: insets.bottom,
+                height: 65,
+              },
+        }}>
         <Tabs.Screen
           name="index"
           options={{
