@@ -11,15 +11,19 @@ export const apiClient = axios.create({
   baseURL: "https://identity0.azurewebsites.net",
 });
 export const apiWallet = axios.create({
-  baseURL: "https://e-wallet.azurewebsites.net",
+  baseURL: "https://e-wallet.azurewebsites.net/api",
   headers: {
     "Content-Type": "application/json",
   },
+});
+export const apiBilling = axios.create({
+  baseURL: "https://billingservice1.azurewebsites.net/api",
 });
 
 apiWallet.interceptors.request.use(
   (config) => {
     const userId = SecureStore.getItem("userId");
+    console.log(userId);
     if (userId) {
       config.headers["X-User-ID"] = userId;
     }

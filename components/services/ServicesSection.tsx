@@ -1,0 +1,188 @@
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from "react-native";
+import useCustomQuery from "@/config/useCustomQuery";
+import { useFocusEffect } from "@react-navigation/native";
+import HeaderSection from "./HeaderSection";
+import { Ionicons } from "@expo/vector-icons";
+import CustomText from "../ui/CustomText";
+import { router } from "expo-router";
+import { Dimensions } from "react-native";
+const { height: screenHeight } = Dimensions.get("window");
+interface Service {
+  merchant_id: string;
+  legal_name: string;
+  logo: string;
+}
+
+const ServiceItem = ({ item }: { item: Service }) => (
+  <TouchableOpacity
+    activeOpacity={0.6}
+    style={styles.serviceCard}
+    onPress={() => {
+      router.push({
+        pathname: "/Services/electricityBilling",
+        params: {
+          merchant_id: item.merchant_id,
+        },
+      });
+    }}
+  >
+    <View style={styles.iconContainer}>
+      <Ionicons name="flash" size={15} color="#ffffff" />
+    </View>
+    <Text style={styles.serviceName} numberOfLines={2} ellipsizeMode="tail">
+      {item.legal_name}
+    </Text>
+  </TouchableOpacity>
+);
+
+const ServicesSection = () => {
+  console.log("services");
+  const {
+    data: servicesData,
+    error: servicesError,
+    isLoading: servicesLoading,
+    refetch: refetchServices,
+  } = useCustomQuery({
+    queryKey: ["services"],
+    whichInstance: "apiBilling",
+    url: "/merchants/list-active-merchants?page=1",
+  });
+  useFocusEffect(
+    React.useCallback(() => {
+      refetchServices();
+    }, [])
+  );
+  console.log(servicesData);
+  if (servicesLoading) {
+    return (
+      <View style={styles.container}>
+        <HeaderSection />
+        <ActivityIndicator size="large" color="#2c7075" />
+      </View>
+    );
+  }
+
+  if (servicesError) {
+    console.log("fdgfdgf");
+    return (
+      <View style={styles.container}>
+        <HeaderSection />
+        <Text style={styles.errorText}>{servicesError.message}</Text>
+      </View>
+    );
+  }
+
+  if (servicesData.data.count === 0) {
+    return (
+      <View style={styles.container}>
+        <HeaderSection />
+        <Text style={styles.noDataText}>No services available</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <HeaderSection />
+      <FlatList
+        data={servicesData.data.rows}
+        numColumns={4}
+        keyExtractor={(item) => item.merchant_id}
+        renderItem={({ item }) => <ServiceItem item={item} />}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        columnWrapperStyle={styles.columnWrapper}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 20,
+    paddingHorizontal: 10,
+    width: "100%",
+    height: "82.8%",
+    // borderWidth: 5,
+    // borderColor: "red",
+    // minHeight: 500,
+  },
+  listContent: {
+    // borderWidth: 5,
+    // borderColor: "green",
+    paddingBottom: 20,
+    marginBottom: 10,
+    justifyContent: "flex-start",
+  },
+
+  columnWrapper: {
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 16,
+    color: "#333333",
+  },
+  list: {
+    paddingVertical: 10,
+    gap: 16,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  serviceCard: {
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    borderRadius: 12,
+    alignItems: "center",
+    margin: 4,
+    width: "22.8%",
+    shadowColor: "#535050",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 3,
+    minHeight: 100,
+    justifyContent: "center",
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 20,
+  },
+  noDataText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#757575",
+  },
+  iconContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#2c7075",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  serviceName: {
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "justify",
+    color: "#2c7075",
+  },
+});
+
+export default ServicesSection;

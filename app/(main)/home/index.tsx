@@ -3,8 +3,7 @@ import React from "react";
 import CustomInput from "@/components/ui/CustomInput";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import CustomText from "@/components/ui/CustomText";
-import ServicesSection from "@/components/ui/ServicesSection";
-import Services from "@/components/ui/StaticServices";
+import ServicesSection from "@/components/services/ServicesSection";
 
 const Home = () => {
   return (
@@ -16,7 +15,8 @@ const Home = () => {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 10,
-            }}>
+            }}
+          >
             <Image
               source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
               style={{ width: 40, height: 40, marginRight: 2, marginLeft: 15 }}
@@ -40,7 +40,8 @@ const Home = () => {
               alignItems: "center",
               backgroundColor: "#f0f0f0",
               marginTop: 30,
-            }}>
+            }}
+          >
             <CustomInput
               placeholder="Search"
               style={{
