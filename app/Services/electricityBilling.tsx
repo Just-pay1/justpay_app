@@ -4,49 +4,41 @@ import { View, Text, Alert } from "react-native";
 import PrimaryButton from "@/components/ui/Custombutton";
 import CustomText from "@/components/ui/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
-import { apiClient } from "@/config/axios.config";
+import { apiBilling, apiClient } from "@/config/axios.config";
+import toastConfig from "@/config/toast";
+import CustomErrorToast from "@/components/ui/CustomErrorToast";
 
 const ElectricityBilling = () => {
+  const { merchant_id } = useLocalSearchParams();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const handleContinue = async () => {
-    if (code.length !== 13) {
-      Alert.alert("Invalid Code", "E-Payment Code must be 13 digits.");
+    if (code.length !== 4) {
+      Alert.alert("Invalid Code", "E-Payment Code must be 4 digits.");
       return;
     }
-
-    setLoading(true);
     try {
-      const response = await apiClient.post("/", {
-        paymentCode: code,
+      setLoading(true);
+      const { data } = await apiBilling.get(
+        `/bills/electric-bill-details?merchant_id=${merchant_id}&bill_code=BILL${code}`
+      );
+      console.log(data.data);
+      router.replace({
+        pathname: "/Services/paymentDetails",
+        params: {
+          source: "billing",
+          dataWillBeShown: JSON.stringify(data.data),
+        },
       });
-
-      if (response.status === 200) {
-        const { billId, time, date, paymentmethod, total, status } =
-          response.data;
-        router.push({
-          pathname: "/Services/paymentDetails",
-          params: {
-            billId,
-            time,
-            date,
-            paymentmethod,
-            total,
-            status,
-          },
-        });
-      } else {
-        Alert.alert("Error", "Invalid E-Payment Code.");
-      }
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      CustomErrorToast(error);
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <View className="flex-1 bg-secondary">
       {/* Header Section */}
@@ -60,28 +52,28 @@ const ElectricityBilling = () => {
       </LinearGradient>
 
       <View className="flex-1 bg-secondary rounded-t-[40px] -mt-16 pt-8 px-5">
-        {/* Input Section */}
         <View className="mt-10 px-1">
           <CustomText className="color-primary text-left text-xl  mb-2 ">
             E-Payment Code
           </CustomText>
           <CustomInput
-            placeholder="E-Payment Code (13 Digits)"
+            placeholder="E-Payment Code (4 Digits)"
             keyboardType="numeric"
-            maxLength={13}
+            maxLength={4}
             value={code}
             onChangeText={setCode}
-            className="border-2 border-primary rounded-full px-4 py-3 text-secondary-foreground"
+            className="border-2 border-primary rounded-full px-4 py-3 text-primary"
           />
         </View>
         {/* Button Section */}
         <View className="mt-8 ">
           <PrimaryButton
             width="w-[90%]"
-            borderColor="border-primary"
             onPress={handleContinue}
-            bgColor="bg-primary">
-            <CustomText className="color-secondary ">Continue</CustomText>
+            loading={loading}>
+            <CustomText className="color-secondary bg-primary">
+              Continue
+            </CustomText>
           </PrimaryButton>
         </View>
 

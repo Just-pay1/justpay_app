@@ -13,8 +13,17 @@ import { ActivityIndicator, View } from "react-native";
 import Toast from "react-native-toast-message";
 import toastConfig from "@/config/toast";
 import { getTokens } from "@/config/auth";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient();
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       refetchOnWindowFocus: false, // default: true
+//     },
+//   },
+// })
 function NavigationStack() {
   const [dataLoading, setDataLoading] = useState(true);
   const dispatch = useAppDispatch();
@@ -79,10 +88,12 @@ export default function RootLayout() {
   return (
     <SafeAreaView className="flex-1">
       <StatusBar style="dark" backgroundColor="#ffffff" />
-      <Provider store={store}>
-        <NavigationStack />
-      </Provider>
-      <Toast config={toastConfig} />
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <NavigationStack />
+        </Provider>
+        <Toast config={toastConfig} />
+      </QueryClientProvider>
     </SafeAreaView>
   );
 }

@@ -17,6 +17,7 @@ function PrimaryButton({
   styled,
   loading,
   textLoading = "loading",
+  textLoadingColor = "text-secondary",
   disabled = loading,
   ...rest
 }: ICustomButton) {
@@ -42,10 +43,14 @@ function PrimaryButton({
           <View className="flex-row items-start justify-center">
             <CustomText className="color-secondary">
               <View className="flex-row items-center">
-                <CustomText className="p-0 color-secondary">
+                <CustomText className={`p-0 ${textLoadingColor}`}>
                   {textLoading}{" "}
                 </CustomText>
-                <ActivityIndicator color="white" size={25} />
+                <ActivityIndicator
+                  // color="white"
+                  size={25}
+                  className={`${textLoadingColor}`}
+                />
               </View>
             </CustomText>
           </View>

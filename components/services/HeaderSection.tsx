@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import CustomText from "../ui/CustomText";
 
 const HeaderSection: React.FC = () => (
   <View style={styles.header}>
-    <Text style={styles.title}>Services</Text>
-    <TouchableOpacity>
-      <Text style={styles.seeAll}>See All</Text>
-    </TouchableOpacity>
+    <CustomText className="text-2xl font-bold p-0 mb-1 text-primary ">
+      Services
+    </CustomText>
   </View>
 );
 
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    // marginBottom: 16,
   },
   title: {
     fontSize: 20,

@@ -23,9 +23,10 @@ const Page = () => {
         router.dismissTo("/(auth)/PinCode");
       } else {
         router.dismissTo("/(main)/home");
+        // router.dismissTo("/Services/paymentDetails");
       }
     } else {
-      router.dismissTo("/(auth)/SuccessPage");
+      router.dismissTo("/Welcome");
     }
   }, [isLoggedIn, isCompletedInfo, isReady]);
 
