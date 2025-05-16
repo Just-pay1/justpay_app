@@ -3,10 +3,21 @@ import { View, ScrollView, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
-import { router } from "expo-router";
+
 import Elec from "@/assets/svg/elec.svg";
+import { router, useLocalSearchParams } from "expo-router";
 
 const PaymentDetails = () => {
+  const params = useLocalSearchParams();
+
+  const handleConfirm = () => {
+    if (params.status === "success") {
+      router.push({ pathname: "/Services/success", params });
+    } else {
+      router.push({ pathname: "/Services/failed", params });
+    }
+  };
+
   return (
     <View className="flex-1 bg-secondary">
       {/* Header Section */}
@@ -37,7 +48,7 @@ const PaymentDetails = () => {
                   Id Number
                 </CustomText>
                 <CustomText className="color-primary-foreground">
-                  012514786354
+                  {params.billId}
                 </CustomText>
               </View>
             </View>
@@ -45,14 +56,14 @@ const PaymentDetails = () => {
             <View className="flex-row justify-between">
               <CustomText className="color-primary-foreground">Time</CustomText>
               <CustomText className="color-primary-foreground">
-                07:42 PM
+                {params.time}
               </CustomText>
             </View>
 
             <View className="flex-row justify-between">
               <CustomText className="color-primary-foreground">Date</CustomText>
               <CustomText className="color-primary-foreground">
-                25 Sep 2024
+                {params.date}
               </CustomText>
             </View>
 
@@ -61,7 +72,7 @@ const PaymentDetails = () => {
                 Payment Method
               </CustomText>
               <CustomText className="color-primary-foreground ">
-                Credit Card
+                {params.paymentmethod}
               </CustomText>
             </View>
 
@@ -70,7 +81,9 @@ const PaymentDetails = () => {
                 <Text className="color-primary-foreground  text-xl ">
                   Total
                 </Text>
-                <Text className="color-primary-foreground text-xl">0 EGP</Text>
+                <Text className="color-primary-foreground text-xl">
+                  {params.total} EGP
+                </Text>
               </View>
             </View>
           </View>
@@ -79,14 +92,15 @@ const PaymentDetails = () => {
         {/* Buttons Section */}
         <View className="mt-2 items-center">
           <PrimaryButton
-            width="w-[71%]"
+            width="w-[70%]"
             borderColor="border-primary"
-            bgColor="bg-primary">
+            bgColor="bg-primary"
+            onPress={handleConfirm}>
             <CustomText className="color-secondary ">Confirm</CustomText>
           </PrimaryButton>
 
           <PrimaryButton
-            width="w-[70%] "
+            width="w-[68%] "
             borderColor="border-primary"
             bgColor="bg-transparent"
             onPress={() => router.push("/(main)/home")}>

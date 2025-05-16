@@ -54,8 +54,8 @@ const Home = () => {
             />
           </View>
           <View style={{ marginTop: 30 }}>
-            {/*<Services />*/}
-            <ServicesSection />
+            {/* <ServicesSection />*/}
+            <Services />
           </View>
         </View>
       </SafeAreaView>

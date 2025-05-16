@@ -6,7 +6,6 @@ import CustomText from "@/components/ui/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
-
 import { apiClient } from "@/config/axios.config";
 
 const ElectricityBilling = () => {
@@ -20,27 +19,34 @@ const ElectricityBilling = () => {
 
     setLoading(true);
     try {
-      const response = await apiClient.post("/payment/verify", {
+      const response = await apiClient.post("/", {
         paymentCode: code,
       });
 
       if (response.status === 200) {
-        router.push("/Services/paymentDetails");
+        const { billId, time, date, paymentmethod, total, status } =
+          response.data;
+        router.push({
+          pathname: "/Services/paymentDetails",
+          params: {
+            billId,
+            time,
+            date,
+            paymentmethod,
+            total,
+            status,
+          },
+        });
       } else {
         Alert.alert("Error", "Invalid E-Payment Code.");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      Alert.alert(
-        "Error",
-        error.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
+      Alert.alert("Error", "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <View className="flex-1 bg-secondary">
       {/* Header Section */}
