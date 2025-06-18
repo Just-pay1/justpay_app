@@ -8,10 +8,12 @@ import { useState, useEffect } from "react";
 import { Dimensions } from "react-native";
 import MYicon from "@/assets/svg/icon.svg";
 import Logo from "@/assets/svg/justpay_logo.svg";
+import { useRouter } from "expo-router";
 
 const { width } = Dimensions.get("window");
 const aspectRatio = 173 / 380;
 const height = width * aspectRatio;
+const router = useRouter();
 
 type RootDrawerParamList = {};
 export default function HomeLayout() {
@@ -49,18 +51,13 @@ export default function HomeLayout() {
         </View>
         <TouchableOpacity
           onPress={() => navigation.toggleDrawer()}
-          style={{ position: "absolute", top: 25, left: 20 }}
-        >
+          style={{ position: "absolute", top: 25, left: 20 }}>
           <Ionicons name="menu" size={30} color="#444444" />
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => {
-            // navigate to
-            console.log("!!!!!!!!!!!!!!");
-          }}
-          style={{ position: "absolute", top: 30, right: 20 }}
-        >
+          onPress={() => console.log("!!")}
+          style={{ position: "absolute", top: 30, right: 20 }}>
           <Ionicons name="notifications" size={30} color="#444444" />
         </TouchableOpacity>
       </View>
@@ -75,8 +72,7 @@ export default function HomeLayout() {
                 paddingBottom: insets.bottom,
                 height: 65,
               },
-        }}
-      >
+        }}>
         <Tabs.Screen
           name="index"
           options={{
@@ -120,13 +116,13 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="history"
+          name="profile"
           options={{
             headerShown: false,
-            title: "History",
+            title: "Profile",
             tabBarIcon: ({ focused }) => (
               <Ionicons
-                name="time"
+                name="person-circle"
                 size={30}
                 color={focused ? "#2c7075" : "#808080"}
               />

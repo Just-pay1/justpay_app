@@ -16,13 +16,95 @@ import TransactionList from "@/components/ui/transactionList";
 import { getItem } from "expo-secure-store";
 import useCustomQuery from "@/config/useCustomQuery";
 import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 interface WalletResponse {
   balance: number;
   idNumber: string;
 }
 const Wallet = () => {
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
+  const router = useRouter();
+  const mockTransactions = [
+    {
+      date: "2025-06-01T10:00:00",
+      description: "Payment 1",
+      amount: 100,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-02T11:00:00",
+      description: "Payment 2",
+      amount: 200,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-03T12:00:00",
+      description: "Payment 3",
+      amount: 300,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-04T13:00:00",
+      description: "Payment 4",
+      amount: 400,
+      status: "canceled",
+    },
+
+    {
+      date: "2025-06-01T10:00:00",
+      description: "Payment 5",
+      amount: 100,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-02T11:00:00",
+      description: "Payment 6",
+      amount: 200,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-03T12:00:00",
+      description: "Payment 7",
+      amount: 300,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-04T13:00:00",
+      description: "Payment 8",
+      amount: 400,
+      status: "canceled",
+    },
+
+    {
+      date: "2025-06-01T10:00:00",
+      description: "Payment 9",
+      amount: 100,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-02T11:00:00",
+      description: "Payment 10",
+      amount: 200,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-03T12:00:00",
+      description: "Payment 11",
+      amount: 300,
+      status: "confirmed",
+    },
+    {
+      date: "2025-06-04T13:00:00",
+      description: "Payment 12",
+      amount: 400,
+      status: "canceled",
+    },
+  ];
+
+  const [transactions, setTransactions] = React.useState(mockTransactions);
+  const [loadingTransactions, setLoadingTransactions] = React.useState(false);
+
+  //const [transactions, setTransactions] = useState<any[]>([]);
+  //const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
   const {
     data,
     error: balanceError,
@@ -59,8 +141,7 @@ const Wallet = () => {
       className="flex-1"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       <View className="flex-1">
         <View style={styles.container}>
           <LinearGradient
@@ -71,8 +152,7 @@ const Wallet = () => {
               borderRadius: 20,
               paddingVertical: 20,
               paddingHorizontal: 16,
-            }}
-          >
+            }}>
             <Text className="p-0 text-secondary  text-xl font-bold  text-left pb-4 ">
               {storedUsername || "Guest"}@justpay
             </Text>
@@ -82,16 +162,14 @@ const Wallet = () => {
                   flex: 1,
                   justifyContent: "center",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <ActivityIndicator size={"large"} color="#ffffff" />
               </View>
             ) : (
               <View className="flex-row items-baseline px-4 flex-nowrap">
                 <Text
                   className=" color-secondary text-4xl font-extrabold"
-                  numberOfLines={1}
-                >
+                  numberOfLines={1}>
                   {Number(data.Balance || 0).toLocaleString("en-EG", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -99,8 +177,7 @@ const Wallet = () => {
                 </Text>
                 <Text
                   className="color-secondary text-4xl font-semibold ml-1"
-                  numberOfLines={1}
-                >
+                  numberOfLines={1}>
                   EGP
                 </Text>
               </View>
@@ -138,7 +215,13 @@ const Wallet = () => {
             <Text className="color-primary-foreground text-3xl font-bold">
               Transaction
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: "/Screens/History", // to history page
+                  params: { transactions: JSON.stringify(transactions) },
+                })
+              }>
               <CustomText className="color-muted text-xl">See All</CustomText>
             </TouchableOpacity>
           </View>
@@ -148,7 +231,7 @@ const Wallet = () => {
         {loadingTransactions ? (
           <ActivityIndicator size="large" color="#2c7075" />
         ) : (
-          <TransactionList transactions={transactions} />
+          <TransactionList transactions={transactions.slice(0, 5)} />
         )}
       </View>
     </ScrollView>
