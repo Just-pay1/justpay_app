@@ -55,10 +55,7 @@ export default function HomeLayout() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => {
-            // navigate to
-            console.log("!!!!!!!!!!!!!!");
-          }}
+          onPress={() => console.log("!!")}
           style={{ position: "absolute", top: 30, right: 20 }}
         >
           <Ionicons name="notifications" size={30} color="#444444" />
@@ -120,13 +117,13 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="history"
+          name="profile"
           options={{
             headerShown: false,
-            title: "History",
+            title: "Profile",
             tabBarIcon: ({ focused }) => (
               <Ionicons
-                name="time"
+                name="person-circle"
                 size={30}
                 color={focused ? "#2c7075" : "#808080"}
               />

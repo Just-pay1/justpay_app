@@ -6,7 +6,6 @@ import CustomText from "@/components/ui/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
-
 import { apiBilling, apiClient } from "@/config/axios.config";
 import toastConfig from "@/config/toast";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
@@ -81,8 +80,7 @@ const ElectricityBilling = () => {
           <PrimaryButton
             width="w-[90%]"
             onPress={handleContinue}
-            loading={loading}
-          >
+            loading={loading}>
             <CustomText className="color-secondary bg-primary">
               Continue
             </CustomText>

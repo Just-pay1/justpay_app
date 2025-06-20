@@ -76,26 +76,27 @@ const PaymentDetails = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="p-6 bg-white rounded-2xl ">
-            <CustomText className="text-primary text-2xl  mb-1 text-left">
+          <View className="p-4 bg-white rounded-2xl ">
+            <CustomText className="text-primary text-2xl text-left px-0">
               Payment Details
             </CustomText>
-            <View className="border-t border-muted pt-2 ">
-              <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground  text-xl">
+            <View className="border-t border-muted ">
+              {/* <View className="border-2 border-primary "> */}
+              <View className="flex-row justify-between p-1 my-1">
+                <CustomText className="color-primary-foreground p-0">
                   Id Number
                 </CustomText>
-                <CustomText className="color-primary-foreground text-sm">
+                <CustomText className="color-primary-foreground text-sm p-1">
                   {bill_id}
                 </CustomText>
               </View>
             </View>
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground">
+              <View className="flex-row justify-between p-1  my-1">
+                <CustomText className="color-primary-foreground p-0">
                   Time
                 </CustomText>
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   {new Date(Date.now()).toLocaleTimeString("en-US", {
                     hourCycle: "h23",
                     hour: "2-digit",
@@ -106,50 +107,40 @@ const PaymentDetails = () => {
               </View>
             </View>
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground">
+              <View className="flex-row justify-between p-1 my-1">
+                <CustomText className="color-primary-foreground p-0">
                   Date
                 </CustomText>
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   {new Date(Date.now()).toLocaleDateString()}
                 </CustomText>
               </View>
             </View>
 
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">
-                  Status
-                </Text>
-                <Text className="color-primary-foreground text-xl">
-                  {status}
-                </Text>
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground p-0">Status</Text>
+                <Text className="color-primary-foreground p-0">{status}</Text>
               </View>
             </View>
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">
-                  Amount
-                </Text>
-                <Text className="color-primary-foreground text-xl">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Amount</Text>
+                <Text className="color-primary-foreground p-0">
                   {amount} EGP
                 </Text>
               </View>
             </View>
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">Fee</Text>
-                <Text className="color-primary-foreground text-xl">
-                  {fee} EGP
-                </Text>
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Fee</Text>
+                <Text className="color-primary-foreground p-0">{fee} EGP</Text>
               </View>
             </View>
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">
-                  Total
-                </Text>
-                <Text className="color-primary-foreground text-xl">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Total</Text>
+                <Text className="color-primary-foreground p-0">
                   {total_amount} EGP
                 </Text>
               </View>

@@ -2,12 +2,12 @@ import { View, Text } from "react-native";
 import React from "react";
 import CustomInput from "@/components/ui/CustomInput";
 
-const history = () => {
+const profile = () => {
   return (
     <View>
       <View className="px-6">
         <Text className="color-primary-foreground text-left text-4xl">
-          History
+          Profile
         </Text>
       </View>
       <View
@@ -34,4 +34,4 @@ const history = () => {
   );
 };
 
-export default history;
+export default profile;

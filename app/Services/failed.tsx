@@ -2,25 +2,16 @@ import { View, Text, ScrollView, Pressable } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import CustomText from "@/components/ui/CustomText";
 import { TouchableOpacity } from "react-native";
 import IconBackground from "@/assets/svg/IconBackground.svg";
 import Fail from "@/assets/svg/fail.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
 
-const paymentData = {
-  id: "012********",
-  status: "Failed",
-  time: " 12:00 PM",
-  date: "5 march 2025",
-  paymentMethod: "Credit Card",
-  amount: " 0 EGP",
-
-  total: "0 EGP",
-};
-
 const Failed = () => {
+  const { billId, status, time, date, paymentmethod, total } =
+    useLocalSearchParams();
   return (
     <ScrollView
       className="flex-1"
@@ -66,83 +57,34 @@ const Failed = () => {
             <View className="gap-y-2">
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">Id Number</Text>
-                <Text className="color-secondary-foreground">
-                  {paymentData.id}
-                </Text>
+                <Text className="color-secondary-foreground">{billId}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">Status</Text>
-                <Text className="color-danger">{paymentData.status}</Text>
+                <Text className="color-danger">{status}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">Time</Text>
-                <Text className="color-secondary-foreground">
-                  {paymentData.time}
-                </Text>
+                <Text className="color-secondary-foreground">{time}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">Date</Text>
-                <Text className="color-secondary-foreground">
-                  {paymentData.date}
-                </Text>
+                <Text className="color-secondary-foreground">{date}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">
                   Payment Method
                 </Text>
                 <Text className="color-secondary-foreground">
-                  {paymentData.paymentMethod}
+                  {paymentmethod}
                 </Text>
               </View>
               <View className="border-t border-primary-foreground mt-2 pt-2">
-                <View className="flex-row justify-between">
-                  <Text className="color-secondary-foreground text-xl">
-                    Amount
-                  </Text>
-                  <Text className="color-secondary-foreground text-xl ">
-                    {paymentData.amount}
-                  </Text>
-                </View>
-
                 <View className="flex-row justify-between font-bold">
                   <Text className="color-secondary-foreground text-xl">
                     Total
                   </Text>
-                  <Text className="color-secondary-foreground text-xl">
-                    {paymentData.total}
-                  </Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
-                </View>
-                <View className="flex-row justify-between font-bold">
-                  <Text className="text-gray-700">Total</Text>
-                  <Text className="text-blue-500">{paymentData.total}</Text>
+                  <Text className="color-danger text-xl">{total}</Text>
                 </View>
               </View>
             </View>

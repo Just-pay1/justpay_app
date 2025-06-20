@@ -2,8 +2,15 @@ import React from "react";
 import { View, Text } from "react-native";
 import Pencilcoin from "@/assets/svg/pencilcoin.svg";
 
+type Transaction = {
+  date: string;
+  description: string;
+  amount: number;
+  status?: "confirmed" | "canceled" | string;
+};
+
 interface Props {
-  transactions: any[];
+  transactions: Transaction[];
 }
 
 const TransactionList: React.FC<Props> = ({ transactions }) => {
