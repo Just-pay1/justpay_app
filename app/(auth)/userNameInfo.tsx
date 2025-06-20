@@ -37,7 +37,7 @@ export default function UserNameInfo() {
       try {
         setIsLoading(true);
         const { data } = await apiClient.post(
-          "/walletConfig/checkUsernameAvailability",
+          "/identity/walletConfig/checkUsernameAvailability",
           { username }
         );
         if (!data.available) {
@@ -61,7 +61,7 @@ export default function UserNameInfo() {
   const onsubmitHandler = handleSubmit(async (dataa) => {
     try {
       setIsLoading(true);
-      const { data } = await apiClient.post("/walletConfig/username", {
+      const { data } = await apiClient.post("/identity/walletConfig/username", {
         username: dataa.username,
       });
       await setItemAsync("isCompletedInfo", "pincode");

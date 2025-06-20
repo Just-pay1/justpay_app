@@ -31,7 +31,7 @@ const SuccessPage = () => {
         bgColor="bg-transparent"
         borderColor="border-primary"
         onPress={() => {
-          router.dismissAll();
+          // router.dismissAll();
           router.replace("/");
         }}
       >

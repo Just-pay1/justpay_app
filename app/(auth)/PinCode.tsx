@@ -15,7 +15,7 @@ const PinCode = () => {
     try {
       setIsLoading(true);
       console.log(pin);
-      const { data } = await apiClient.post("/walletConfig/pinCode", {
+      const { data } = await apiClient.post("/identity/walletConfig/pinCode", {
         pin_code: pin,
       });
       router.navigate("/ConfirmPinCode");

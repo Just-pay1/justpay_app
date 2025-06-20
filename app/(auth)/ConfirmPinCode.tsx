@@ -18,9 +18,12 @@ const ConfirmPinCode = () => {
   const PinCodeHandler = async () => {
     try {
       setIsLoading(true);
-      const { data } = await apiClient.post("/walletConfig/confirmPinCode", {
-        pin_code: pin,
-      });
+      const { data } = await apiClient.post(
+        "/identity/walletConfig/confirmPinCode",
+        {
+          pin_code: pin,
+        }
+      );
 
       // store username in securestore
       if (data?.username) {
@@ -46,10 +49,12 @@ const ConfirmPinCode = () => {
   return (
     <LinearGradient
       colors={["#1A5A60", "#113E41", "#081C1C"]}
-      className="flex-1 pt-20 justify-around">
+      className="flex-1 pt-20 justify-around"
+    >
       <Pressable
         className="absolute top-4 left-4 z-10"
-        onPress={() => router.back()}>
+        onPress={() => router.back()}
+      >
         <Ionicons name="chevron-back-outline" size={32} color="white" />
       </Pressable>
       <View className="mt-16 mb-6">
@@ -64,7 +69,8 @@ const ConfirmPinCode = () => {
           disabled={pin.length !== 6 || isLoading}
           loading={isLoading}
           onPress={PinCodeHandler}
-          textLoading="verifying">
+          textLoading="verifying"
+        >
           <CustomText className="color-secondary">next</CustomText>
         </PrimaryButton>
       </View>

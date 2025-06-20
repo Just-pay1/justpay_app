@@ -12,7 +12,8 @@ import toastConfig from "@/config/toast";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 
 const ElectricityBilling = () => {
-  const { merchant_id } = useLocalSearchParams();
+  const { merchant_id, service_type, service_id, commercial_name } =
+    useLocalSearchParams();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const handleContinue = async () => {
@@ -22,8 +23,16 @@ const ElectricityBilling = () => {
     }
     try {
       setLoading(true);
+      let url = "";
+      if (service_type === "electric bills") {
+        url = "electric-bill-details";
+      } else if (service_type === "water bills") {
+        url = "water-bill-details";
+      } else if (service_type === "gas bills") {
+        url = "/gas-bill-details";
+      }
       const { data } = await apiBilling.get(
-        `/bills/electric-bill-details?merchant_id=${merchant_id}&bill_code=BILL${code}`
+        `/bills/${url}?merchant_id=${merchant_id}&bill_code=BILL${code}`
       );
       console.log(data.data);
       router.replace({
@@ -60,6 +69,7 @@ const ElectricityBilling = () => {
           <CustomInput
             placeholder="E-Payment Code (4 Digits)"
             keyboardType="numeric"
+            inputMode="numeric"
             maxLength={4}
             value={code}
             onChangeText={setCode}

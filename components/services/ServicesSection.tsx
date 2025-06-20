@@ -17,12 +17,23 @@ import { router } from "expo-router";
 import { Dimensions } from "react-native";
 const { height: screenHeight } = Dimensions.get("window");
 interface Service {
-  merchant_id: string;
-  legal_name: string;
-  logo: string;
+  id: string;
+  service_type: string;
+  merchants: {
+    merchant_id: string;
+    commercial_name: string;
+  }[];
 }
 
-const ServiceItem = ({ item }: { item: Service }) => (
+const ServiceItem = ({
+  merchant,
+  serviceType,
+  serviceId,
+}: {
+  merchant: { merchant_id: string; commercial_name: string };
+  serviceType: string;
+  serviceId: string;
+}) => (
   <TouchableOpacity
     activeOpacity={0.6}
     style={styles.serviceCard}
@@ -30,7 +41,10 @@ const ServiceItem = ({ item }: { item: Service }) => (
       router.push({
         pathname: "/Services/electricityBilling",
         params: {
-          merchant_id: item.merchant_id,
+          merchant_id: merchant.merchant_id,
+          commercial_name: merchant.commercial_name,
+          service_type: serviceType,
+          service_id: serviceId,
         },
       });
     }}
@@ -39,7 +53,7 @@ const ServiceItem = ({ item }: { item: Service }) => (
       <Ionicons name="flash" size={15} color="#ffffff" />
     </View>
     <Text style={styles.serviceName} numberOfLines={2} ellipsizeMode="tail">
-      {item.legal_name}
+      {merchant.commercial_name}
     </Text>
   </TouchableOpacity>
 );
@@ -61,7 +75,7 @@ const ServicesSection = () => {
       refetchServices();
     }, [])
   );
-  console.log(servicesData);
+  console.log(servicesData?.data.rows[0].merchants[0].commercial_name);
   if (servicesLoading) {
     return (
       <View style={styles.container}>
@@ -90,14 +104,34 @@ const ServicesSection = () => {
     );
   }
 
+  const flattenedMerchants =
+    servicesData?.data.rows.flatMap((service: Service) =>
+      service.merchants.map(
+        (merchant: { merchant_id: string; commercial_name: string }) => ({
+          serviceId: service.id,
+          serviceType: service.service_type,
+          merchant,
+        })
+      )
+    ) || [];
+
   return (
     <View style={styles.container}>
       <HeaderSection />
       <FlatList
-        data={servicesData.data.rows}
+        data={flattenedMerchants}
         numColumns={4}
-        keyExtractor={(item) => item.merchant_id}
-        renderItem={({ item }) => <ServiceItem item={item} />}
+        keyExtractor={(item) => {
+          console.log(item.merchant.merchant_id + item.serviceId);
+          return item.merchant.merchant_id + item.serviceId;
+        }}
+        renderItem={({ item }) => (
+          <ServiceItem
+            merchant={item.merchant}
+            serviceType={item.serviceType}
+            serviceId={item.serviceId}
+          />
+        )}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.columnWrapper}

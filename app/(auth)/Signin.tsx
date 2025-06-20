@@ -30,7 +30,7 @@ export default function Signin() {
   const onSubmit: SubmitHandler<TLoginForm> = async (dataa) => {
     try {
       setIsLoading(true);
-      const { data } = await apiClient.post("/login", dataa);
+      const { data } = await apiClient.post("/identity/login", dataa);
       const { accessToken, refreshToken, user } = data;
       await storeTokens(user, user.id, accessToken, refreshToken);
       await storeStatus("true");
@@ -41,8 +41,8 @@ export default function Signin() {
         text1: `Login successfully!`,
         position: "bottom",
       });
-      // router.navigate("/");
-      router.back();
+      router.dismissAll();
+      router.replace("/");
     } catch (error) {
       CustomErrorToast(error);
     } finally {

@@ -39,7 +39,10 @@ export default function Signup() {
         phone: dataa.phone,
       };
       setIsLoading(true);
-      const { data } = await apiClient.post("/register", onlyDataRequired);
+      const { data } = await apiClient.post(
+        "/identity/register",
+        onlyDataRequired
+      );
       const { accessToken, refreshToken, user } = data;
       dispatch(setCredentials({ accessToken, user }));
       await storeTokens(user, user.id, accessToken, refreshToken);

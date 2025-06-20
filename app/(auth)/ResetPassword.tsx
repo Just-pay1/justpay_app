@@ -35,11 +35,15 @@ export default function ResetPassword() {
       console.log(dataa);
       console.log(resetToken);
       setIsLoading(true);
-      const { status } = await apiClient.post("/resetPassword", dataa, {
-        headers: {
-          Authorization: `Bearer ${resetToken}`,
-        },
-      });
+      const { status } = await apiClient.post(
+        "/identity/resetPassword",
+        dataa,
+        {
+          headers: {
+            Authorization: `Bearer ${resetToken}`,
+          },
+        }
+      );
       if (status === 200) {
         await deleteItemAsync("resetToken");
       }

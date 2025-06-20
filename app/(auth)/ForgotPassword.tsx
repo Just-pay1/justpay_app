@@ -34,7 +34,7 @@ export default function ForgotPassword() {
     console.log(data);
     try {
       setIsLoading(true);
-      await apiClient.post("/forgetPassword", data);
+      await apiClient.post("/identity/forgetPassword", data);
       Toast.show({
         type: "info",
         text1: " Code sent successfully!",

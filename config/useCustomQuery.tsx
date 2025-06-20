@@ -1,26 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
 import { AxiosRequestConfig } from "axios";
-import { apiBilling, apiClient, apiWallet } from "./axios.config";
+import { apiBilling, apiClient } from "./axios.config";
 
 interface IAuthenticatedQuery {
   queryKey: string[];
   url: string;
   config?: AxiosRequestConfig;
-  whichInstance?: "apiWallet" | "apiClient" | "apiBilling";
+  whichInstance?: "apiClient" | "apiBilling";
 }
 
 const useCustomQuery = ({
   queryKey,
   url,
   config,
-  whichInstance = "apiWallet",
+  whichInstance = "apiClient",
 }: IAuthenticatedQuery) => {
-  const instance =
-    whichInstance === "apiWallet"
-      ? apiWallet
-      : whichInstance === "apiClient"
-        ? apiClient
-        : apiBilling;
+  const instance = whichInstance === "apiBilling" ? apiBilling : apiClient;
   return useQuery({
     queryKey,
     queryFn: async () => {

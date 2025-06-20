@@ -17,6 +17,23 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
+// function useRouteLogger() {
+//   const pathname = usePathname();
+//   const segments = useSegments();
+
+//   useEffect(() => {
+//     console.log("========================");
+//     console.log("🧭 NAVIGATION DEBUG INFO");
+//     console.log("------------------------");
+//     console.log(`Current path: ${pathname}`);
+//     console.log(`Path segments: ${JSON.stringify(segments)}`);
+//     console.log(`Timestamp: ${new Date().toISOString()}`);
+//     console.log("========================");
+//   }, [pathname, segments]);
+
+//   return { pathname, segments };
+// }
+
 // const queryClient = new QueryClient({
 //   defaultOptions: {
 //     queries: {
@@ -25,6 +42,7 @@ const queryClient = new QueryClient();
 //   },
 // })
 function NavigationStack() {
+  // useRouteLogger();
   const [dataLoading, setDataLoading] = useState(true);
   const dispatch = useAppDispatch();
   useEffect(() => {

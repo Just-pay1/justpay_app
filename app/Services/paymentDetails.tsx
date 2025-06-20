@@ -6,7 +6,7 @@ import PrimaryButton from "@/components/ui/Custombutton";
 import { router, useLocalSearchParams } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
 import { OTPInput } from "@/components/auth/Otpinput";
-import { apiClient, apiWallet } from "@/config/axios.config";
+import { apiClient } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
 
@@ -14,6 +14,7 @@ const PaymentDetails = () => {
   const { source, dataWillBeShown } = useLocalSearchParams();
   const Data = JSON.parse((dataWillBeShown as string) || "{}");
   const { bill_id, amount, fee, status, model, total_amount } = Data;
+  console.log(bill_id);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pinCode, setPinCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,16 +26,22 @@ const PaymentDetails = () => {
     try {
       setIsLoading(true);
       console.log(pinCode);
-      const { data } = await apiClient.post(`/walletConfig/verifyPinCode`, {
-        pin_code: pinCode,
-      });
+      const { data } = await apiClient.post(
+        `/identity/walletConfig/verifyPinCode`,
+        {
+          pin_code: pinCode,
+        }
+      );
       if (data) {
         setIsModalVisible(false);
         try {
-          const { data } = await apiWallet.post(`/transaction/pay`, {
-            bill_id: pinCode,
-            source: source,
-          });
+          const { data } = await apiClient.post(
+            `/transactions/api/transaction/pay`,
+            {
+              bill_id: bill_id,
+              source: source,
+            }
+          );
           router.replace("/Services/success");
         } catch (error) {
           router.replace("/Services/failed");
@@ -75,7 +82,7 @@ const PaymentDetails = () => {
             </CustomText>
             <View className="border-t border-muted pt-2 ">
               <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground  text-xl">
                   Id Number
                 </CustomText>
                 <CustomText className="color-primary-foreground text-sm">
@@ -83,24 +90,30 @@ const PaymentDetails = () => {
                 </CustomText>
               </View>
             </View>
-
-            <View className="flex-row justify-between">
-              <CustomText className="color-primary-foreground">Time</CustomText>
-              <CustomText className="color-primary-foreground">
-                {new Date(Date.now()).toLocaleTimeString("en-US", {
-                  hourCycle: "h23",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
-              </CustomText>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between">
+                <CustomText className="color-primary-foreground">
+                  Time
+                </CustomText>
+                <CustomText className="color-primary-foreground">
+                  {new Date(Date.now()).toLocaleTimeString("en-US", {
+                    hourCycle: "h23",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}
+                </CustomText>
+              </View>
             </View>
-
-            <View className="flex-row justify-between">
-              <CustomText className="color-primary-foreground">Date</CustomText>
-              <CustomText className="color-primary-foreground">
-                {new Date(Date.now()).toLocaleDateString()}
-              </CustomText>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between">
+                <CustomText className="color-primary-foreground">
+                  Date
+                </CustomText>
+                <CustomText className="color-primary-foreground">
+                  {new Date(Date.now()).toLocaleDateString()}
+                </CustomText>
+              </View>
             </View>
 
             <View className="border-t border-muted  ">

@@ -20,7 +20,7 @@ export default function Otp() {
   const objectUser = JSON.parse(storedUser!);
   const resendOtp = async () => {
     try {
-      await apiClient.post("/otp/resendOTP", {
+      await apiClient.post("/identity/otp/resendOTP", {
         email: params.email ? params.email : objectUser.email,
       });
       Toast.show({
@@ -54,7 +54,7 @@ export default function Otp() {
         flow: params.source === "register" ? "register" : "reset_password",
       };
       const { status, data } = await apiClient.post(
-        "/otp/verifyOTP",
+        "/identity/otp/verifyOTP",
         dataSending
       );
       if (status === 200) {

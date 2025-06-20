@@ -30,7 +30,7 @@ const Wallet = () => {
     refetch: refetchBalance,
   } = useCustomQuery({
     queryKey: ["balance"],
-    url: "/wallet/getBalance",
+    url: "/transactions/api/wallet/getBalance",
   });
   const {
     data: walletData,
@@ -39,7 +39,7 @@ const Wallet = () => {
     refetch: refetchWallet,
   } = useCustomQuery({
     queryKey: ["wallet"],
-    url: "/wallet/by-user",
+    url: "/transactions/api/wallet/by-user",
   });
 
   useFocusEffect(
