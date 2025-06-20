@@ -19,6 +19,9 @@ export const apiWallet = axios.create({
 export const apiBilling = axios.create({
   baseURL: "https://billingservice1.azurewebsites.net/api",
 });
+export const apiRefNumBilling = axios.create({
+  baseURL: "https://refererencenumber-akcug4h4d4fff8d9.canadacentral-01.azurewebsites.net/api",
+});
 
 apiWallet.interceptors.request.use(
   (config) => {

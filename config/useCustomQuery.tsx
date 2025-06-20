@@ -6,7 +6,7 @@ interface IAuthenticatedQuery {
   queryKey: string[];
   url: string;
   config?: AxiosRequestConfig;
-  whichInstance?: "apiWallet" | "apiClient" | "apiBilling";
+  whichInstance?: "apiWallet" | "apiClient" | "apiBilling"  ;
 }
 
 const useCustomQuery = ({

@@ -28,7 +28,7 @@ const ServiceItem = ({ item }: { item: Service }) => (
     style={styles.serviceCard}
     onPress={() => {
       router.push({
-        pathname: "/Services/electricityBilling",
+        pathname: "/Services/refnumBilling",
         params: {
           merchant_id: item.merchant_id,
         },

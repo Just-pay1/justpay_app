@@ -10,7 +10,7 @@ const ErrorModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Modal
-      visible={true}
+      visible={false}
       animationType="fade"
       transparent
       onRequestClose={() => setIsOpen(false)}
