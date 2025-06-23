@@ -13,10 +13,10 @@ import { useRouter } from "expo-router";
 const { width } = Dimensions.get("window");
 const aspectRatio = 173 / 380;
 const height = width * aspectRatio;
-const router = useRouter();
 
 type RootDrawerParamList = {};
 export default function HomeLayout() {
+  const router = useRouter();
   const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamList>>();
   const insets = useSafeAreaInsets();
 
@@ -56,7 +56,7 @@ export default function HomeLayout() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => console.log("!!")}
+          onPress={() => router.push("/Screens/Notifications")}
           style={{ position: "absolute", top: 30, right: 20 }}>
           <Ionicons name="notifications" size={30} color="#444444" />
         </TouchableOpacity>

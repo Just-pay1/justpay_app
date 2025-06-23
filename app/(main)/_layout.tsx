@@ -1,12 +1,5 @@
 import { Drawer } from "expo-router/drawer";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Dimensions,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerContentComponentProps,
@@ -24,13 +17,7 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { name: "Profile", route: "drawer/profile", icon: "person" },
   { name: "Settings", route: "drawer/setting", icon: "settings" },
-  {
-    name: "Add Fingerprint",
-    route: "drawer/addFingerPrint",
-    icon: "finger-print",
-  },
   { name: "Policy", route: "drawer/policy", icon: "document-text" },
   { name: "Help", route: "drawer/help", icon: "help-circle" },
   { name: "About", route: "drawer/about", icon: "information-circle" },
@@ -40,38 +27,56 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  // log out
   const handleLogout = async () => {
     await dispatch(logoutThunk());
     router.replace("/(auth)/Signin");
   };
 
-  const { width } = Dimensions.get("window");
-
   return (
-    <DrawerContentScrollView {...props} style={styles.container}>
-      <View style={styles.userContainer}>
-        <Text style={styles.userName}>UserName</Text>
-      </View>
+    <LinearGradient
+      colors={["#d5e6e7", "#ffffff"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      className="flex-1">
+      <DrawerContentScrollView
+        {...props}
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}>
+        <View className="pt-2 pb-2 items-center">
+          <Image
+            source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
+            className="w-16 h-16 rounded-full mb-2"
+          />
+          <Text className="text-[16px] font-semibold color-primary-foreground">
+            UserName
+          </Text>
+        </View>
 
-      <View style={styles.menuContainer}>
-        {menuItems.map((item) => (
+        {/*card */}
+        <View className="bg-white flex-1 rounded-t-[25px] px-5 pt-6 pb-10">
+          {menuItems.map((item) => (
+            <TouchableOpacity
+              key={item.route}
+              className="flex-row items-center py-5 border-b border-dotted border-[#ccc]"
+              onPress={() => props.navigation.navigate(item.route)}>
+              <Ionicons name={item.icon} size={22} color="#2c7075" />
+              <Text className="ml-4 text-[16px] text-[#2c7075] font-medium">
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+
           <TouchableOpacity
-            key={item.route}
-            style={styles.menuItem}
-            onPress={() => props.navigation.navigate(item.route)}>
-            <Ionicons name={item.icon} size={24} color="#2c7075" />
-            <Text style={styles.menuText}>{item.name}</Text>
+            className="flex-row items-center py-5"
+            onPress={handleLogout}>
+            <Ionicons name="log-out" size={22} color="#2c7075" />
+            <Text className="ml-4 text-[16px] color-primary-foreground  font-medium">
+              Log Out
+            </Text>
           </TouchableOpacity>
-        ))}
-        <TouchableOpacity
-          style={[styles.menuItem, { marginTop: "auto", borderBottomWidth: 0 }]}
-          onPress={handleLogout}>
-          <Ionicons name="log-out" size={24} color="#2c7075" />
-          <Text style={[styles.menuText, { color: "#444444" }]}>Log Out</Text>
-        </TouchableOpacity>
-      </View>
-    </DrawerContentScrollView>
+        </View>
+      </DrawerContentScrollView>
+    </LinearGradient>
   );
 }
 
@@ -104,35 +109,3 @@ export default function RootLayout(): JSX.Element {
     </Drawer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  userContainer: {
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  userName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#444444",
-  },
-  menuContainer: {
-    flex: 1,
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 25,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  menuText: {
-    fontSize: 16,
-    marginLeft: 10,
-    color: "#444444",
-    fontWeight: "black",
-  },
-});
