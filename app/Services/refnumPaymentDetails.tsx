@@ -4,75 +4,52 @@ import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { router, useLocalSearchParams } from "expo-router";
-import Elec from "@/assets/svg/elec.svg";
+import Ref from "@/assets/svg/reference_number_logo.svg"
 import { OTPInput } from "@/components/auth/Otpinput";
-import { apiClient } from "@/config/axios.config";
+import { apiClient, apiWallet } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
-import * as Location from "expo-location";
-
-const PaymentDetails = () => {
-  const { source, dataWillBeShown } = useLocalSearchParams();
+import { Ionicons } from "@expo/vector-icons";
+const RefnumBillingDetails = () => {
+  const { dataWillBeShown } = useLocalSearchParams();
   const Data = JSON.parse((dataWillBeShown as string) || "{}");
-  const { bill_id, amount, fee, status, model, total_amount } = Data;
-  console.log(bill_id);
+  const { reference_number, amount, fee,status,  model, total } = Data;
+  
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pinCode, setPinCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
-
-  // to access the location of the user
-  const getCurrentLocation = async () => {
-    try {
-      // Request location permissions
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Location permission denied");
-        return null;
-      }
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-      setLocation(currentLocation);
-      console.log(currentLocation);
-      return currentLocation;
-    } catch (error) {
-      console.error("Error getting location:", error);
-      return null;
-    }
-  };
   const handleConfirm = () => {
     console.log("Opening modal...");
     setIsModalVisible(true);
   };
-
   const onVerifyHandler = async () => {
     try {
       setIsLoading(true);
       console.log(pinCode);
-      await getCurrentLocation();
-      const { data } = await apiClient.post(
-        `/identity/walletConfig/verifyPinCode`,
-        {
-          pin_code: pinCode,
-        }
-      );
+      const { data } = await apiClient.post(`/walletConfig/verifyPinCode`, {
+        pin_code: pinCode,
+      });
       if (data) {
         setIsModalVisible(false);
         try {
-          const paymentData = {
-            bill_id: bill_id,
-            source: source,
-            longitude: location?.coords.longitude,
-            latitude: location?.coords.latitude,
-          };
-          const { data } = await apiClient.post(
-            `/transactions/api/transaction/pay`,
-            paymentData
-          );
-          router.replace("/Services/success");
+          const {data}= await apiWallet.post(`/transaction/pay`, {
+            bill_id: reference_number,
+            source : "reference"
+          },
+          {
+            headers: {
+              'X-User-ID':69,
+            },
+          }
+        );
+        console.log(data.fee_transaction);
+        
+          router.replace({
+            pathname: "/Services/success",
+            params: {
+              dataWillBeShown: JSON.stringify(data),
+            },
+          })
         } catch (error) {
           router.replace("/Services/failed");
         }
@@ -90,9 +67,15 @@ const PaymentDetails = () => {
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className="pb-28 pt-16 items-center -mx-5">
-          <Elec width={60} height={60} />
+               <TouchableOpacity
+                  onPress={() => router.back()}
+                  className="absolute left-10 top-5"
+                >
+                  <Ionicons name="arrow-back" size={24} color="white" />
+                </TouchableOpacity>
+          <Ref width={60} height={60} />
           <CustomText className="color-secondary text-4xl  mt-2">
-            Electricity Billing
+            Refrence Number Billing
           </CustomText>
         </View>
       </LinearGradient>
@@ -106,75 +89,77 @@ const PaymentDetails = () => {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="p-4 bg-white rounded-2xl ">
-            <CustomText className="text-primary text-2xl text-left px-0">
+          <View className="p-6 bg-white rounded-2xl ">
+            <CustomText className="text-primary text-2xl  mb-1 text-left">
               Payment Details
             </CustomText>
-            <View className="border-t border-muted ">
-              {/* <View className="border-2 border-primary "> */}
-              <View className="flex-row justify-between p-1 my-1">
-                <CustomText className="color-primary-foreground p-0">
+            <View className="border-t border-muted pt-2 ">
+              <View className="flex-row justify-between">
+                <CustomText className="color-primary-foreground">
                   Id Number
                 </CustomText>
-                <CustomText className="color-primary-foreground text-sm p-1">
-                  {bill_id}
-                </CustomText>
-              </View>
-            </View>
-            <View className="border-t border-muted  ">
-              <View className="flex-row justify-between p-1  my-1">
-                <CustomText className="color-primary-foreground p-0">
-                  Time
-                </CustomText>
-                <CustomText className="color-primary-foreground p-0">
-                  {new Date(Date.now()).toLocaleTimeString("en-US", {
-                    hourCycle: "h23",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  })}
-                </CustomText>
-              </View>
-            </View>
-            <View className="border-t border-muted  ">
-              <View className="flex-row justify-between p-1 my-1">
-                <CustomText className="color-primary-foreground p-0">
-                  Date
-                </CustomText>
-                <CustomText className="color-primary-foreground p-0">
-                  {new Date(Date.now()).toLocaleDateString()}
+                <CustomText className="color-primary-foreground text-sm">
+                  {reference_number}
                 </CustomText>
               </View>
             </View>
 
-            <View className="border-t border-muted  ">
-              <View className="flex-row justify-between p-1 my-1">
-                <Text className="color-primary-foreground p-0">Status</Text>
-                <Text className="color-primary-foreground p-0">{status}</Text>
-              </View>
+            <View className="flex-row justify-between">
+              <CustomText className="color-primary-foreground">Time</CustomText>
+              <CustomText className="color-primary-foreground">
+                {new Date(Date.now()).toLocaleTimeString("en-US", {
+                  hourCycle: "h23",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </CustomText>
             </View>
+
+            <View className="flex-row justify-between">
+              <CustomText className="color-primary-foreground">Date</CustomText>
+              <CustomText className="color-primary-foreground">
+                {new Date(Date.now()).toLocaleDateString()}
+              </CustomText>
+            </View>
+             <View className="flex-row justify-between">
+              <CustomText className="color-primary-foreground">payment method</CustomText>
+              <CustomText className="color-primary-foreground">
+                creadit card
+              </CustomText>
+            </View>
+
             <View className="border-t border-muted  ">
-              <View className="flex-row justify-between p-1 my-1">
-                <Text className="color-primary-foreground  p-0 ">Amount</Text>
-                <Text className="color-primary-foreground p-0">
+             
+            </View>
+            
+              <View className="flex-row justify-between mt-2">
+                <Text className="color-primary-foreground  text-xl ">
+                  Amount
+                </Text>
+                <Text className="color-primary-foreground text-xl">
                   {amount} EGP
                 </Text>
               </View>
-            </View>
-            <View className="border-t border-muted  ">
-              <View className="flex-row justify-between p-1 my-1">
-                <Text className="color-primary-foreground  p-0 ">Fee</Text>
-                <Text className="color-primary-foreground p-0">{fee} EGP</Text>
-              </View>
-            </View>
-            <View className="border-t border-muted  ">
-              <View className="flex-row justify-between p-1 my-1">
-                <Text className="color-primary-foreground  p-0 ">Total</Text>
-                <Text className="color-primary-foreground p-0">
-                  {total_amount} EGP
+            
+            
+              <View className="flex-row justify-between mt-2">
+                <Text className="color-primary-foreground  text-xl ">Fee</Text>
+                <Text className="color-primary-foreground text-xl">
+                 {fee}  EGP
                 </Text>
               </View>
-            </View>
+            
+          
+              <View className="flex-row justify-between mt-2">
+                <Text className="color-primary-foreground  text-xl ">
+                  Total
+                </Text>
+                <Text className="color-primary-foreground text-xl">
+                  {total} EGP
+                </Text>
+              </View>
+            
           </View>
         </ScrollView>
 
@@ -262,4 +247,4 @@ const PaymentDetails = () => {
   );
 };
 
-export default PaymentDetails;
+export default RefnumBillingDetails;

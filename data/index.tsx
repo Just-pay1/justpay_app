@@ -83,3 +83,21 @@ export const RESET_PASSWORD_FIELDS: IResetPass[] = [
     type: "password",
   },
 ];
+
+export const EDIT_INFO_FORM: IRegisterInput[] = [
+  {
+    name: "name",
+    placeholder: "Name",
+    type: "text",
+  },
+  {
+    name: "email",
+    placeholder: "Email",
+    type: "email",
+  },
+  {
+    name: "phone",
+    placeholder: "Phone",
+    type: "text",
+  },
+];

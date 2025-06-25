@@ -10,22 +10,25 @@ import Success from "@/assets/svg/success.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
 
 const success = () => {
-  const { billId, status, time, date, paymentmethod, total } =
-    useLocalSearchParams();
-
+  const { dataWillBeShown } = useLocalSearchParams();
+  const Data = JSON.parse((dataWillBeShown as string) || "{}");
+  const { amount } = Data.merchant_transaction;
   return (
     <ScrollView
       className="flex-1"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       <LinearGradient
         colors={["#1A5A60", "#113E41", "#081C1C"]}
-        className="flex-1 justify-center items-center ">
+        className="flex-1 justify-center items-center "
+      >
         <View className=" absolute top-4 flex-row items-center px-2 ">
           <TouchableOpacity
             onPress={() => router.push("/(main)/home")}
-            className="absolute left-0">
+            className="absolute left-0"
+          >
             <Ionicons name="chevron-back-outline" size={32} color="white" />
           </TouchableOpacity>
           <CustomText className="color-secondary flex-1 text-2xl  mx-auto  ">
@@ -65,12 +68,25 @@ const success = () => {
                 <Text className="color-primary">{status}</Text>
               </View>
               <View className="flex-row justify-between">
-                <Text className="color-secondary-foreground">Time</Text>
-                <Text className="color-secondary-foreground">{time}</Text>
+                <CustomText className="color-primary-foreground">
+                  Time
+                </CustomText>
+                <CustomText className="color-primary-foreground">
+                  {new Date(Date.now()).toLocaleTimeString("en-US", {
+                    hourCycle: "h23",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}
+                </CustomText>
               </View>
               <View className="flex-row justify-between">
-                <Text className="color-secondary-foreground">Date</Text>
-                <Text className="color-secondary-foreground">{date}</Text>
+                <CustomText className="color-primary-foreground">
+                  Date
+                </CustomText>
+                <CustomText className="color-primary-foreground">
+                  {new Date(Date.now()).toLocaleDateString()}
+                </CustomText>
               </View>
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">
@@ -85,7 +101,9 @@ const success = () => {
                   <Text className="color-secondary-foreground text-xl">
                     Total
                   </Text>
-                  <Text className="color-primary text-xl">{total}</Text>
+                  <Text className="color-secondary-foreground text-xl">
+                    {amount}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -96,7 +114,8 @@ const success = () => {
           bgColor="bg-transparent"
           borderColor="border-primary"
           onPress={() => router.push("/(main)/home")}
-          styled={{ marginTop: 10 }}>
+          styled={{ marginTop: 10 }}
+        >
           <CustomText className="color-primary">Get PDF Receipt</CustomText>
         </PrimaryButton>
       </LinearGradient>

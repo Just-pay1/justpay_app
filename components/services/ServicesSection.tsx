@@ -75,7 +75,8 @@ const ServicesSection = () => {
       refetchServices();
     }, [])
   );
-  console.log(servicesData?.data.rows[0].merchants[0].commercial_name);
+  console.log(servicesData?.data.rows[0]?.merchants[0]?.commercial_name);
+  console.log(servicesData?.data.rows[1]);
   if (servicesLoading) {
     return (
       <View style={styles.container}>

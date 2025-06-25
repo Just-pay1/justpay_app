@@ -48,23 +48,36 @@ export default function Otp() {
   const otpHandler = async () => {
     try {
       setIsLoading(true);
-      const dataSending = {
-        otp: otpCode,
-        email: params.source === "register" ? objectUser.email : params.email,
-        flow: params.source === "register" ? "register" : "reset_password",
-      };
-      const { status, data } = await apiClient.post(
-        "/identity/otp/verifyOTP",
-        dataSending
-      );
-      if (status === 200) {
-        await SecureStore.setItemAsync("isVerified", "true");
-        await SecureStore.setItemAsync("isCompletedInfo", "username");
-        dispatch(setLoggedInStatus(true));
+      if (params.source === "setting") {
+        console.log(params.verificationId);
+        await apiClient.post("/identity/verify_email_update", {
+          otp: otpCode,
+          verificationId: params.verificationId,
+        });
+        await SecureStore.setItemAsync(
+          "user",
+          JSON.stringify({ ...objectUser, email: params.email })
+        );
         router.dismissTo("/");
       } else {
-        await SecureStore.setItemAsync("resetToken", data.resetToken);
-        router.replace("/ResetPassword");
+        const dataSending = {
+          otp: otpCode,
+          email: params.source === "register" ? objectUser.email : params.email,
+          flow: params.source === "register" ? "register" : "reset_password",
+        };
+        const { status, data } = await apiClient.post(
+          "/identity/otp/verifyOTP",
+          dataSending
+        );
+        if (status === 200) {
+          await SecureStore.setItemAsync("isVerified", "true");
+          await SecureStore.setItemAsync("isCompletedInfo", "username");
+          dispatch(setLoggedInStatus(true));
+          router.dismissTo("/");
+        } else {
+          await SecureStore.setItemAsync("resetToken", data.resetToken);
+          router.replace("/ResetPassword");
+        }
       }
     } catch (error) {
       CustomErrorToast(error);

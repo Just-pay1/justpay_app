@@ -87,12 +87,11 @@ export const UserNameSchema = Yup.object().shape({
   username: Yup.string()
     .required("Username is required")
     .min(4, "Username must be at least 4 characters")
-    .max(15,"Username must not exceed 15 characters")
+    .max(15, "Username must not exceed 15 characters")
     .matches(
       /^[a-z0-9]+$/,
       "Username must contain only lowercase letters and numbers"
     ),
-
 });
 
 export const requirements = [
@@ -110,7 +109,25 @@ export const requirements = [
   },
 ];
 
-
+export const editInfoSchema = Yup.object({
+  name: Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters")
+    .max(30, "Name cannot exceed 30 characters")
+    .matches(/^[a-zA-Z0-9]*$/, "Name must be alphanumeric"),
+  email: Yup.string()
+    .required("Email is required")
+    .matches(
+      /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/,
+      "Not a valid email address."
+    ),
+  phone: Yup.string()
+    .required("Phone number is required")
+    .matches(/^[0-9]+$/, "Phone number must contain only digits")
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number cannot exceed 15 digits"),
+});
+export type TEditInfoForm = Yup.InferType<typeof editInfoSchema>;
 
 // pinPage
 
