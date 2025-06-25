@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { View, TouchableOpacity, Keyboard, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,7 @@ const height = width * aspectRatio;
 
 type RootDrawerParamList = {};
 export default function HomeLayout() {
+  const router = useRouter();
   const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamList>>();
   const insets = useSafeAreaInsets();
 
@@ -55,7 +56,7 @@ export default function HomeLayout() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => console.log("!!")}
+          onPress={() => router.push("/Screens/Notifications")}
           style={{ position: "absolute", top: 30, right: 20 }}
         >
           <Ionicons name="notifications" size={30} color="#444444" />

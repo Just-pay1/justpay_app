@@ -30,7 +30,7 @@ const ServiceItem = ({
   serviceType,
   serviceId,
 }: {
-  merchant: { merchant_id: string; commercial_name: string };
+  merchant: { id: string; commercial_name: string };
   serviceType: string;
   serviceId: string;
 }) => (
@@ -41,7 +41,7 @@ const ServiceItem = ({
       router.push({
         pathname: "/Services/electricityBilling",
         params: {
-          merchant_id: merchant.merchant_id,
+          merchant_id: merchant.id,
           commercial_name: merchant.commercial_name,
           service_type: serviceType,
           service_id: serviceId,
@@ -75,8 +75,8 @@ const ServicesSection = () => {
       refetchServices();
     }, [])
   );
-  console.log(servicesData?.data.rows[0]?.merchants[0]?.commercial_name);
-  console.log(servicesData?.data.rows[1]);
+  // console.log(servicesData?.data.rows[0]);
+  console.log(servicesData?.data.rows[1]?.merchants[0]?.id);
   if (servicesLoading) {
     return (
       <View style={styles.container}>
@@ -123,7 +123,8 @@ const ServicesSection = () => {
         data={flattenedMerchants}
         numColumns={4}
         keyExtractor={(item) => {
-          console.log(item.merchant.merchant_id + item.serviceId);
+          console.log(item.merchant.id + item.serviceId);
+          // console.log(item);
           return item.merchant.merchant_id + item.serviceId;
         }}
         renderItem={({ item }) => (

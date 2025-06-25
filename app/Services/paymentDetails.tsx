@@ -10,13 +10,14 @@ import { apiClient } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
 import * as Location from "expo-location";
+import { set } from "react-hook-form";
 
 const PaymentDetails = () => {
   const { source, dataWillBeShown } = useLocalSearchParams();
   const Data = JSON.parse((dataWillBeShown as string) || "{}");
   const { bill_id, amount, fee, status, model, total_amount } = Data;
-  console.log(bill_id);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [pinCode, setPinCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -72,9 +73,14 @@ const PaymentDetails = () => {
             `/transactions/api/transaction/pay`,
             paymentData
           );
-          router.replace("/Services/success");
+          router.replace({
+            pathname: "/Services/success",
+            params: {
+              sucessData: JSON.stringify(data),
+            },
+          });
         } catch (error) {
-          router.replace("/Services/failed");
+          setIsOpen(true);
         }
       }
     } catch (error) {
@@ -86,7 +92,7 @@ const PaymentDetails = () => {
 
   return (
     <View className="flex-1 bg-secondary">
-      <ErrorModal />
+      <ErrorModal open={isOpen} setIsOpen={setIsOpen} />
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className="pb-28 pt-16 items-center -mx-5">

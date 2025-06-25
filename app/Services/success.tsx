@@ -10,9 +10,9 @@ import Success from "@/assets/svg/success.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
 
 const success = () => {
-  const { dataWillBeShown } = useLocalSearchParams();
-  const Data = JSON.parse((dataWillBeShown as string) || "{}");
-  const { amount } = Data.merchant_transaction;
+  const { sucessData } = useLocalSearchParams();
+  const Data = JSON.parse((sucessData as string) || "{}");
+  const { amount, date, fee, id, time, total } = Data.model;
   return (
     <ScrollView
       className="flex-1"
@@ -61,11 +61,11 @@ const success = () => {
             <View className="gap-y-2">
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">Id Number</Text>
-                <Text className="color-secondary-foreground">{billId}</Text>
+                <Text className="color-secondary-foreground">{97}</Text>
               </View>
               <View className="flex-row justify-between">
                 <Text className="color-secondary-foreground">Status</Text>
-                <Text className="color-primary">{status}</Text>
+                <Text className="color-primary">Success</Text>
               </View>
               <View className="flex-row justify-between">
                 <CustomText className="color-primary-foreground">
@@ -93,8 +93,28 @@ const success = () => {
                   Payment Method
                 </Text>
                 <Text className="color-secondary-foreground">
-                  {paymentmethod}
+                  justPay Wallet
                 </Text>
+              </View>
+              <View className="border-t border-primary-foreground mt-2 pt-2">
+                <View className="flex-row justify-between font-bold">
+                  <Text className="color-secondary-foreground text-xl">
+                    Amount
+                  </Text>
+                  <Text className="color-secondary-foreground text-xl">
+                    {amount}
+                  </Text>
+                </View>
+              </View>
+              <View className="border-t border-primary-foreground mt-2 pt-2">
+                <View className="flex-row justify-between font-bold">
+                  <Text className="color-secondary-foreground text-xl">
+                    Fee
+                  </Text>
+                  <Text className="color-secondary-foreground text-xl">
+                    {fee}
+                  </Text>
+                </View>
               </View>
               <View className="border-t border-primary-foreground mt-2 pt-2">
                 <View className="flex-row justify-between font-bold">
@@ -102,7 +122,7 @@ const success = () => {
                     Total
                   </Text>
                   <Text className="color-secondary-foreground text-xl">
-                    {amount}
+                    {total}
                   </Text>
                 </View>
               </View>

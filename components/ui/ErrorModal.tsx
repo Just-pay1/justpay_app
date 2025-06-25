@@ -6,17 +6,20 @@ import React, { useState } from "react";
 import DangerIcon from "@/assets/svg/danger.svg";
 import { Ionicons } from "@expo/vector-icons";
 
-const ErrorModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface IProps {
+  open: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+const ErrorModal = ({ open, setIsOpen }: IProps) => {
   return (
     <Modal
-      visible={false}
+      visible={open}
       animationType="fade"
       transparent
       onRequestClose={() => setIsOpen(false)}
     >
       <View className="flex-1 justify-end">
-        <View className="bg-secondary p-6 rounded-t-[40px] w-full h-[50%] border-2 border-b-[0] border-danger">
+        <View className="bg-secondary p-6 rounded-t-[40px] w-full h-[50%]">
           <View className="items-center mb-6">
             <Ionicons
               name="close"
