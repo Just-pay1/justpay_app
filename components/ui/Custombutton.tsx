@@ -5,8 +5,9 @@
  ** to change width ==> <Primarybutton width="w-full" or "w- fit" or "w-[number]" or any number }} ...>
  */
 import { ICustomButton } from "@/interfaces";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { Pressable } from "react-native";
+import CustomText from "./CustomText";
 
 function PrimaryButton({
   children,
@@ -14,7 +15,10 @@ function PrimaryButton({
   width = "w-3/4",
   borderColor,
   styled,
-  disabled = false,
+  loading,
+  textLoading = "loading",
+  textLoadingColor = "text-secondary",
+  disabled = loading,
   ...rest
 }: ICustomButton) {
   const borderProp = borderColor ? `border-1.5 ${borderColor}` : null;
@@ -35,7 +39,24 @@ function PrimaryButton({
         android_ripple={{ color: "rgba(0, 0, 0, .2)", borderless: false }}
         {...rest}
       >
-        {children}
+        {loading ? (
+          <View className="flex-row items-start justify-center">
+            <CustomText className="color-secondary">
+              <View className="flex-row items-center">
+                <CustomText className={`p-0 ${textLoadingColor}`}>
+                  {textLoading}{" "}
+                </CustomText>
+                <ActivityIndicator
+                  // color="white"
+                  size={25}
+                  className={`${textLoadingColor}`}
+                />
+              </View>
+            </CustomText>
+          </View>
+        ) : (
+          children
+        )}
       </Pressable>
     </View>
   );

@@ -13,10 +13,36 @@ import { ActivityIndicator, View } from "react-native";
 import Toast from "react-native-toast-message";
 import toastConfig from "@/config/toast";
 import { getTokens } from "@/config/auth";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient();
+// function useRouteLogger() {
+//   const pathname = usePathname();
+//   const segments = useSegments();
 
+//   useEffect(() => {
+//     console.log("========================");
+//     console.log("🧭 NAVIGATION DEBUG INFO");
+//     console.log("------------------------");
+//     console.log(`Current path: ${pathname}`);
+//     console.log(`Path segments: ${JSON.stringify(segments)}`);
+//     console.log(`Timestamp: ${new Date().toISOString()}`);
+//     console.log("========================");
+//   }, [pathname, segments]);
+
+//   return { pathname, segments };
+// }
+
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       refetchOnWindowFocus: false, // default: true
+//     },
+//   },
+// })
 function NavigationStack() {
+  // useRouteLogger();
   const [dataLoading, setDataLoading] = useState(true);
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -61,14 +87,13 @@ function NavigationStack() {
     </Stack>
   );
 }
-
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     RobotoSlab: require("../assets/fonts/RobotoSlab-VariableFont_wght.ttf"),
+    RobotoSlabSemi: require("../assets/fonts/RobotoSlab-SemiBold.ttf"),
     Nunito: require("../assets/fonts/Nunito-VariableFont_wght.ttf"),
     Nunitosemi: require("../assets/fonts/Nunito-SemiBold.ttf"),
   });
-
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -78,14 +103,15 @@ export default function RootLayout() {
   if (!fontsLoaded) {
     return null;
   }
-
   return (
     <SafeAreaView className="flex-1">
       <StatusBar style="dark" backgroundColor="#ffffff" />
-      <Provider store={store}>
-        <NavigationStack />
-      </Provider>
-      <Toast config={toastConfig} />
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <NavigationStack />
+        </Provider>
+        <Toast config={toastConfig} />
+      </QueryClientProvider>
     </SafeAreaView>
   );
 }

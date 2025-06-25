@@ -1,4 +1,4 @@
-import { ILoginInput, IRegisterInput } from "@/interfaces";
+import { ILoginInput, IRegisterInput, IResetPass } from "@/interfaces";
 
 export const welcomeSlides = [
   {
@@ -33,7 +33,7 @@ export const welcomeSlides = [
 export const REGISTER_FORM: IRegisterInput[] = [
   {
     name: "name",
-    placeholder: "Username",
+    placeholder: "Name",
     type: "text",
   },
   {
@@ -51,6 +51,11 @@ export const REGISTER_FORM: IRegisterInput[] = [
     placeholder: "Password",
     type: "password",
   },
+  {
+    name: "confirmPassword",
+    placeholder: "Confirm Password",
+    type: "password",
+  }, // confirm password
 ];
 export const LOGIN_FORM: ILoginInput[] = [
   {
@@ -62,5 +67,37 @@ export const LOGIN_FORM: ILoginInput[] = [
     name: "password",
     placeholder: "Password",
     type: "password",
+  },
+];
+
+// reset password
+export const RESET_PASSWORD_FIELDS: IResetPass[] = [
+  {
+    name: "newPassword",
+    placeholder: "Password",
+    type: "password",
+  },
+  {
+    name: "confirmedPassword",
+    placeholder: "Confirm Password",
+    type: "password",
+  },
+];
+
+export const EDIT_INFO_FORM: IRegisterInput[] = [
+  {
+    name: "name",
+    placeholder: "Name",
+    type: "text",
+  },
+  {
+    name: "email",
+    placeholder: "Email",
+    type: "email",
+  },
+  {
+    name: "phone",
+    placeholder: "Phone",
+    type: "text",
   },
 ];

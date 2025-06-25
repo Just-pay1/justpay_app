@@ -1,0 +1,271 @@
+import React, { useState } from "react";
+import { View, ScrollView, Text, Modal, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import CustomText from "@/components/ui/CustomText";
+import PrimaryButton from "@/components/ui/Custombutton";
+import { router, useLocalSearchParams } from "expo-router";
+import Elec from "@/assets/svg/elec.svg";
+import { OTPInput } from "@/components/auth/Otpinput";
+import { apiClient } from "@/config/axios.config";
+import CustomErrorToast from "@/components/ui/CustomErrorToast";
+import ErrorModal from "@/components/ui/ErrorModal";
+import * as Location from "expo-location";
+import { set } from "react-hook-form";
+
+const PaymentDetails = () => {
+  const { source, dataWillBeShown } = useLocalSearchParams();
+  const Data = JSON.parse((dataWillBeShown as string) || "{}");
+  const { bill_id, amount, fee, status, model, total_amount } = Data;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [pinCode, setPinCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
+
+  // to access the location of the user
+  const getCurrentLocation = async () => {
+    try {
+      // Request location permissions
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Location permission denied");
+        return null;
+      }
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      setLocation(currentLocation);
+      console.log(currentLocation);
+      return currentLocation;
+    } catch (error) {
+      console.error("Error getting location:", error);
+      return null;
+    }
+  };
+  const handleConfirm = () => {
+    console.log("Opening modal...");
+    setIsModalVisible(true);
+  };
+
+  const onVerifyHandler = async () => {
+    try {
+      setIsLoading(true);
+      console.log(pinCode);
+      await getCurrentLocation();
+      const { data } = await apiClient.post(
+        `/identity/walletConfig/verifyPinCode`,
+        {
+          pin_code: pinCode,
+        }
+      );
+      if (data) {
+        setIsModalVisible(false);
+        try {
+          const paymentData = {
+            bill_id: bill_id,
+            source: source,
+            longitude: location?.coords.longitude,
+            latitude: location?.coords.latitude,
+          };
+          const { data } = await apiClient.post(
+            `/transactions/api/transaction/pay`,
+            paymentData
+          );
+          router.replace({
+            pathname: "/Services/success",
+            params: {
+              sucessData: JSON.stringify(data),
+            },
+          });
+        } catch (error) {
+          setIsOpen(true);
+        }
+      }
+    } catch (error) {
+      CustomErrorToast(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <View className="flex-1 bg-secondary">
+      <ErrorModal open={isOpen} setIsOpen={setIsOpen} />
+      {/* Header Section */}
+      <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
+        <View className="pb-28 pt-16 items-center -mx-5">
+          <Elec width={60} height={60} />
+          <CustomText className="color-secondary text-4xl  mt-2">
+            Electricity Billing
+          </CustomText>
+        </View>
+      </LinearGradient>
+
+      {/* Payment Details Section */}
+
+      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-16 pt-8 px-5 ">
+        <ScrollView
+          className="flex-1 pb-20"
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View className="p-4 bg-white rounded-2xl ">
+            <CustomText className="text-primary text-2xl text-left px-0">
+              Payment Details
+            </CustomText>
+            <View className="border-t border-muted ">
+              {/* <View className="border-2 border-primary "> */}
+              <View className="flex-row justify-between p-1 my-1">
+                <CustomText className="color-primary-foreground p-0">
+                  Id Number
+                </CustomText>
+                <CustomText className="color-primary-foreground text-sm p-1">
+                  {bill_id}
+                </CustomText>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1  my-1">
+                <CustomText className="color-primary-foreground p-0">
+                  Time
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  {new Date(Date.now()).toLocaleTimeString("en-US", {
+                    hourCycle: "h23",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}
+                </CustomText>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <CustomText className="color-primary-foreground p-0">
+                  Date
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  {new Date(Date.now()).toLocaleDateString()}
+                </CustomText>
+              </View>
+            </View>
+
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground p-0">Status</Text>
+                <Text className="color-primary-foreground p-0">{status}</Text>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Amount</Text>
+                <Text className="color-primary-foreground p-0">
+                  {amount} EGP
+                </Text>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Fee</Text>
+                <Text className="color-primary-foreground p-0">{fee} EGP</Text>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Total</Text>
+                <Text className="color-primary-foreground p-0">
+                  {total_amount} EGP
+                </Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Buttons Section */}
+        <View className="mt-2 items-center">
+          <PrimaryButton
+            width="w-[70%]"
+            bgColor="bg-primary"
+            onPress={handleConfirm}
+            loading={isLoading}
+          >
+            <CustomText className="color-secondary">Confirm</CustomText>
+          </PrimaryButton>
+
+          <PrimaryButton
+            width="w-[70%] "
+            bgColor="bg-secondary"
+            onPress={() => router.push("/(main)/home")}
+            disabled={isLoading}
+            borderColor="border-primary"
+            style={[]}
+          >
+            <CustomText className="color-primary">Cancel</CustomText>
+          </PrimaryButton>
+        </View>
+
+        <View className="items-center pb-12 mt-8">
+          <Text className="color-muted text-sm  ">
+            🔒 All Transactions are Secure and protected.
+          </Text>
+        </View>
+      </View>
+
+      {/* OTP Modal */}
+      <Modal
+        visible={isModalVisible}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View className="flex-1 justify-end">
+          <View className="bg-primary p-6 rounded-t-[40px] w-full h-[72%]">
+            <View className="items-center mb-6">
+              <View className="w-12 h-1 bg-gray-300 rounded-full mb-4" />
+              <CustomText className="text-secondary text-2xl mb-4 text-center">
+                Enter Your PIN Code
+              </CustomText>
+            </View>
+            <OTPInput otpCode={pinCode} setOtpCode={setPinCode} />
+            <View className="mt-6">
+              <PrimaryButton
+                width="w-full"
+                bgColor="bg-secondary"
+                disabled={pinCode.length !== 6 || isLoading}
+                loading={isLoading}
+                textLoading="verifying"
+                textLoadingColor="text-primary"
+                onPress={onVerifyHandler}
+                style={[
+                  (pinCode.length !== 6 || isLoading) && {
+                    backgroundColor: "rgba(159, 153, 153, 0.5)",
+                  },
+                ]}
+              >
+                <CustomText className="text-primary">Verify</CustomText>
+              </PrimaryButton>
+              <PrimaryButton
+                width="w-full mt-2"
+                bgColor="bg-transparent"
+                disabled={isLoading}
+                onPress={() => setIsModalVisible(false)}
+                style={[
+                  isLoading && {
+                    backgroundColor: "rgba(159, 153, 153, 0.5)",
+                  },
+                ]}
+              >
+                <CustomText className="text-primary">Close</CustomText>
+              </PrimaryButton>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+export default PaymentDetails;

@@ -5,9 +5,39 @@ import { store } from "../store/store";
 import { Alert } from "react-native";
 import { logout } from "@/store/authSlice";
 import { router } from "expo-router";
+
 export const apiClient = axios.create({
-  baseURL: "http://192.168.1.7:3000",
+  // baseURL: "http://192.168.1.12:3000",
+  // baseURL: "https://identity0.azurewebsites.net",
+  baseURL: "http://74.162.120.110:8000",
 });
+// export const apiWallet = axios.create({
+//   baseURL: "https://e-wallet.azurewebsites.net/api",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+export const apiBilling = axios.create({
+  baseURL: "https://billingservice1.azurewebsites.net/api",
+});
+export const apiRefNumBilling = axios.create({
+  baseURL: "https://refererencenumber-akcug4h4d4fff8d9.canadacentral-01.azurewebsites.net/api",
+});
+
+// apiWallet.interceptors.request.use(
+//   (config) => {
+//     const userId = SecureStore.getItem("userId");
+//     console.log(userId);
+//     if (userId) {
+//       config.headers["X-User-ID"] = userId;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig<any> {
   skipAuthRefresh?: boolean;
 }
@@ -34,8 +64,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log(error);
     const originalRequest = error.config;
-    console.log("Response Interceptor Error:", error.response?.status);
+    // console.log("Response Interceptor Error:", error.response?.status);
     if (
       error.response?.status === 402 &&
       !originalRequest._retry &&
@@ -50,7 +81,7 @@ apiClient.interceptors.response.use(
         originalRequest._retry = true;
         // Add explicit error handling for the refresh request
         const { data } = await apiClient.post(
-          "/refreshToken",
+          "/identity/refreshToken",
           {
             refreshToken,
           },
