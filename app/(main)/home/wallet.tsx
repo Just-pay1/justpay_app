@@ -8,7 +8,6 @@ import {
 import React, { useState, useEffect } from "react";
 import CustomText from "@/components/ui/CustomText";
 import Walletvector from "@/assets/svg/walletvector.svg";
-import Deposit from "@/assets/svg/deposit.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -136,6 +135,7 @@ const Wallet = () => {
   }
   const storedId = getItem("userId");
   const storedUsername = getItem("username");
+
   return (
     <ScrollView
       className="flex-1"
@@ -191,24 +191,15 @@ const Wallet = () => {
           </LinearGradient>
         </View>
 
-        <View className="flex-row justify-between mt-1 px-8">
-          <PrimaryButton width="w-[45%]">
-            <View className="flex-row items-center justify-center bg-primary">
-              <CustomText className="color-secondary bg-primary">
-                Deposit
-              </CustomText>
-              <Deposit width={18} height={18} color="white" />
-            </View>
-          </PrimaryButton>
-          <PrimaryButton width="w-[45%]">
-            <View className="flex-row items-center justify-center bg-primary">
-              <CustomText className="color-secondary bg-primary">
-                send
-              </CustomText>
-              <Walletvector width={18} height={18} color="white" />
-            </View>
-          </PrimaryButton>
-        </View>
+        <PrimaryButton
+          bgColor="bg-primary"
+          width="w-[70%]"
+          onPress={() => router.push("/Screens/SendMoney")}>
+          <View className="flex-row items-center justify-center">
+            <CustomText className="color-secondary text-xl">send</CustomText>
+            <Walletvector width={20} height={20} color="white" />
+          </View>
+        </PrimaryButton>
 
         <View className="items-center">
           <View className="flex-row items-center justify-between w-full px-5">
