@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import CustomText from "../ui/CustomText";
 import { router } from "expo-router";
 import { Dimensions } from "react-native";
+import RenderIcon from "../ui/RenderIcon";
 const { height: screenHeight } = Dimensions.get("window");
 interface Service {
   id: string;
@@ -39,7 +40,11 @@ const ServiceItem = ({
     style={styles.serviceCard}
     onPress={() => {
       router.push({
-        pathname: "/Services/electricityBilling",
+        // pathname: "/Services/electricityBilling",
+        pathname: (serviceType === "reference bills" ||
+        serviceType.includes("ref")
+          ? "/Services/referenceBilling"
+          : "/Services/generalBilling") as any,
         params: {
           merchant_id: merchant.id,
           commercial_name: merchant.commercial_name,
@@ -50,7 +55,8 @@ const ServiceItem = ({
     }}
   >
     <View style={styles.iconContainer}>
-      <Ionicons name="flash" size={15} color="#ffffff" />
+      <RenderIcon serviceType={serviceType} />
+      {/* <Ionicons name="flash" size={15} color="#ffffff" /> */}
     </View>
     <Text style={styles.serviceName} numberOfLines={2} ellipsizeMode="tail">
       {merchant.commercial_name}
