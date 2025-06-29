@@ -21,6 +21,7 @@ const menuItems: MenuItem[] = [
   { name: "Policy", route: "drawer/policy", icon: "document-text" },
   { name: "Help", route: "drawer/help", icon: "help-circle" },
   { name: "About", route: "drawer/about", icon: "information-circle" },
+  { name: "Contact Us", route: "drawer/contactUs", icon: "chatbox-ellipses-outline" },
 ];
 
 function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {

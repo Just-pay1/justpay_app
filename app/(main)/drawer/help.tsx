@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { View, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
 import CustomText from "@/components/ui/CustomText";
-import CustomInput from "@/components/ui/CustomInput";
 import PrimaryButton from "@/components/ui/Custombutton";
+import { useRouter } from "expo-router";
 
 // Static FAQ data
 const faqData = [
@@ -29,7 +28,7 @@ const SupportCenter = () => {
   const toggleExpand = (index: number) => {
     setExpandedIndex(index === expandedIndex ? null : index);
   };
-
+const router = useRouter()
   return (
     <View className="flex-1 bg-secondary">
       {/* Header */}
@@ -46,9 +45,9 @@ const SupportCenter = () => {
             Have a question?{"\n"}Let's solve it together
           </CustomText>
           
-          <PrimaryButton width="w-[90%]" className="bg-secondary">
+          <PrimaryButton width="w-[90%]" className="bg-secondary" onPress={() => router.push("/drawer/contactUs")}>
             <CustomText className="text-primary text-center text-3xl">
-              Chat With Us
+              contact us 
             </CustomText>
           </PrimaryButton>
           <PrimaryButton width="w-[90%]" className="bg-secondary">
