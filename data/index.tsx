@@ -47,6 +47,11 @@ export const REGISTER_FORM: IRegisterInput[] = [
     type: "text",
   },
   {
+    name: "city",
+    placeholder: "City",
+    type: "text",
+  },
+  {
     name: "password",
     placeholder: "Password",
     type: "password",

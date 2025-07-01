@@ -1,20 +1,18 @@
 import CustomInput from "@/components/ui/CustomInput";
 import React, { useState } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, ScrollView } from "react-native";
 import PrimaryButton from "@/components/ui/Custombutton";
 import CustomText from "@/components/ui/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
-
-import Ref from "@/assets/svg/reference_number_logo.svg"
-
 import { apiRefNumBilling, apiClient } from "@/config/axios.config";
-import toastConfig from "@/config/toast";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
+import RenderIcon from "@/components/ui/RenderIcon";
 const RefnumBilling = () => {
-  const { merchant_id } = useLocalSearchParams();
+  const { merchant_id, service_type, service_id, commercial_name } =
+    useLocalSearchParams();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const handleContinue = async () => {
@@ -24,15 +22,18 @@ const RefnumBilling = () => {
     }
     try {
       setLoading(true);
-      const { data } = await apiRefNumBilling.get(
-        `/billing/${code}`
+      const { data } = await apiClient.get(
+        `reference-number/api/billing/${code}`
       );
       console.log(data.data);
       router.replace({
         pathname: "/Services/refnumPaymentDetails",
         params: {
-          
-          dataWillBeShown: JSON.stringify(data.data),
+          dataWillBeShown: JSON.stringify({
+            ...data.data,
+            commercial_name,
+            service_type,
+          }),
         },
       });
     } catch (error) {
@@ -47,24 +48,25 @@ const RefnumBilling = () => {
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className=" pb-28 pt-16 items-center -mx-5">
-            <TouchableOpacity
-      onPress={() => router.back()}
-      className="absolute left-10 top-5"
-    >
-      <Ionicons name="arrow-back" size={24} color="white" />
-    </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            className="absolute left-10 top-5"
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
 
-          <Ref width={60} height={60} />
+          <RenderIcon serviceType={service_type as string} size={50} />
+
           <CustomText className="color-secondary text-4xl mt-2 ">
-            Refrence Number Billing
+            {commercial_name}
           </CustomText>
         </View>
       </LinearGradient>
 
-      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-16 pt-8 px-5">
+      <ScrollView className="flex-1 bg-secondary rounded-t-[40px] -mt-16 px-5 mb-1">
         <View className="mt-10 px-1">
           <CustomText className="color-primary text-left text-xl  mb-2 ">
-            RefNum-Payment Code
+            Reference Number Code
           </CustomText>
           <CustomInput
             placeholder="E-Payment Code (9 Digits)"
@@ -76,7 +78,7 @@ const RefnumBilling = () => {
           />
         </View>
         {/* Button Section */}
-        <View className="mt-8 ">
+        <View className="mt-4">
           <PrimaryButton
             width="w-[90%]"
             onPress={handleContinue}
@@ -93,7 +95,7 @@ const RefnumBilling = () => {
             🔒 All Transactions Are Secure And Protected.
           </Text>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };

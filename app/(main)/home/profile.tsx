@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, ScrollView, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { getItemAsync } from "expo-secure-store";
+import { useFocusEffect } from "@react-navigation/native";
+
 const Profile = () => {
+  const [user, setUser] = useState<any>(null);
+
+  const loadUser = async () => {
+    const userData = await getItemAsync("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadUser();
+    }, [])
+  );
+
+  if (!user) {
+    return null;
+  }
+
   return (
     // <ScrollView className="flex-1 bg-white px-6 pt-2 h-screen">
     <ScrollView
@@ -27,53 +49,49 @@ const Profile = () => {
               style={{ position: "absolute", bottom: 0, right: 0 }}
             />
           </View>
-          <Text className="text-4xl font-semibold mt-2">Nada Gamal</Text>
-          <Text className="text-lg text-primary-foreground">
-            nada1234@fake.com
-          </Text>
-          <Text className="text-lg text-primary-foreground">
-            +20 123 456 7899
-          </Text>
+          <Text className="text-4xl font-semibold mt-2">{user.name}</Text>
+          <Text className="text-lg text-primary-foreground">{user.email}</Text>
+          <Text className="text-lg text-primary-foreground">{user.phone}</Text>
         </View>
 
         <View className="flex-row flex-wrap justify-between gap-4">
           <Pressable
-            className="w-[45%] bg-primary rounded-xl items-center justify-center py-7"
+            className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
             onPress={() => router.push("/Screens/Setting")}
           >
-            <Ionicons name="settings-outline" size={50} color="white" />
-            <Text className="text-secondary mt-2 text-2xl text-center">
+            <Ionicons name="settings-outline" size={35} color="white" />
+            <Text className="text-secondary mt-2 text-xl text-center">
               Setting
             </Text>
           </Pressable>
 
-          <Pressable className="w-[45%] bg-primary rounded-xl items-center justify-center py-7">
-            <Ionicons name="document-text-outline" size={50} color="white" />
-            <Text className="text-secondary mt-2 text-2xl text-center">
+          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+            <Ionicons name="document-text-outline" size={35} color="white" />
+            <Text className="text-secondary mt-2 text-xl text-center">
               Transactions
             </Text>
           </Pressable>
 
-          <Pressable className="w-[45%] bg-primary rounded-xl items-center justify-center py-7">
-            <Ionicons name="lock-closed-outline" size={50} color="white" />
-            <Text className="text-secondary mt-2 text-2xl text-center">
+          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+            <Ionicons name="lock-closed-outline" size={35} color="white" />
+            <Text className="text-secondary mt-2 text-xl text-center">
               Change Password
             </Text>
           </Pressable>
 
-          <Pressable className="w-[45%] bg-primary rounded-xl items-center justify-center py-7">
-            <Ionicons name="help-circle-outline" size={50} color="white" />
-            <Text className="text-secondary mt-2 text-2xl text-center">
+          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+            <Ionicons name="help-circle-outline" size={35} color="white" />
+            <Text className="text-secondary mt-2 text-xl text-center">
               Support Center
             </Text>
           </Pressable>
 
-          <Pressable className="w-[45%] bg-primary rounded-xl items-center justify-start py-7 mt-2">
-            <Ionicons name="log-out-outline" size={50} color="white" />
-            <Text className="text-secondary mt-2 text-2xl text-center">
+          {/* <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-start py-7 mt-2">
+            <Ionicons name="log-out-outline" size={35} color="white" />
+            <Text className="text-secondary mt-2 text-xl text-center">
               Logout
             </Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
     </ScrollView>

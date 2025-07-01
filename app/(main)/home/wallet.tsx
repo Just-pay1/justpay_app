@@ -8,7 +8,6 @@ import {
 import React, { useState, useEffect } from "react";
 import CustomText from "@/components/ui/CustomText";
 import Walletvector from "@/assets/svg/walletvector.svg";
-import Deposit from "@/assets/svg/deposit.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -131,17 +130,23 @@ const Wallet = () => {
     }, [])
   );
 
-  if (walletError || balanceError) {
-    console.log({ error: walletError?.message || balanceError?.message });
+  if (walletError) {
+    console.log({ error: walletError.message });
+  }
+  if (balanceError) {
+    console.log({ error: balanceError.message });
   }
   const storedId = getItem("userId");
-  const storedUsername = getItem("username");
+  const storedUser = getItem("user");
+  const storedUsername = JSON.parse(storedUser || "{}").username;
+
   return (
     <ScrollView
       className="flex-1"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       <View className="flex-1">
         <View style={styles.container}>
           <LinearGradient
@@ -152,7 +157,8 @@ const Wallet = () => {
               borderRadius: 20,
               paddingVertical: 20,
               paddingHorizontal: 16,
-            }}>
+            }}
+          >
             <Text className="p-0 text-secondary  text-xl font-bold  text-left pb-4 ">
               {storedUsername || "Guest"}@justpay
             </Text>
@@ -162,14 +168,16 @@ const Wallet = () => {
                   flex: 1,
                   justifyContent: "center",
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <ActivityIndicator size={"large"} color="#ffffff" />
               </View>
             ) : (
               <View className="flex-row items-baseline px-4 flex-nowrap">
                 <Text
                   className=" color-secondary text-4xl font-extrabold"
-                  numberOfLines={1}>
+                  numberOfLines={1}
+                >
                   {Number(data.Balance || 0).toLocaleString("en-EG", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -177,7 +185,8 @@ const Wallet = () => {
                 </Text>
                 <Text
                   className="color-secondary text-4xl font-semibold ml-1"
-                  numberOfLines={1}>
+                  numberOfLines={1}
+                >
                   EGP
                 </Text>
               </View>
@@ -191,24 +200,16 @@ const Wallet = () => {
           </LinearGradient>
         </View>
 
-        <View className="flex-row justify-between mt-1 px-8">
-          <PrimaryButton width="w-[45%]">
-            <View className="flex-row items-center justify-center bg-primary">
-              <CustomText className="color-secondary bg-primary">
-                Deposit
-              </CustomText>
-              <Deposit width={18} height={18} color="white" />
-            </View>
-          </PrimaryButton>
-          <PrimaryButton width="w-[45%]">
-            <View className="flex-row items-center justify-center bg-primary">
-              <CustomText className="color-secondary bg-primary">
-                send
-              </CustomText>
-              <Walletvector width={18} height={18} color="white" />
-            </View>
-          </PrimaryButton>
-        </View>
+        <PrimaryButton
+          bgColor="bg-primary"
+          width="w-[50%]"
+          onPress={() => router.push("/Screens/SendMoney")}
+        >
+          <View className="flex-row items-center justify-center">
+            <CustomText className="color-secondary text-xl">send</CustomText>
+            <Walletvector width={20} height={20} color="white" />
+          </View>
+        </PrimaryButton>
 
         <View className="items-center">
           <View className="flex-row items-center justify-between w-full px-5">
@@ -221,7 +222,8 @@ const Wallet = () => {
                   pathname: "/Screens/History", // to history page
                   params: { transactions: JSON.stringify(transactions) },
                 })
-              }>
+              }
+            >
               <CustomText className="color-muted text-xl">See All</CustomText>
             </TouchableOpacity>
           </View>

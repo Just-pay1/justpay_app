@@ -26,7 +26,7 @@ const success = () => {
       >
         <View className=" absolute top-4 flex-row items-center px-2 ">
           <TouchableOpacity
-            onPress={() => router.push("/(main)/home")}
+            onPress={() => router.dismissTo("/")}
             className="absolute left-0"
           >
             <Ionicons name="chevron-back-outline" size={32} color="white" />
@@ -54,24 +54,30 @@ const success = () => {
             }}
           />
 
-          <Text className="text-2xl  mb-6 color-primary-foreground  mt-6 border-b border-primary-foreground">
+          <Text className="text-2xl  mb-4 color-primary-foreground  mt-6 border-b border-primary-foreground">
             Payment Details
           </Text>
           <ScrollView>
             <View className="gap-y-2">
               <View className="flex-row justify-between">
-                <Text className="color-secondary-foreground">Id Number</Text>
-                <Text className="color-secondary-foreground">{97}</Text>
+                <CustomText className="color-primary-foreground p-0">
+                  Id Number
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  {id}
+                </CustomText>
               </View>
               <View className="flex-row justify-between">
-                <Text className="color-secondary-foreground">Status</Text>
-                <Text className="color-primary">Success</Text>
+                <CustomText className="color-primary-foreground p-0">
+                  Status
+                </CustomText>
+                <CustomText className="color-primary p-0">Success</CustomText>
               </View>
               <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   Time
                 </CustomText>
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   {new Date(Date.now()).toLocaleTimeString("en-US", {
                     hourCycle: "h23",
                     hour: "2-digit",
@@ -81,49 +87,49 @@ const success = () => {
                 </CustomText>
               </View>
               <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   Date
                 </CustomText>
-                <CustomText className="color-primary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   {new Date(Date.now()).toLocaleDateString()}
                 </CustomText>
               </View>
               <View className="flex-row justify-between">
-                <Text className="color-secondary-foreground">
+                <CustomText className="color-primary-foreground p-0">
                   Payment Method
-                </Text>
-                <Text className="color-secondary-foreground">
-                  justPay Wallet
-                </Text>
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  justpay Wallet
+                </CustomText>
               </View>
-              <View className="border-t border-primary-foreground mt-2 pt-2">
+              <View className="border-t border-primary-foreground pt-2">
                 <View className="flex-row justify-between font-bold">
-                  <Text className="color-secondary-foreground text-xl">
+                  <CustomText className="color-primary-foreground text-xl p-0">
                     Amount
-                  </Text>
-                  <Text className="color-secondary-foreground text-xl">
+                  </CustomText>
+                  <CustomText className="color-primary-foreground text-xl p-0">
                     {amount}
-                  </Text>
+                  </CustomText>
                 </View>
               </View>
-              <View className="border-t border-primary-foreground mt-2 pt-2">
+              <View className=" border-primary-foreground">
                 <View className="flex-row justify-between font-bold">
-                  <Text className="color-secondary-foreground text-xl">
+                  <CustomText className="color-primary-foreground text-xl p-0">
                     Fee
-                  </Text>
-                  <Text className="color-secondary-foreground text-xl">
+                  </CustomText>
+                  <CustomText className="color-primary-foreground text-xl p-0">
                     {fee}
-                  </Text>
+                  </CustomText>
                 </View>
               </View>
-              <View className="border-t border-primary-foreground mt-2 pt-2">
+              <View className="border-t border-primary-foreground pt-2">
                 <View className="flex-row justify-between font-bold">
-                  <Text className="color-secondary-foreground text-xl">
+                  <CustomText className="color-primary-foreground text-xl p-0">
                     Total
-                  </Text>
-                  <Text className="color-secondary-foreground text-xl">
+                  </CustomText>
+                  <CustomText className="color-primary text-xl p-0">
                     {total}
-                  </Text>
+                  </CustomText>
                 </View>
               </View>
             </View>

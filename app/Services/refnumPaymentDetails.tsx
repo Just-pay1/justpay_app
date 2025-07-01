@@ -4,57 +4,97 @@ import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { router, useLocalSearchParams } from "expo-router";
-import Ref from "@/assets/svg/reference_number_logo.svg"
+import Ref from "@/assets/svg/reference_number_logo.svg";
 import { OTPInput } from "@/components/auth/Otpinput";
-import { apiClient, apiWallet } from "@/config/axios.config";
+import { apiClient } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
 import { Ionicons } from "@expo/vector-icons";
+import { AxiosError } from "axios";
+
+import { useQueryClient } from "@tanstack/react-query";
+import { encryptData, getCurrentLocation } from "@/utils";
+import RenderIcon from "@/components/ui/RenderIcon";
 const RefnumBillingDetails = () => {
   const { dataWillBeShown } = useLocalSearchParams();
   const Data = JSON.parse((dataWillBeShown as string) || "{}");
-  const { reference_number, amount, fee,status,  model, total } = Data;
-  
+  const {
+    reference_number,
+    amount,
+    fee,
+    status,
+    model,
+    total,
+    commercial_name,
+    service_type,
+  } = Data;
+  const [isOpen, setIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pinCode, setPinCode] = useState("");
+  // const [location, setLocation] = useState<Location.LocationObject | null>(
+  //   null
+  // );
   const [isLoading, setIsLoading] = useState(false);
   const handleConfirm = () => {
     console.log("Opening modal...");
     setIsModalVisible(true);
   };
+
+  const queryClient = useQueryClient();
   const onVerifyHandler = async () => {
+    setIsLoading(true);
+    const currentLocation = await getCurrentLocation();
+    if (!currentLocation) {
+      setIsLoading(false);
+      setIsModalVisible(false);
+      CustomErrorToast(new Error("Location access is required to continue"));
+      return;
+    }
     try {
-      setIsLoading(true);
-      console.log(pinCode);
-      const { data } = await apiClient.post(`/walletConfig/verifyPinCode`, {
-        pin_code: pinCode,
-      });
+      const { data } = await apiClient.post(
+        `/identity/walletConfig/verifyPinCode`,
+        {
+          pin_code: pinCode,
+        }
+      );
       if (data) {
         setIsModalVisible(false);
         try {
-          const {data}= await apiWallet.post(`/transaction/pay`, {
+          const { signature, timestamp, nonce } = encryptData(reference_number);
+          const paymentData = {
             bill_id: reference_number,
-            source : "reference"
-          },
-          {
-            headers: {
-              'X-User-ID':69,
-            },
+            source: "reference",
+            long: currentLocation.coords.longitude,
+            lat: currentLocation.coords.latitude,
+            signature: signature,
+            timestamp: timestamp,
+            nonce: nonce,
+            category: "reference_bill",
+          };
+          console.log({ paymentData });
+          const { data, status } = await apiClient.post(
+            `/transactions/api/transaction/pay`,
+            paymentData
+          );
+          if (status === 200) {
+            queryClient.invalidateQueries({ queryKey: ["balance"] });
+            router.replace({
+              pathname: "/Services/success",
+              params: {
+                sucessData: JSON.stringify(data),
+              },
+            });
           }
-        );
-        console.log(data.fee_transaction);
-        
-          router.replace({
-            pathname: "/Services/success",
-            params: {
-              dataWillBeShown: JSON.stringify(data),
-            },
-          })
         } catch (error) {
-          router.replace("/Services/failed");
+          setIsOpen(true);
+          if (error instanceof AxiosError) {
+            setErrorMessage(error.response?.data?.message);
+          }
         }
       }
     } catch (error) {
+      setIsModalVisible(false);
       CustomErrorToast(error);
     } finally {
       setIsLoading(false);
@@ -63,19 +103,23 @@ const RefnumBillingDetails = () => {
 
   return (
     <View className="flex-1 bg-secondary">
-      <ErrorModal />
+      <ErrorModal
+        open={isOpen}
+        setIsOpen={setIsOpen}
+        errorMessage={errorMessage}
+      />
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className="pb-28 pt-16 items-center -mx-5">
-               <TouchableOpacity
-                  onPress={() => router.back()}
-                  className="absolute left-10 top-5"
-                >
-                  <Ionicons name="arrow-back" size={24} color="white" />
-                </TouchableOpacity>
-          <Ref width={60} height={60} />
-          <CustomText className="color-secondary text-4xl  mt-2">
-            Refrence Number Billing
+          <TouchableOpacity
+            onPress={() => router.back()}
+            className="absolute left-10 top-5"
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <RenderIcon serviceType={service_type} size={60} />
+          <CustomText className="color-secondary text-4xl  mt-2 mx-4">
+            {commercial_name}
           </CustomText>
         </View>
       </LinearGradient>
@@ -122,44 +166,37 @@ const RefnumBillingDetails = () => {
                 {new Date(Date.now()).toLocaleDateString()}
               </CustomText>
             </View>
-             <View className="flex-row justify-between">
-              <CustomText className="color-primary-foreground">payment method</CustomText>
+            <View className="flex-row justify-between">
+              <CustomText className="color-primary-foreground">
+                payment method
+              </CustomText>
               <CustomText className="color-primary-foreground">
                 creadit card
               </CustomText>
             </View>
 
-            <View className="border-t border-muted  ">
-             
+            <View className="border-t border-muted  "></View>
+
+            <View className="flex-row justify-between mt-2">
+              <Text className="color-primary-foreground  text-xl ">Amount</Text>
+              <Text className="color-primary-foreground text-xl">
+                {amount} EGP
+              </Text>
             </View>
-            
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">
-                  Amount
-                </Text>
-                <Text className="color-primary-foreground text-xl">
-                  {amount} EGP
-                </Text>
-              </View>
-            
-            
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">Fee</Text>
-                <Text className="color-primary-foreground text-xl">
-                 {fee}  EGP
-                </Text>
-              </View>
-            
-          
-              <View className="flex-row justify-between mt-2">
-                <Text className="color-primary-foreground  text-xl ">
-                  Total
-                </Text>
-                <Text className="color-primary-foreground text-xl">
-                  {total} EGP
-                </Text>
-              </View>
-            
+
+            <View className="flex-row justify-between mt-2">
+              <Text className="color-primary-foreground  text-xl ">Fee</Text>
+              <Text className="color-primary-foreground text-xl">
+                {fee} EGP
+              </Text>
+            </View>
+
+            <View className="flex-row justify-between mt-2">
+              <Text className="color-primary-foreground  text-xl ">Total</Text>
+              <Text className="color-primary-foreground text-xl">
+                {total} EGP
+              </Text>
+            </View>
           </View>
         </ScrollView>
 

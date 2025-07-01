@@ -11,7 +11,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
 import { setItemAsync } from "expo-secure-store";
+import * as SecureStore from "expo-secure-store";
 const ConfirmPinCode = () => {
+  const user = SecureStore.getItem("user");
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,8 +29,11 @@ const ConfirmPinCode = () => {
 
       // store username in securestore
       if (data?.username) {
-        await setItemAsync("username", data.username);
-        console.log("Username stored:", data.username);
+        const userData = JSON.parse(user || "{}");
+        SecureStore.setItem(
+          "user",
+          JSON.stringify({ ...userData, username: data.username })
+        );
       }
 
       await deleteItemAsync("isCompletedInfo");

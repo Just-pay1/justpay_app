@@ -9,8 +9,9 @@ import { Ionicons } from "@expo/vector-icons";
 interface IProps {
   open: boolean;
   setIsOpen: (open: boolean) => void;
+  errorMessage?: string;
 }
-const ErrorModal = ({ open, setIsOpen }: IProps) => {
+const ErrorModal = ({ open, setIsOpen, errorMessage }: IProps) => {
   return (
     <Modal
       visible={open}
@@ -24,7 +25,7 @@ const ErrorModal = ({ open, setIsOpen }: IProps) => {
             <Ionicons
               name="close"
               size={30}
-              className="absolute top-0 left-0 border-2 border-danger rounded-full"
+              className="absolute top-0 left-0 rounded-full"
               color="#444444"
               onPress={() => setIsOpen(false)}
             />
@@ -34,8 +35,8 @@ const ErrorModal = ({ open, setIsOpen }: IProps) => {
               something went wrong
             </CustomText>
             <CustomText className="text-primary-foreground text-base p-0 text-center">
-              Please check your connection, card details, or account balance,
-              then try again.
+              {errorMessage ||
+                "Please check your connection, card details, or account balance, then try again."}
             </CustomText>
           </View>
           <View>
