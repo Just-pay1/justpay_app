@@ -71,7 +71,7 @@ const PaymentDetails = () => {
             signature: signature,
             timestamp: timestamp,
             nonce: nonce,
-            category: "electronic",
+            category: "reference_bill",
           };
           const { data } = await apiClient.post(
             `/transactions/api/transaction/pay`,

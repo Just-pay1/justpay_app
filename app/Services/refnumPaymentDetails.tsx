@@ -70,7 +70,7 @@ const RefnumBillingDetails = () => {
             signature: signature,
             timestamp: timestamp,
             nonce: nonce,
-            category: "reference",
+            category: "reference_bill",
           };
           console.log({ paymentData });
           const { data, status } = await apiClient.post(

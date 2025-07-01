@@ -9,7 +9,7 @@ import { router } from "expo-router";
 export const apiClient = axios.create({
   // baseURL: "http://192.168.1.12:3000",
   // baseURL: "https://identity0.azurewebsites.net",
-  baseURL: "http://74.162.120.110:8000",
+  baseURL: process.env.EXPO_PUBLIC_API_CLIENT,
 });
 // export const apiWallet = axios.create({
 //   baseURL: "https://e-wallet.azurewebsites.net/api",
@@ -21,7 +21,8 @@ export const apiBilling = axios.create({
   baseURL: "https://billingservice1.azurewebsites.net/api",
 });
 export const apiRefNumBilling = axios.create({
-  baseURL: "https://refererencenumber-akcug4h4d4fff8d9.canadacentral-01.azurewebsites.net/api",
+  baseURL:
+    "https://refererencenumber-akcug4h4d4fff8d9.canadacentral-01.azurewebsites.net/api",
 });
 
 // apiWallet.interceptors.request.use(
