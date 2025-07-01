@@ -19,10 +19,11 @@ const CustomInputWithSuffix = ({
       className={twMerge(
         "flex-row items-center border border-primary-foreground rounded-full px-4 py-1 w-full",
         containerClassName
-      )}>
+      )}
+    >
       <TextInput
         className={twMerge(
-          "flex-1 text-base text-white font-Nunitosemi",
+          "flex-1 text-base text-primary font-Nunitosemi",
           inputClassName
         )}
         placeholderTextColor="#9d9a9a"

@@ -2,24 +2,30 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import CustomText from "@/components/ui/CustomText";
 import Fail from "@/assets/svg/fail.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
+import { getItem } from "expo-secure-store";
 
 const CheckoutDetailsFailed = () => {
+  const { errorMessage, receiverData } = useLocalSearchParams();
+  const { name, username, amount, fees, id } = JSON.parse(
+    receiverData as string
+  );
+  const user = JSON.parse(getItem("user") as string);
   const data = {
-    amount: "90 EGP",
+    amount: `${amount} EGP`,
     from: {
-      name: "Nada Gamal Ahmed",
-      email: "Nada123@Justppay",
+      name: user.name,
+      email: `${user.username}@justppay.com`,
     },
     to: {
-      name: "Mohamed A** E*****",
-      email: "Mo123@Justppay",
+      name: name,
+      email: `${username}@justppay.com`,
     },
-    reference: "123456789",
-    date: "25 June 2025 01:20 AM",
+    reference: id,
+    date: new Date().toLocaleString(),
   };
 
   return (
@@ -35,7 +41,7 @@ const CheckoutDetailsFailed = () => {
       >
         {/* Header */}
         <View className="absolute top-4 flex-row items-center w-full px-4">
-          <TouchableOpacity onPress={() => router.push("/(main)/home")}>
+          <TouchableOpacity onPress={() => router.dismissTo("/")}>
             <Ionicons name="chevron-back-outline" size={32} color="white" />
           </TouchableOpacity>
           <CustomText className="text-secondary text-3xl text-center flex-1 mr-8">
@@ -46,30 +52,31 @@ const CheckoutDetailsFailed = () => {
         {/* Card */}
         <View className="bg-secondary w-[90%] mt-28 rounded-2xl px-5 pt-16 pb-8 relative shadow-lg">
           {/* Success Icon */}
-          <View className="absolute -top-20 left-1/2 -ml-16 bg-secondary rounded-full p-10 shadow-md">
-            <Fail width={80} height={80} />
+          <View className="absolute -top-20 left-1/2 transform -translate-x-1/2 bg-secondary rounded-full p-8 shadow-md ml-4">
+            <Fail width={50} height={50} />
           </View>
 
           {/* Success Message */}
-          <Text className="text-center text-2xl mt-10 text-gray-500">
-            amout exceeds the allowed limit per transction
+          <Text className="text-center text-xl mt-5 text-gray-500">
+            {errorMessage ||
+              "Something went wrong check your connection and your wallet balance"}
           </Text>
 
           {/* Amount */}
           <Text className="text-center text-4xl font-bold text-black mt-2">
             {data.amount}
           </Text>
-          <Text className="text-center text-xl text-gray-500 mb-6">
+          <Text className="text-center text-xl text-gray-500 mb-3">
             Transfer Amount
           </Text>
 
           {/* From Section */}
           <View>
-            <CustomText className="text-muted text-start">From</CustomText>
-            <CustomText className="text-2xl text-start -mt-6">
+            <CustomText className="text-muted text-start p-0">From</CustomText>
+            <CustomText className="text-2xl text-start p-0 ">
               {data.from.name}
             </CustomText>
-            <CustomText className="text-muted text-start mb-3 -mt-6">
+            <CustomText className="text-muted text-start p-0 mb-3 ">
               {data.from.email}
             </CustomText>
           </View>
@@ -84,19 +91,19 @@ const CheckoutDetailsFailed = () => {
 
           {/* To Section */}
           <View>
-            <CustomText className="text-muted text-start">To</CustomText>
-            <CustomText className="text-2xl text-start -mt-6">
+            <CustomText className="text-muted text-start p-0">To</CustomText>
+            <CustomText className="text-2xl text-start p-0">
               {data.to.name}
             </CustomText>
-            <CustomText className="text-muted text-start mb-3 -mt-6">
+            <CustomText className="text-muted text-start p-0 mb-3 ">
               {data.to.email}
             </CustomText>
           </View>
 
           {/* Reference */}
           <View className="flex-row justify-between mb-1">
-            <CustomText className="text-xl">Reference</CustomText>
-            <CustomText className="text-xl">{data.reference}</CustomText>
+            <CustomText className="text-xl p-0">Reference</CustomText>
+            <CustomText className="text-xl p-0">{data.reference}</CustomText>
           </View>
           <View
             className="w-full border-t border-muted"
@@ -104,9 +111,9 @@ const CheckoutDetailsFailed = () => {
           />
 
           {/* Date */}
-          <View className="flex-row justify-between mb-4">
-            <CustomText className="text-xl">Date</CustomText>
-            <CustomText className="text-primary text-xl">
+          <View className="flex-row justify-between my-2">
+            <CustomText className="text-xl p-0">Date</CustomText>
+            <CustomText className="text-primary text-xl p-0">
               {data.date}
             </CustomText>
           </View>
@@ -124,8 +131,8 @@ const CheckoutDetailsFailed = () => {
           width="w-[60%]"
           bgColor="bg-transparent"
           borderColor="border-white"
-          onPress={() => router.push("/(main)/home")}
-          styled={{ marginTop: 30 }}
+          onPress={() => router.dismissTo("/")}
+          styled={{ marginTop: 20 }}
         >
           <CustomText className="text-white text-lg">Done</CustomText>
         </PrimaryButton>

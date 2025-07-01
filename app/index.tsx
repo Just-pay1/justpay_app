@@ -24,9 +24,10 @@ const Page = () => {
       } else {
         router.dismissTo("/(main)/home");
         // router.dismissTo("/Services/paymentDetails");
+        // router.dismissTo("/Services/success");
       }
     } else {
-      router.dismissTo("/(main)/home");
+      router.dismissTo("/Welcome");
     }
   }, [isLoggedIn, isCompletedInfo, isReady]);
 

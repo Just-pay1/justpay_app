@@ -1,36 +1,103 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
 import Sendmoney from "@/assets/svg/sendmoney.svg";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import UserCard from "@/components/ui/UserCard";
+import { getItem } from "expo-secure-store";
+import OTPModel from "@/components/ui/OTPModel";
+import { apiClient } from "@/config/axios.config";
+import { encryptData } from "@/utils";
+import CustomErrorToast from "@/components/ui/CustomErrorToast";
+import ErrorModal from "@/components/ui/ErrorModal";
+import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SendDetails = () => {
+  const { userData } = useLocalSearchParams();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pinCode, setPinCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { amount, fees, id, username, name } = JSON.parse(userData as string);
   const router = useRouter();
-  const amount = 90;
-  const fees = 0.5;
-  const total = amount + fees;
-
-  const sender = {
-    name: "Nada Gamal Ahmed",
-    address: "Nada123@justpay",
+  const queryClient = useQueryClient();
+  const total = Number(amount) + Number(fees);
+  const user = JSON.parse(getItem("user") as string);
+  const handleConfirm = () => {
+    setIsModalVisible(true);
   };
-
-  const receiver = {
-    name: "Mohamed A* E*****",
-    address: "Mo123@justpay",
+  const onVerifyHandler = async () => {
+    try {
+      setIsLoading(true);
+      const { status } = await apiClient.post(
+        `/identity/walletConfig/verifyPinCode`,
+        {
+          pin_code: pinCode,
+        }
+      );
+      if (status === 200) {
+        setIsModalVisible(false);
+        try {
+          const { signature, timestamp, nonce } = encryptData(id, amount);
+          const paymentData = {
+            receiver_id: id,
+            amount: amount,
+            signature: signature,
+            timestamp: timestamp,
+            nonce: nonce,
+          };
+          const { data } = await apiClient.post(
+            `/transactions/api/transaction/send-money`,
+            paymentData
+          );
+          queryClient.invalidateQueries({ queryKey: ["balance"] });
+          router.replace({
+            pathname: "/Screens/checkoutDetailsSuccess",
+            params: {
+              sucessData: JSON.stringify({
+                ...data.model,
+                name: name,
+                username: username,
+              }),
+            },
+          });
+        } catch (error) {
+          router.replace({
+            pathname: "/Screens/checkoutDetailsFailed",
+            params: {
+              errorMessage: ((error as AxiosError)?.response?.data as any)
+                ?.message,
+              receiverData: JSON.stringify({
+                name: name,
+                username: username,
+                amount: amount,
+                id: id,
+              }),
+            },
+          });
+        }
+      }
+    } catch (error) {
+      setIsModalVisible(false);
+      CustomErrorToast(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <View className="flex-1 bg-secondary">
+      <ErrorModal open={isOpen} setIsOpen={setIsOpen} />
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className=" pb-12 pt-12 justify-center items-center ">
           <TouchableOpacity
             onPress={() => router.back()}
-            className="absolute top-4 left-5">
+            className="absolute top-4 left-5"
+          >
             <Ionicons name="chevron-back-outline" size={30} color="white" />
           </TouchableOpacity>
           <Sendmoney width={60} height={60} />
@@ -44,7 +111,7 @@ const SendDetails = () => {
         {/* Amount & Fees */}
         <View className="items-center mt-4">
           <Text className="text-4xl font-bold ">{amount} EGP</Text>
-          <Text className="text-xl text-base color-secondary-foreground mt-1">
+          <Text className="text-xl  color-secondary-foreground mt-1">
             Transfer Amount
           </Text>
         </View>
@@ -66,17 +133,9 @@ const SendDetails = () => {
 
         {/* From & To */}
         <View className="mt-6">
-          <UserCard
-            type="from"
-            name="Nada Gamal Ahmed"
-            address="Nada123@Justppay"
-          />
+          <UserCard type="from" name={user.name} address={user.username} />
           <View className="h-3" />
-          <UserCard
-            type="to"
-            name="Mohamed A** E*****"
-            address="Mo123@Justppay"
-          />
+          <UserCard type="to" name={name} address={username} />
         </View>
 
         {/* Button */}
@@ -84,7 +143,9 @@ const SendDetails = () => {
           <PrimaryButton
             bgColor="bg-primary"
             width="w-[90%]"
-            onPress={() => router.push("/Screens/EnterPin")}>
+            onPress={handleConfirm}
+            loading={isLoading}
+          >
             <View className="flex-row items-center justify-center ">
               <CustomText className="color-secondary text-xl">
                 confirm
@@ -95,8 +156,12 @@ const SendDetails = () => {
           <PrimaryButton
             bgColor="bg-transparent"
             width="w-[90%]"
-            className="border border-primary rounded-full"
-            onPress={() => router.push("/(main)/home/wallet")}>
+            className=" rounded-full"
+            borderColor="border-primary"
+            disabled={!isLoading}
+            style={[]}
+            onPress={() => router.dismissTo("/(main)/home/wallet")}
+          >
             <View className="flex-row items-center justify-center ">
               <CustomText className="text-primary text-xl ">Cancel</CustomText>
             </View>
@@ -110,6 +175,14 @@ const SendDetails = () => {
           </Text>
         </View>
       </View>
+      <OTPModel
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        pinCode={pinCode}
+        setPinCode={setPinCode}
+        isLoading={isLoading}
+        onVerifyHandler={onVerifyHandler}
+      />
     </View>
   );
 };

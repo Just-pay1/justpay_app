@@ -9,7 +9,7 @@ import GeneralIcon from "@/assets/svg/justpay_logo.svg";
 
 const RenderIcon = ({
   serviceType,
-  size = 17,
+  size = 19,
 }: {
   serviceType: string;
   size?: number;
@@ -18,27 +18,27 @@ const RenderIcon = ({
     if (serviceType === "electric bills" || serviceType.includes("elec")) {
       return <ElectricityIcon width={size} height={size} />;
     } else if (serviceType === "water bills" || serviceType.includes("water")) {
-      return <WaterIcon />;
+      return <WaterIcon width={size} height={size} />;
     } else if (serviceType === "gas bills" || serviceType.includes("gas")) {
-      return <GasIcon />;
+      return <GasIcon width={size} height={size} />;
     } else if (
       serviceType === "internet bills" ||
       serviceType.includes("internet")
     ) {
-      return <InternetIcon />;
+      return <InternetIcon width={size} height={size} />;
     } else if (
       serviceType === "mobile bills" ||
       serviceType.includes("mob") ||
       serviceType.includes("phone")
     ) {
-      return <MobileIcon />;
+      return <MobileIcon width={size} height={size} />;
     } else if (
       serviceType === "reference bills" ||
       serviceType.includes("ref")
     ) {
-      return <ReferenceIcon />;
+      return <ReferenceIcon width={size} height={size} />;
     } else {
-      return <GeneralIcon />;
+      return <GeneralIcon width={size} height={size} />;
     }
   };
 

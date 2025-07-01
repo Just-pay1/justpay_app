@@ -37,6 +37,7 @@ export default function Signup() {
         email: dataa.email,
         password: dataa.password,
         phone: dataa.phone,
+        city: dataa.city,
       };
       setIsLoading(true);
       const { data } = await apiClient.post(
@@ -57,7 +58,7 @@ export default function Signup() {
       });
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.request);
+        console.log(error.response?.data);
       }
       CustomErrorToast(error);
     } finally {

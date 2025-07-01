@@ -1,6 +1,6 @@
 import CustomInput from "@/components/ui/CustomInput";
 import React, { useState } from "react";
-import { View, Text, Alert, ScrollView } from "react-native";
+import { View, Text, Alert, ScrollView, TouchableOpacity } from "react-native";
 import PrimaryButton from "@/components/ui/Custombutton";
 import CustomText from "@/components/ui/CustomText";
 import { LinearGradient } from "expo-linear-gradient";
@@ -10,10 +10,12 @@ import { apiBilling, apiClient } from "@/config/axios.config";
 import toastConfig from "@/config/toast";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import RenderIcon from "@/components/ui/RenderIcon";
+import { Ionicons } from "@expo/vector-icons";
 
 const GeneralBilling = () => {
   const { merchant_id, service_type, service_id, commercial_name } =
     useLocalSearchParams();
+  console.log({ merchant_id, service_type, service_id, commercial_name });
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const handleContinue = async () => {
@@ -23,23 +25,31 @@ const GeneralBilling = () => {
     }
     try {
       setLoading(true);
-      let url = "";
-      if (service_type === "electric bills") {
-        url = "electric-bill-details";
-      } else if (service_type === "water bills") {
-        url = "water-bill-details";
-      } else if (service_type === "gas bills") {
-        url = "/gas-bill-details";
-      }
+      // let url = "";
+      // if (service_type === "electric bills") {
+      //   url = "electric-bill-details";
+      // } else if (service_type === "water bills") {
+      //   url = "water-bill-details";
+      // } else if (service_type === "gas bills") {
+      //   url = "/gas-bill-details";
+      // }
+      // const { data } = await apiBilling.get(
+      //   `/bills/${url}?merchant_id=${merchant_id}&bill_code=BILL${code}`
+      // );
       const { data } = await apiBilling.get(
-        `/bills/${url}?merchant_id=${merchant_id}&bill_code=BILL${code}`
+        `/bills/get-bill-details?merchant_id=${merchant_id}&bill_code=BILL${code}&service_id=${service_id}`
       );
+
       console.log(data.data);
       router.replace({
         pathname: "/Services/paymentDetails",
         params: {
           source: "billing",
-          dataWillBeShown: JSON.stringify(data.data),
+          dataWillBeShown: JSON.stringify({
+            ...data.data,
+            service_type,
+            commercial_name,
+          }),
         },
       });
     } catch (error) {
@@ -54,6 +64,12 @@ const GeneralBilling = () => {
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className=" pb-28 pt-16 items-center -mx-5">
+          <TouchableOpacity
+            onPress={() => router.back()}
+            className="absolute left-10 top-5"
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
           <RenderIcon serviceType={service_type as string} size={50} />
           <CustomText className="color-secondary text-4xl mt-2 ">
             {commercial_name}

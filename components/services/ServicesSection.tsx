@@ -43,7 +43,7 @@ const ServiceItem = ({
         // pathname: "/Services/electricityBilling",
         pathname: (serviceType === "reference bills" ||
         serviceType.includes("ref")
-          ? "/Services/referenceBilling"
+          ? "/Services/refnumBilling"
           : "/Services/generalBilling") as any,
         params: {
           merchant_id: merchant.id,
@@ -58,8 +58,13 @@ const ServiceItem = ({
       <RenderIcon serviceType={serviceType} />
       {/* <Ionicons name="flash" size={15} color="#ffffff" /> */}
     </View>
-    <Text style={styles.serviceName} numberOfLines={2} ellipsizeMode="tail">
-      {merchant.commercial_name}
+    <Text
+      style={styles.serviceName}
+      numberOfLines={2}
+      ellipsizeMode="tail"
+      adjustsFontSizeToFit={false}
+    >
+      {merchant.commercial_name.split(" ").join("\n")}
     </Text>
   </TouchableOpacity>
 );
@@ -211,9 +216,9 @@ const styles = StyleSheet.create({
     color: "#757575",
   },
   iconContainer: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
     backgroundColor: "#2c7075",
     justifyContent: "center",
     alignItems: "center",
@@ -222,7 +227,7 @@ const styles = StyleSheet.create({
   serviceName: {
     fontSize: 14,
     fontWeight: "600",
-    textAlign: "justify",
+    textAlign: "center",
     color: "#2c7075",
   },
 });

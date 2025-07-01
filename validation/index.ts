@@ -31,6 +31,7 @@ export const userRegisterSchema = Yup.object({
     .matches(/^[0-9]+$/, "Phone number must contain only digits")
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number cannot exceed 15 digits"),
+  city: Yup.string().required("City is required"),
 }).required();
 export type TFormInput = Yup.InferType<typeof userRegisterSchema>;
 export const userLoginSchema = Yup.object({

@@ -13,7 +13,7 @@ export interface ICustomButton extends PressableProps {
   textLoadingColor?: string;
 }
 export interface IRegisterInput {
-  name: "name" | "email" | "phone" | "password" | "confirmPassword";
+  name: "name" | "email" | "phone" | "password" | "confirmPassword" | "city";
   placeholder: string;
   type: string;
   // validation: {

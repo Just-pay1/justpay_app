@@ -5,55 +5,54 @@ import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { router, useLocalSearchParams } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
-import { OTPInput } from "@/components/auth/Otpinput";
 import { apiClient } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
-import * as Location from "expo-location";
-import { set } from "react-hook-form";
+import OTPModel from "@/components/ui/OTPModel";
+import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { encryptData, getCurrentLocation } from "@/utils";
+import RenderIcon from "@/components/ui/RenderIcon";
 
 const PaymentDetails = () => {
+  const queryClient = useQueryClient();
   const { source, dataWillBeShown } = useLocalSearchParams();
   const Data = JSON.parse((dataWillBeShown as string) || "{}");
-  const { bill_id, amount, fee, status, model, total_amount } = Data;
+  const {
+    bill_id,
+    amount,
+    fee,
+    status,
+    model,
+    total_amount,
+    service_type,
+    commercial_name,
+  } = Data;
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [pinCode, setPinCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useState<Location.LocationObject | null>(
-    null
-  );
+  // const [location, setLocation] = useState<Location.LocationObject | null>(
+  //   null
+  // );
 
-  // to access the location of the user
-  const getCurrentLocation = async () => {
-    try {
-      // Request location permissions
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Location permission denied");
-        return null;
-      }
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-      setLocation(currentLocation);
-      console.log(currentLocation);
-      return currentLocation;
-    } catch (error) {
-      console.error("Error getting location:", error);
-      return null;
-    }
-  };
   const handleConfirm = () => {
     console.log("Opening modal...");
     setIsModalVisible(true);
   };
 
   const onVerifyHandler = async () => {
+    setIsLoading(true);
+    const currentLocation = await getCurrentLocation();
+    if (!currentLocation) {
+      setIsLoading(false);
+      setIsModalVisible(false);
+      CustomErrorToast(new Error("Location access is required to continue"));
+      return;
+    }
     try {
-      setIsLoading(true);
-      console.log(pinCode);
-      await getCurrentLocation();
       const { data } = await apiClient.post(
         `/identity/walletConfig/verifyPinCode`,
         {
@@ -63,16 +62,22 @@ const PaymentDetails = () => {
       if (data) {
         setIsModalVisible(false);
         try {
+          const { signature, timestamp, nonce } = encryptData(bill_id);
           const paymentData = {
             bill_id: bill_id,
             source: source,
-            longitude: location?.coords.longitude,
-            latitude: location?.coords.latitude,
+            long: currentLocation.coords.longitude,
+            lat: currentLocation.coords.latitude,
+            signature: signature,
+            timestamp: timestamp,
+            nonce: nonce,
+            category: "electronic",
           };
           const { data } = await apiClient.post(
             `/transactions/api/transaction/pay`,
             paymentData
           );
+          queryClient.invalidateQueries({ queryKey: ["balance"] });
           router.replace({
             pathname: "/Services/success",
             params: {
@@ -80,10 +85,15 @@ const PaymentDetails = () => {
             },
           });
         } catch (error) {
+          // console.log(error.response.data);
           setIsOpen(true);
+          if (error instanceof AxiosError) {
+            setErrorMessage(error.response?.data?.message);
+          }
         }
       }
     } catch (error) {
+      setIsModalVisible(false);
       CustomErrorToast(error);
     } finally {
       setIsLoading(false);
@@ -92,13 +102,17 @@ const PaymentDetails = () => {
 
   return (
     <View className="flex-1 bg-secondary">
-      <ErrorModal open={isOpen} setIsOpen={setIsOpen} />
+      <ErrorModal
+        open={isOpen}
+        setIsOpen={setIsOpen}
+        errorMessage={errorMessage}
+      />
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className="pb-28 pt-16 items-center -mx-5">
-          <Elec width={60} height={60} />
-          <CustomText className="color-secondary text-4xl  mt-2">
-            Electricity Billing
+          <RenderIcon serviceType={service_type} size={60} />
+          <CustomText className="color-secondary text-4xl mt-2 mx-4">
+            {commercial_name}
           </CustomText>
         </View>
       </LinearGradient>
@@ -215,7 +229,7 @@ const PaymentDetails = () => {
       </View>
 
       {/* OTP Modal */}
-      <Modal
+      {/* <Modal
         visible={isModalVisible}
         animationType="fade"
         transparent
@@ -263,7 +277,15 @@ const PaymentDetails = () => {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
+      <OTPModel
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        pinCode={pinCode}
+        setPinCode={setPinCode}
+        isLoading={isLoading}
+        onVerifyHandler={onVerifyHandler}
+      />
     </View>
   );
 };
