@@ -26,7 +26,7 @@ const Page = () => {
         // router.dismissTo("/Services/paymentDetails");
       }
     } else {
-      router.dismissTo("/(main)/home");
+      router.dismissTo("/(auth)/Signin");
     }
   }, [isLoggedIn, isCompletedInfo, isReady]);
 

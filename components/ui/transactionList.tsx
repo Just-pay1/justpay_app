@@ -1,12 +1,16 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import Pencilcoin from "@/assets/svg/pencilcoin.svg";
 
-type Transaction = {
-  date: string;
+export type Transaction = {
+  display: string;
+  id: string;
+  amount: string;
+  type: string;
   description: string;
-  amount: number;
-  status?: "confirmed" | "canceled" | string;
+  date: string;
+  time: string;
+  logo: string;
 };
 
 interface Props {
@@ -27,60 +31,44 @@ const TransactionList: React.FC<Props> = ({ transactions }) => {
 
   return (
     <View className="px-5 mt-3">
-      {[
-        ...new Map(
-          transactions.map((tx) => [
-            `${tx.description}-${tx.amount}-${tx.date}`,
-            tx,
-          ])
-        ).values(),
-      ].map((transaction, index, array) => {
-        const transactionDate = new Date(transaction.date);
-        const formattedDate = transactionDate.toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        });
-        const formattedTime = transactionDate.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-
-        const statusColor =
-          transaction.status === "confirmed"
-            ? "color-primary"
-            : transaction.status === "canceled"
-              ? "color-danger"
-              : "color-primary-foreground";
-
-        const amountColor = "color-primary-foreground";
-
+      {transactions.map((transaction, index, array) => {
         return (
-          <View key={index}>
-            <View className="flex-row justify-between items-center p-3">
-              <View>
-                <Text className=" color-primary-foreground text-base">
+          <View key={transaction.id}>
+            <View className="flex-row justify-between items-start py-4">
+              {/* Logo */}
+              <View className="w-10 h-10  rounded-full items-center justify-center mr-3 mt-1">
+                <Image
+                  source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
+                  style={{ width: 22, height: 22 }}
+                  resizeMode="contain"
+                />
+              </View>
+
+              {/*  Disply /Description / Date */}
+              <View className="flex-1">
+                <Text className="text-xl  font-bold text-primaryforeground mb-1">
+                  {transaction.display}
+                </Text>
+                <Text
+                  className="font-base  text-primary-foreground"
+                  numberOfLines={2}
+                  ellipsizeMode="tail">
                   {transaction.description}
                 </Text>
-                <Text className="text-muted text-sm mt-1">
-                  {formattedDate} - {formattedTime}
-                </Text>
-              </View>
-              <View className="items-end">
-                <Text className={`text-base font-bold ${amountColor}`}>
-                  {Math.abs(transaction.amount).toFixed(2)} EGP
-                </Text>
-                {transaction.status && (
-                  <Text
-                    className={`text-xs font-semibold capitalize mt-1 ${statusColor}`}>
-                    {transaction.status === "confirmed"
-                      ? "Approved"
-                      : transaction.status === "canceled"
-                        ? "Canceled"
-                        : transaction.status}
+                <View className="flex-row mt-2">
+                  <Text className="text-sm text-muted">{transaction.date}</Text>
+                  <View style={{ width: 16 }} />
+                  <Text className="text-sm   text-muted">
+                    {transaction.time}
                   </Text>
-                )}
+                </View>
+              </View>
+
+              {/*  Amount */}
+              <View className="items-end ml-2">
+                <Text className=" font-bold text-xl text-primary-foreground">
+                  {parseFloat(transaction.amount).toFixed(2)} EGP
+                </Text>
               </View>
             </View>
 

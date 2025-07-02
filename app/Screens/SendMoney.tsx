@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomInputWithSuffix from "@/components/ui/CustomInputWithSuffix";
 import CustomText from "@/components/ui/CustomText";
@@ -10,6 +10,9 @@ import { useRouter } from "expo-router";
 
 const SendMoney = () => {
   const router = useRouter();
+  const [selectedTab, setSelectedTab] = useState<"username" | "mobile">(
+    "username"
+  );
   return (
     <View className="flex-1 bg-secondary">
       {/* Header Section */}
@@ -24,19 +27,54 @@ const SendMoney = () => {
           <CustomText className="color-secondary text-4xl mt-2 ">
             Send Money
           </CustomText>
+          {/* Tabs */}
+          <View className="flex-row justify-center mt-6 w-full px-10">
+            <TouchableOpacity
+              onPress={() => setSelectedTab("username")}
+              className={`flex-1 items-center py-2 border-b-2 ${
+                selectedTab === "username"
+                  ? "border-primary"
+                  : "border-secondary"
+              }`}>
+              <Ionicons
+                name="person-outline"
+                size={22}
+                color={selectedTab === "username" ? "#80cccc" : "#ffffff"}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setSelectedTab("mobile")}
+              className={`flex-1 items-center py-2 border-b-2 ${
+                selectedTab === "mobile" ? "border-primary" : "border-secondary"
+              }`}>
+              <Ionicons
+                name="call-outline"
+                size={22}
+                color={selectedTab === "mobile" ? "#80cccc" : "#ffffff"}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </LinearGradient>
 
-      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-10 pt-2 px-8">
-        {/* Payment Address */}
-        <View className="mt-12">
-          <CustomInputWithSuffix
-            placeholder="Payment Address"
-            keyboardType="default"
-            suffix={
-              <Text className="color-secondary-foreground">@justpay</Text>
-            }
-          />
+      <View className="flex-1 bg-secondary rounded-t-[40px] -mt-10 pt-6 px-8">
+        {/*  Address or Mobile */}
+        <View className="mt-6">
+          {selectedTab === "username" ? (
+            <CustomInputWithSuffix
+              placeholder="Payment Address"
+              keyboardType="default"
+              suffix={
+                <Text className="color-secondary-foreground">@justpay</Text>
+              }
+            />
+          ) : (
+            <CustomInputWithSuffix
+              placeholder="Mobile Number"
+              keyboardType="phone-pad"
+              suffix={null}
+            />
+          )}
         </View>
 
         {/* Amount */}
