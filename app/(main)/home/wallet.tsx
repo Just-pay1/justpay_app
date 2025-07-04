@@ -16,91 +16,15 @@ import { getItem } from "expo-secure-store";
 import useCustomQuery from "@/config/useCustomQuery";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import type { Transaction } from "@/components/ui/transactionList";
+
 interface WalletResponse {
   balance: number;
   idNumber: string;
 }
 const Wallet = () => {
   const router = useRouter();
-  const mockTransactions = [
-    {
-      date: "2025-06-01T10:00:00",
-      description: "Payment 1",
-      amount: 100,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-02T11:00:00",
-      description: "Payment 2",
-      amount: 200,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-03T12:00:00",
-      description: "Payment 3",
-      amount: 300,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-04T13:00:00",
-      description: "Payment 4",
-      amount: 400,
-      status: "canceled",
-    },
-
-    {
-      date: "2025-06-01T10:00:00",
-      description: "Payment 5",
-      amount: 100,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-02T11:00:00",
-      description: "Payment 6",
-      amount: 200,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-03T12:00:00",
-      description: "Payment 7",
-      amount: 300,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-04T13:00:00",
-      description: "Payment 8",
-      amount: 400,
-      status: "canceled",
-    },
-
-    {
-      date: "2025-06-01T10:00:00",
-      description: "Payment 9",
-      amount: 100,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-02T11:00:00",
-      description: "Payment 10",
-      amount: 200,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-03T12:00:00",
-      description: "Payment 11",
-      amount: 300,
-      status: "confirmed",
-    },
-    {
-      date: "2025-06-04T13:00:00",
-      description: "Payment 12",
-      amount: 400,
-      status: "canceled",
-    },
-  ];
-
-  const [transactions, setTransactions] = React.useState(mockTransactions);
-  const [loadingTransactions, setLoadingTransactions] = React.useState(false);
+  const [transactions, setTransactions] = React.useState<Transaction[]>([]);
 
   //const [transactions, setTransactions] = useState<any[]>([]);
   //const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
@@ -123,18 +47,38 @@ const Wallet = () => {
     url: "/transactions/api/wallet/by-user",
   });
 
+  const {
+    data: transactionData,
+    isLoading: transactionLoading,
+    error: transactionsError,
+    refetch: refetchTransactions,
+  } = useCustomQuery({
+    queryKey: ["transaction-history"],
+    url: "/transactions/api/transaction/history",
+  });
+  console.log("Transaction Data:", transactionData);
+
+  useEffect(() => {
+    if (transactionData?.transactions) {
+      setTransactions(transactionData.transactions);
+    }
+  }, [transactionData]);
+
   useFocusEffect(
     React.useCallback(() => {
       refetchBalance();
       refetchWallet();
+      refetchTransactions();
     }, [])
   );
 
-  if (walletError) {
-    console.log({ error: walletError.message });
-  }
-  if (balanceError) {
-    console.log({ error: balanceError.message });
+  if (walletError || balanceError || transactionsError) {
+    console.log({
+      error:
+        walletError?.message ||
+        balanceError?.message ||
+        transactionsError?.message,
+    });
   }
   const storedId = getItem("userId");
   const storedUser = getItem("user");
@@ -230,7 +174,7 @@ const Wallet = () => {
           <View className="border-b border-muted w-[90%] mt-1" />
         </View>
 
-        {loadingTransactions ? (
+        {transactionLoading ? (
           <ActivityIndicator size="large" color="#2c7075" />
         ) : (
           <TransactionList transactions={transactions.slice(0, 5)} />
