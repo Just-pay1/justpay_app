@@ -27,6 +27,7 @@ const PaymentDetails = () => {
     total_amount,
     service_type,
     commercial_name,
+    category,
   } = Data;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -71,7 +72,7 @@ const PaymentDetails = () => {
             signature: signature,
             timestamp: timestamp,
             nonce: nonce,
-            category: "reference_bill",
+            category: category,
           };
           const { data } = await apiClient.post(
             `/transactions/api/transaction/pay`,
@@ -134,10 +135,10 @@ const PaymentDetails = () => {
               {/* <View className="border-2 border-primary "> */}
               <View className="flex-row justify-between p-1 my-1">
                 <CustomText className="color-primary-foreground p-0">
-                  Id Number
+                  Bill Id
                 </CustomText>
                 <CustomText className="color-primary-foreground text-sm p-1">
-                  {bill_id}
+                  {bill_id.split("-").join("")}
                 </CustomText>
               </View>
             </View>
@@ -285,6 +286,7 @@ const PaymentDetails = () => {
         setPinCode={setPinCode}
         isLoading={isLoading}
         onVerifyHandler={onVerifyHandler}
+        hideText={true}
       />
     </View>
   );

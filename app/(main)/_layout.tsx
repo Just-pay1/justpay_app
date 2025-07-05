@@ -5,10 +5,11 @@ import {
   DrawerContentComponentProps,
 } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import { useAppDispatch } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 import { logoutThunk } from "@/store/authSlice";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSelector } from "react-redux";
 
 interface MenuItem {
   name: string;
@@ -29,6 +30,7 @@ const menuItems: MenuItem[] = [
 ];
 
 function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
+  const user = useAppSelector((state) => state.auth.data);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -54,8 +56,8 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
             source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
             className="w-16 h-16 rounded-full mb-2"
           />
-          <Text className="text-[16px] font-semibold color-primary-foreground">
-            UserName
+          <Text className="text-[16px] font-semibold color-primary-foreground capitalize">
+            {`hello ${user.username}` || "hello"}
           </Text>
         </View>
 

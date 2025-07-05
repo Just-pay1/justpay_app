@@ -63,6 +63,7 @@ const SendMoney = () => {
         }
       }
     } catch (error) {
+      // console.log(error.response.data);
       CustomErrorToast(error);
     } finally {
       setIsLoading(false);
@@ -91,28 +92,28 @@ const SendMoney = () => {
                 onPress={() => setSelectedTab("username")}
                 className={`flex-1 items-center py-2 border-b-2 ${
                   selectedTab === "username"
-                    ? "border-primary"
-                    : "border-secondary"
+                    ? "border-secondary"
+                    : "border-primary"
                 }`}
               >
                 <Ionicons
                   name="person-outline"
                   size={22}
-                  color={selectedTab === "username" ? "#80cccc" : "#ffffff"}
+                  color={selectedTab === "username" ? "#ffffff" : "#80cccc"}
                 />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setSelectedTab("phone")}
                 className={`flex-1 items-center py-2 border-b-2 ${
                   selectedTab === "phone"
-                    ? "border-primary"
-                    : "border-secondary"
+                    ? "border-secondary"
+                    : "border-primary"
                 }`}
               >
                 <Ionicons
                   name="call-outline"
                   size={22}
-                  color={selectedTab === "phone" ? "#80cccc" : "#ffffff"}
+                  color={selectedTab === "phone" ? "#ffffff" : "#80cccc"}
                 />
               </TouchableOpacity>
             </View>

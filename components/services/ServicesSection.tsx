@@ -13,7 +13,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import HeaderSection from "./HeaderSection";
 import { Ionicons } from "@expo/vector-icons";
 import CustomText from "../ui/CustomText";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Dimensions } from "react-native";
 import RenderIcon from "../ui/RenderIcon";
 const { height: screenHeight } = Dimensions.get("window");
@@ -70,7 +70,6 @@ const ServiceItem = ({
 );
 
 const ServicesSection = () => {
-  console.log("services");
   const {
     data: servicesData,
     error: servicesError,
@@ -81,12 +80,12 @@ const ServicesSection = () => {
     whichInstance: "apiBilling",
     url: "/merchants/list-active-merchants?page=1",
   });
+
   useFocusEffect(
     React.useCallback(() => {
       refetchServices();
     }, [])
   );
-  // console.log(servicesData?.data.rows[0]);
   console.log(servicesData?.data.rows[1]?.merchants[0]?.id);
   if (servicesLoading) {
     return (
@@ -98,7 +97,6 @@ const ServicesSection = () => {
   }
 
   if (servicesError) {
-    console.log("fdgfdgf");
     return (
       <View style={styles.container}>
         <HeaderSection />
@@ -134,7 +132,6 @@ const ServicesSection = () => {
         data={flattenedMerchants}
         numColumns={4}
         keyExtractor={(item) => {
-          console.log(item.merchant.id + item.serviceId);
           // console.log(item);
           return item.merchant.merchant_id + item.serviceId;
         }}

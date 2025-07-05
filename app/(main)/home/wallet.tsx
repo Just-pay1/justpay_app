@@ -5,7 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CustomText from "@/components/ui/CustomText";
 import Walletvector from "@/assets/svg/walletvector.svg";
 import PrimaryButton from "@/components/ui/Custombutton";
@@ -18,16 +18,17 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import type { Transaction } from "@/components/ui/transactionList";
 
-interface WalletResponse {
-  balance: number;
-  idNumber: string;
-}
+import OTPModel from "@/components/ui/OTPModel";
+import { apiClient } from "@/config/axios.config";
+import CustomErrorToast from "@/components/ui/CustomErrorToast"; // <-- import it
+
 const Wallet = () => {
   const router = useRouter();
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
-
-  //const [transactions, setTransactions] = useState<any[]>([]);
-  //const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
+  const [balanceVisible, setBalanceVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pinCode, setPinCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const {
     data,
     error: balanceError,
@@ -37,6 +38,7 @@ const Wallet = () => {
     queryKey: ["balance"],
     url: "/transactions/api/wallet/getBalance",
   });
+
   const {
     data: walletData,
     error: walletError,
@@ -69,8 +71,35 @@ const Wallet = () => {
       refetchBalance();
       refetchWallet();
       refetchTransactions();
+      return () => setBalanceVisible(false);
     }, [])
   );
+
+  const handleBalanceToggle = () => {
+    if (!balanceVisible) {
+      setIsModalVisible(true);
+    }
+  };
+
+  const onVerifyHandler = async () => {
+    try {
+      setIsLoading(true);
+      const { status } = await apiClient.post(
+        "/identity/walletConfig/verifyPinCode",
+        { pin_code: pinCode }
+      );
+      if (status === 200) {
+        setBalanceVisible(true);
+        setIsModalVisible(false);
+        setPinCode("");
+      }
+    } catch (error) {
+      setIsModalVisible(false);
+      CustomErrorToast(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (walletError || balanceError || transactionsError) {
     console.log({
@@ -82,7 +111,7 @@ const Wallet = () => {
   }
   const storedId = getItem("userId");
   const storedUser = getItem("user");
-  const storedUsername = JSON.parse(storedUser || "{}").username;
+  const storedUsername = storedUser ? JSON.parse(storedUser).username : "Guest";
 
   return (
     <ScrollView
@@ -103,9 +132,10 @@ const Wallet = () => {
               paddingHorizontal: 16,
             }}
           >
-            <Text className="p-0 text-secondary  text-xl font-bold  text-left pb-4 ">
-              {storedUsername || "Guest"}@justpay
+            <Text className="p-0 text-secondary text-xl font-bold text-left pb-4">
+              {storedUsername}@justpay
             </Text>
+
             {balanceLoading ? (
               <View
                 style={{
@@ -114,18 +144,22 @@ const Wallet = () => {
                   alignItems: "center",
                 }}
               >
-                <ActivityIndicator size={"large"} color="#ffffff" />
+                <ActivityIndicator size="large" color="#ffffff" />
               </View>
             ) : (
               <View className="flex-row items-baseline px-4 flex-nowrap">
                 <Text
-                  className=" color-secondary text-4xl font-extrabold"
+                  className={`color-secondary text-4xl font-extrabold ${
+                    !balanceVisible ? "blur-sm" : ""
+                  }`}
                   numberOfLines={1}
                 >
-                  {Number(data.Balance || 0).toLocaleString("en-EG", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {balanceVisible
+                    ? Number(data.Balance || 0).toLocaleString("en-EG", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                    : "******"}
                 </Text>
                 <Text
                   className="color-secondary text-4xl font-semibold ml-1"
@@ -136,7 +170,7 @@ const Wallet = () => {
               </View>
             )}
 
-            <Text className="color-secondary text-right text-sm mt-4 ">
+            <Text className="color-secondary text-right text-sm mt-4">
               {walletLoading
                 ? ""
                 : `**** **** **** ${walletData.walletId.slice(-4)}`}
@@ -144,18 +178,29 @@ const Wallet = () => {
           </LinearGradient>
         </View>
 
-        <PrimaryButton
-          bgColor="bg-primary"
-          width="w-[50%]"
-          onPress={() => router.push("/Screens/SendMoney")}
-        >
-          <View className="flex-row items-center justify-center">
-            <CustomText className="color-secondary text-xl">send</CustomText>
-            <Walletvector width={20} height={20} color="white" />
-          </View>
-        </PrimaryButton>
+        <View className="flex-row justify-center gap-4 mt-4 px-4">
+          <PrimaryButton
+            bgColor="bg-primary"
+            width="w-[45%]"
+            onPress={handleBalanceToggle}
+            disabled={balanceVisible}
+          >
+            <CustomText className="color-secondary text-xl">Balance</CustomText>
+          </PrimaryButton>
 
-        <View className="items-center">
+          <PrimaryButton
+            bgColor="bg-primary"
+            width="w-[45%]"
+            onPress={() => router.push("/Screens/SendMoney")}
+          >
+            <View className="flex-row items-center justify-center">
+              <CustomText className="color-secondary text-xl">Send</CustomText>
+              <Walletvector width={20} height={20} color="white" />
+            </View>
+          </PrimaryButton>
+        </View>
+
+        <View className="items-center mt-6">
           <View className="flex-row items-center justify-between w-full px-5">
             <Text className="color-primary-foreground text-3xl font-bold">
               Transaction
@@ -163,7 +208,7 @@ const Wallet = () => {
             <TouchableOpacity
               onPress={() =>
                 router.push({
-                  pathname: "/Screens/History", // to history page
+                  pathname: "/Screens/History",
                   params: { transactions: JSON.stringify(transactions) },
                 })
               }
@@ -180,6 +225,16 @@ const Wallet = () => {
           <TransactionList transactions={transactions.slice(0, 5)} />
         )}
       </View>
+
+      <OTPModel
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        pinCode={pinCode}
+        setPinCode={setPinCode}
+        isLoading={isLoading}
+        onVerifyHandler={onVerifyHandler}
+        hideText={true}
+      />
     </ScrollView>
   );
 };

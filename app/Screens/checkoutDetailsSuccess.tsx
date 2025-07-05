@@ -10,19 +10,28 @@ import { getItem } from "expo-secure-store";
 
 const CheckoutDetailsSuccess = () => {
   const { sucessData } = useLocalSearchParams();
-  const { total, amount, fee, id, date, time, name, username } = JSON.parse(
-    sucessData as string
-  );
+  const {
+    total,
+    amount,
+    fee,
+    id,
+    date,
+    time,
+    name,
+    username,
+    selectedTab,
+    phone,
+  } = JSON.parse(sucessData as string);
   const user = JSON.parse(getItem("user") as string);
   const data = {
     amount: `${amount} EGP`,
     from: {
       name: user.name,
-      email: `${user.username}@justppay.com`,
+      email: `${selectedTab === "phone" ? user.phone : `${user.username}@justppay.com`}`,
     },
     to: {
       name: name,
-      email: `${username}@justppay.com`,
+      email: `${selectedTab === "phone" ? phone : `${username}@justppay.com`}`,
     },
     reference: id,
     date: date + " at " + time,

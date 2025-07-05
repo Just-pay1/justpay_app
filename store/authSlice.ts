@@ -15,7 +15,14 @@ export const logoutThunk = createAsyncThunk(
 
 const initialState = {
   AccToken: null,
-  data: null,
+  data: {
+    username: "",
+    email: "",
+    phone: "",
+    city: "",
+    name: "",
+    id: "",
+  },
   isLoggedIn: false,
 };
 
@@ -33,14 +40,28 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.AccToken = null;
-      state.data = null;
+      state.data = {
+        username: "",
+        email: "",
+        phone: "",
+        city: "",
+        name: "",
+        id: "",
+      };
       state.isLoggedIn = false;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.AccToken = null;
-      state.data = null;
+      state.data = {
+        username: "",
+        email: "",
+        phone: "",
+        city: "",
+        name: "",
+        id: "",
+      };
       state.isLoggedIn = false;
     });
   },

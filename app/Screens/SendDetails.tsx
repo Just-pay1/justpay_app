@@ -22,7 +22,9 @@ const SendDetails = () => {
   const [pinCode, setPinCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { amount, fees, id, username, name } = JSON.parse(userData as string);
+  const { amount, fees, id, username, name, selectedTab, phone } = JSON.parse(
+    userData as string
+  );
   const router = useRouter();
   const queryClient = useQueryClient();
   const total = Number(amount) + Number(fees);
@@ -62,6 +64,8 @@ const SendDetails = () => {
                 ...data.model,
                 name: name,
                 username: username,
+                phone: phone,
+                selectedTab,
               }),
             },
           });
@@ -133,9 +137,17 @@ const SendDetails = () => {
 
         {/* From & To */}
         <View className="mt-6">
-          <UserCard type="from" name={user.name} address={user.username} />
+          <UserCard
+            type="from"
+            name={user.name}
+            address={selectedTab === "username" ? user.username : user.phone}
+          />
           <View className="h-3" />
-          <UserCard type="to" name={name} address={username} />
+          <UserCard
+            type="to"
+            name={name}
+            address={selectedTab === "username" ? username : phone}
+          />
         </View>
 
         {/* Button */}
@@ -182,6 +194,7 @@ const SendDetails = () => {
         setPinCode={setPinCode}
         isLoading={isLoading}
         onVerifyHandler={onVerifyHandler}
+        hideText={true}
       />
     </View>
   );
