@@ -1,4 +1,11 @@
-import { View, Text, Pressable, Platform, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,20 +15,33 @@ import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useLocalSearchParams } from "expo-router";
 import TransactionList from "@/components/ui/transactionList";
+import useCustomQuery from "@/config/useCustomQuery";
 
 type Transaction = {
-  date: string;
+  display: string;
+  id: string;
+  amount: string;
+  type: string;
   description: string;
-  amount: number;
-  status?: "confirmed" | "canceled" | string;
+  date: string;
+  time: string;
+  logo: string;
 };
 
 const History = () => {
   const router = useRouter();
-  const { transactions } = useLocalSearchParams();
-  const parsedTransactions: Transaction[] = transactions
-    ? JSON.parse(transactions as string)
-    : [];
+
+  const {
+    data: transactionData,
+    isLoading,
+    error,
+    refetch,
+  } = useCustomQuery({
+    queryKey: ["transaction-history"],
+    url: "/api/transaction/history",
+  });
+
+  const parsedTransactions = transactionData?.transactions || [];
 
   const [searchText, setSearchText] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -64,7 +84,7 @@ const History = () => {
         <View style={{ width: 32 }} />
       </View>
 
-      <View className="relative mt-[30px] mb-4 w-full px-6">
+      <View className="relative mt-4 mb-2 w-full px-6">
         <CustomInput
           placeholder="Search"
           value={searchText}
@@ -98,18 +118,25 @@ const History = () => {
           />
         )}
       </View>
-
-      <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 20 }}>
-        {parsedTransactions.length > 0 ? (
-          <TransactionList transactions={filteredTransactions} />
-        ) : (
-          <Text className="text-center text-muted mt-10">
-            No transactions founds
-          </Text>
-        )}
-      </ScrollView>
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color="#2c7075"
+          style={{ marginTop: 40 }}
+        />
+      ) : (
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 20 }}>
+          {parsedTransactions.length > 0 ? (
+            <TransactionList transactions={filteredTransactions} />
+          ) : (
+            <Text className="text-center text-muted mt-10">
+              No transactions found
+            </Text>
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
