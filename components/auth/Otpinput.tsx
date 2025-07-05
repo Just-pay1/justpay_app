@@ -10,8 +10,9 @@ import {
 interface Iprops {
   otpCode: string;
   setOtpCode: (otpCode: string) => void;
+  hideText?: boolean;
 }
-export function OTPInput({ otpCode, setOtpCode }: Iprops) {
+export function OTPInput({ otpCode, setOtpCode, hideText = false }: Iprops) {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -92,7 +93,8 @@ export function OTPInput({ otpCode, setOtpCode }: Iprops) {
             keyboardAppearance="default"
             maxLength={1}
             cursorColor={"#9d9a9a"}
-            value={digit}
+            value={hideText === true && digit ? "*" : digit}
+            secureTextEntry={false}
             onFocus={() => setActiveIndex(index)}
             className="w-14 h-14 text-center text-2xl rounded-full relative items-center justify-center color-primary"
             onChangeText={(text) => changehandler(text, index)}

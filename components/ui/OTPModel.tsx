@@ -12,6 +12,7 @@ interface IProps {
   setPinCode: (pinCode: string) => void;
   isLoading: boolean;
   onVerifyHandler: () => void;
+  hideText?: boolean;
 }
 const OTPModel = ({
   isModalVisible,
@@ -20,6 +21,7 @@ const OTPModel = ({
   setPinCode,
   isLoading,
   onVerifyHandler,
+  hideText,
 }: IProps) => {
   return (
     <Modal
@@ -36,7 +38,11 @@ const OTPModel = ({
               Enter Your PIN Code
             </CustomText>
           </View>
-          <OTPInput otpCode={pinCode} setOtpCode={setPinCode} />
+          <OTPInput
+            otpCode={pinCode}
+            setOtpCode={setPinCode}
+            hideText={hideText}
+          />
           <View className="mt-6">
             <PrimaryButton
               width="w-full"

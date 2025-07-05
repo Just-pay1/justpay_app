@@ -53,3 +53,22 @@ const getCurrentLocation = async () => {
 };
 
 export { encryptData, getCurrentLocation };
+
+export function getServiceName(serviceType: string) {
+  if (serviceType.toLowerCase().includes("elec")) {
+    return "electric bills";
+  } else if (serviceType.toLowerCase().includes("water")) {
+    return "water bills";
+  } else if (serviceType.toLowerCase().includes("gas")) {
+    return "gas bills";
+  } else if (serviceType.toLowerCase().includes("internet")) {
+    return "internet bills";
+  } else if (
+    serviceType.toLowerCase().includes("mobile") ||
+    serviceType.toLowerCase().includes("phone")
+  ) {
+    return "mobile bills";
+  } else if (serviceType.toLowerCase().includes("ref")) {
+    return "Reference number bills";
+  }
+}
