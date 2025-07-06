@@ -31,8 +31,7 @@ const Profile = () => {
       className="flex-1 bg-white px-6 pt-2 h-screen"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       <View className="flex-1 mb-4">
         <View className="items-center mb-8 pb-4 ">
           <View className="relative">
@@ -57,15 +56,16 @@ const Profile = () => {
         <View className="flex-row flex-wrap justify-between gap-4">
           <Pressable
             className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
-            onPress={() => router.push("/Screens/Setting")}
-          >
+            onPress={() => router.push("/drawer/Setting")}>
             <Ionicons name="settings-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Setting
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+          <Pressable
+            className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
+            onPress={() => router.push("/Screens/History")}>
             <Ionicons name="document-text-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Transactions
@@ -79,7 +79,9 @@ const Profile = () => {
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+          <Pressable
+            className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
+            onPress={() => router.push("/drawer/help")}>
             <Ionicons name="help-circle-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Support Center

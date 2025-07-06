@@ -18,7 +18,7 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { name: "Settings", route: "drawer/setting", icon: "settings" },
+  { name: "Settings", route: "drawer/Setting", icon: "settings" },
   { name: "Policy", route: "drawer/policy", icon: "document-text" },
   { name: "Help", route: "drawer/help", icon: "help-circle" },
   { name: "About", route: "drawer/about", icon: "information-circle" },
@@ -44,13 +44,11 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
       colors={["#d5e6e7", "#ffffff"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      className="flex-1"
-    >
+      className="flex-1">
       <DrawerContentScrollView
         {...props}
         contentContainerStyle={{ flexGrow: 1 }}
-        showsVerticalScrollIndicator={false}
-      >
+        showsVerticalScrollIndicator={false}>
         <View className="pt-2 pb-2 items-center">
           <Image
             source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
@@ -67,8 +65,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
             <TouchableOpacity
               key={item.route}
               className="flex-row items-center py-5 border-b border-dotted border-[#ccc]"
-              onPress={() => props.navigation.navigate(item.route)}
-            >
+              onPress={() => props.navigation.navigate(item.route)}>
               <Ionicons name={item.icon} size={22} color="#2c7075" />
               <Text className="ml-4 text-[16px] text-[#2c7075] font-medium">
                 {item.name}
@@ -78,8 +75,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
 
           <TouchableOpacity
             className="flex-row items-center py-5"
-            onPress={handleLogout}
-          >
+            onPress={handleLogout}>
             <Ionicons name="log-out" size={22} color="#2c7075" />
             <Text className="ml-4 text-[16px] color-primary-foreground  font-medium">
               Log Out
@@ -110,8 +106,7 @@ export default function RootLayout(): JSX.Element {
                 style={{
                   color: focused ? "#2c7075" : "gray",
                   fontWeight: focused ? "bold" : "normal",
-                }}
-              >
+                }}>
                 {item.name}
               </Text>
             ),

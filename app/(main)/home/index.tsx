@@ -43,27 +43,7 @@ const Home = () => {
             </View>
           </View>
 
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#f0f0f0",
-              marginTop: 30,
-            }}>
-            <CustomInput
-              placeholder="Search"
-              style={{
-                width: "90%",
-                height: 40,
-                borderColor: "#9d9a9a",
-                borderRadius: 10,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-              }}
-            />
-          </View>
-          <View style={{ marginTop: 30 }}>
+          <View style={{ marginTop: 10 }}>
             <ServicesSection />
             {/* <Services />*/}
           </View>
