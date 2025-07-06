@@ -65,14 +65,16 @@ const Profile = () => {
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7" >
             <Ionicons name="document-text-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Transactions
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7" 
+            onPress={() => router.push("/(auth)/ChangePassword")}
+          >
             <Ionicons name="lock-closed-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Change Password

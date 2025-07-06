@@ -160,3 +160,16 @@ export const isValidPin = (pin: string): boolean => {
 
   return true;
 };
+export const changePasswordSchema = Yup.object().shape({
+  oldPassword: Yup.string()
+    .required("Current password is required")
+    .min(6, "Must be at least 6 characters"),
+  newPassword: Yup.string()
+    .required("New password is required")
+    .min(6, "Must be at least 6 characters"),
+  confirmedPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword")], "Passwords must match")
+    .required("Please confirm your new password"),
+});
+
+export type TChangePasswordForm = Yup.InferType<typeof changePasswordSchema>;
