@@ -125,7 +125,7 @@ const success = () => {
                     Total
                   </CustomText>
                   <CustomText className="color-primary text-xl p-0">
-                    {total.toFixed(2)}
+                    {total}
                   </CustomText>
                 </View>
               </View>

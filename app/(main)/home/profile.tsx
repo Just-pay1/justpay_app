@@ -57,7 +57,7 @@ const Profile = () => {
         <View className="flex-row flex-wrap justify-between gap-4">
           <Pressable
             className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
-            onPress={() => router.push("/Screens/Setting")}
+            onPress={() => router.push("/(main)/drawer/setting")}
           >
             <Ionicons name="settings-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
@@ -65,14 +65,18 @@ const Profile = () => {
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7" >
+          <Pressable
+            className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
+            onPress={() => router.push("/Screens/History")}
+          >
             <Ionicons name="document-text-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Transactions
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7" 
+          <Pressable
+            className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
             onPress={() => router.push("/(auth)/ChangePassword")}
           >
             <Ionicons name="lock-closed-outline" size={35} color="white" />
@@ -81,7 +85,10 @@ const Profile = () => {
             </Text>
           </Pressable>
 
-          <Pressable className="w-[47%] bg-primary rounded-xl items-center justify-center py-7">
+          <Pressable
+            className="w-[47%] bg-primary rounded-xl items-center justify-center py-7"
+            onPress={() => router.push("/drawer/help")}
+          >
             <Ionicons name="help-circle-outline" size={35} color="white" />
             <Text className="text-secondary mt-2 text-xl text-center">
               Support Center
