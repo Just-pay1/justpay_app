@@ -17,17 +17,17 @@ const Failed = () => {
       className="flex-1"
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       <LinearGradient
         colors={["#1A5A60", "#113E41", "#081C1C"]}
-        className="flex-1 justify-center items-center ">
-        <View className=" absolute top-4 flex-row items-center px-2 ">
-          <TouchableOpacity
-            onPress={() => router.push("/(main)/home")}
-            className="absolute left-0">
-            <Ionicons name="chevron-back-outline" size={32} color="white" />
+        className="flex-1 justify-center items-center "
+      >
+        <View className="absolute top-4 left-0 right-0 flex-row items-center px-2 z-10">
+          <TouchableOpacity onPress={() => router.back()} className="p-2">
+            <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <CustomText className="color-secondary flex-1 text-2xl  mx-auto  ">
+          <CustomText className="color-secondary flex-1 text-2xl text-center">
             Payment Failed
           </CustomText>
         </View>
@@ -90,14 +90,6 @@ const Failed = () => {
             </View>
           </ScrollView>
         </View>
-        <PrimaryButton
-          width="w-[60%]"
-          bgColor="bg-transparent"
-          borderColor="border-primary"
-          onPress={() => router.push("/(main)/home")}
-          styled={{ marginTop: 10 }}>
-          <CustomText className="color-primary">Get PDF Receipt</CustomText>
-        </PrimaryButton>
       </LinearGradient>
     </ScrollView>
   );

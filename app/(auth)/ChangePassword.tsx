@@ -9,13 +9,17 @@ import Toast from "react-native-toast-message";
 import { useState } from "react";
 import AuthHeader from "@/components/auth/AuthHeader";
 import CustomText from "@/components/ui/CustomText";
-import ChangePasswordErrorToast from "@/components/ui/ChangePasswordErrorToast";
 import CustomMsgError from "@/components/ui/CustomMsgError";
+import CustomErrorToast from "@/components/ui/CustomErrorToast";
 
 export default function ChangePassword() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const { control, handleSubmit, formState: { errors } } = useForm<TChangePasswordForm>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TChangePasswordForm>({
     resolver: yupResolver(changePasswordSchema),
   });
 
@@ -29,7 +33,7 @@ export default function ChangePassword() {
         position: "bottom",
       });
     } catch (error) {
-      ChangePasswordErrorToast(error);
+      CustomErrorToast(error);
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +44,6 @@ export default function ChangePassword() {
       <AuthHeader title="Change Password" />
       <View className="flex-1">
         <View className="gap-y-5 w-[80%] mx-auto">
-
           {/* Old Password */}
           <View>
             <Controller
@@ -56,7 +59,9 @@ export default function ChangePassword() {
                 />
               )}
             />
-            {errors.oldPassword && <CustomMsgError msg={errors.oldPassword.message} />}
+            {errors.oldPassword && (
+              <CustomMsgError msg={errors.oldPassword.message} />
+            )}
           </View>
 
           {/* New Password */}
@@ -74,7 +79,9 @@ export default function ChangePassword() {
                 />
               )}
             />
-            {errors.newPassword && <CustomMsgError msg={errors.newPassword.message} />}
+            {errors.newPassword && (
+              <CustomMsgError msg={errors.newPassword.message} />
+            )}
           </View>
 
           {/* Confirmed Password */}
@@ -92,7 +99,9 @@ export default function ChangePassword() {
                 />
               )}
             />
-            {errors.confirmedPassword && <CustomMsgError msg={errors.confirmedPassword.message} />}
+            {errors.confirmedPassword && (
+              <CustomMsgError msg={errors.confirmedPassword.message} />
+            )}
           </View>
 
           <PrimaryButton

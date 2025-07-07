@@ -64,11 +64,34 @@ export function getServiceName(serviceType: string) {
   } else if (serviceType.toLowerCase().includes("internet")) {
     return "internet bills";
   } else if (
-    serviceType.toLowerCase().includes("mobile") ||
+    serviceType.toLowerCase().includes("mob") ||
     serviceType.toLowerCase().includes("phone")
   ) {
-    return "mobile bills";
+    return "phone bills";
   } else if (serviceType.toLowerCase().includes("ref")) {
-    return "Reference number bills";
+    return "Reference number";
   }
 }
+
+interface Service {
+  id: string;
+  service_type: string;
+  merchants: {
+    merchant_id: string;
+    commercial_name: string;
+  }[];
+}
+
+export const getFlattenedMerchants = (servicesData: any) => {
+  return (
+    servicesData?.data.rows.flatMap((service: Service) =>
+      service.merchants.map(
+        (merchant: { merchant_id: string; commercial_name: string }) => ({
+          serviceId: service.id,
+          serviceType: service.service_type,
+          merchant,
+        })
+      )
+    ) || []
+  );
+};

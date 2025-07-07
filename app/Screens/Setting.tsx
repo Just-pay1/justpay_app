@@ -196,48 +196,6 @@ const SettingScreen = () => {
             </React.Fragment>
           ))}
         </View>
-
-        <View className="mb-5">
-          <Text className="text-lg font-bold mb-2.5 text-[#333]">
-            Allow Notifications
-          </Text>
-          <View className="flex-row justify-between items-center py-2.5">
-            <Text className="text-base text-[#333]">Email Notifications</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#2c7075" }}
-              thumbColor={emailNotifications ? "#f4f3f4" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() =>
-                setEmailNotifications((previousState) => !previousState)
-              }
-              value={emailNotifications}
-            />
-          </View>
-          <View className="flex-row justify-between items-center py-2.5">
-            <Text className="text-base text-[#333]">SMS Alerts</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#2c7075" }}
-              thumbColor={smsAlerts ? "#f4f3f4" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() =>
-                setSmsAlerts((previousState) => !previousState)
-              }
-              value={smsAlerts}
-            />
-          </View>
-          <View className="flex-row justify-between items-center py-2.5">
-            <Text className="text-base text-[#333]">Push Notifications</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#2c7075" }}
-              thumbColor={pushNotifications ? "#f4f3f4" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() =>
-                setPushNotifications((previousState) => !previousState)
-              }
-              value={pushNotifications}
-            />
-          </View>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );

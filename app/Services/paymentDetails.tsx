@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, ScrollView, Text, Modal, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, Text, BackHandler } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { router, useLocalSearchParams } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
-import { apiClient } from "@/config/axios.config";
+import { apiBilling, apiClient } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
 import OTPModel from "@/components/ui/OTPModel";
@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { encryptData, getCurrentLocation } from "@/utils";
 import RenderIcon from "@/components/ui/RenderIcon";
+import Toast from "react-native-toast-message";
 
 const PaymentDetails = () => {
   const queryClient = useQueryClient();
@@ -50,7 +51,10 @@ const PaymentDetails = () => {
     if (!currentLocation) {
       setIsLoading(false);
       setIsModalVisible(false);
-      CustomErrorToast(new Error("Location access is required to continue"));
+      Toast.show({
+        text1: "Location access is required to continue",
+        type: "error",
+      });
       return;
     }
     try {
@@ -101,6 +105,28 @@ const PaymentDetails = () => {
     }
   };
 
+  const handleCancel = async () => {
+    try {
+      apiBilling.post("/bills/delete-bill", {
+        bill_id: bill_id,
+      });
+    } catch (error) {
+      CustomErrorToast(error);
+    }
+    router.dismissTo("/");
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        console.log("Back button pressed");
+        handleCancel();
+        return true; // Prevent default back behavior
+      }
+    );
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <View className="flex-1 bg-secondary">
       <ErrorModal
@@ -111,7 +137,11 @@ const PaymentDetails = () => {
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className="pb-28 pt-16 items-center -mx-5">
-          <RenderIcon serviceType={service_type} size={60} />
+          <RenderIcon
+            serviceType={service_type}
+            size={60}
+            commercialName={commercial_name}
+          />
           <CustomText className="color-secondary text-4xl mt-2 mx-4">
             {commercial_name}
           </CustomText>
@@ -185,14 +215,16 @@ const PaymentDetails = () => {
             <View className="border-t border-muted  ">
               <View className="flex-row justify-between p-1 my-1">
                 <Text className="color-primary-foreground  p-0 ">Fee</Text>
-                <Text className="color-primary-foreground p-0">{fee} EGP</Text>
+                <Text className="color-primary-foreground p-0">
+                  {amount === total_amount ? 0 : fee.toFixed(2)} EGP
+                </Text>
               </View>
             </View>
             <View className="border-t border-muted  ">
               <View className="flex-row justify-between p-1 my-1">
                 <Text className="color-primary-foreground  p-0 ">Total</Text>
                 <Text className="color-primary-foreground p-0">
-                  {total_amount} EGP
+                  {total_amount.toFixed(2)} EGP
                 </Text>
               </View>
             </View>
@@ -207,13 +239,13 @@ const PaymentDetails = () => {
             onPress={handleConfirm}
             loading={isLoading}
           >
-            <CustomText className="color-secondary">Confirm</CustomText>
+            <CustomText className="color-secondary">Pay</CustomText>
           </PrimaryButton>
 
           <PrimaryButton
             width="w-[70%] "
             bgColor="bg-secondary"
-            onPress={() => router.push("/(main)/home")}
+            onPress={handleCancel}
             disabled={isLoading}
             borderColor="border-primary"
             style={[]}

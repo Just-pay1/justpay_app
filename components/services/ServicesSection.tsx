@@ -16,6 +16,7 @@ import CustomText from "../ui/CustomText";
 import { router, useLocalSearchParams } from "expo-router";
 import { Dimensions } from "react-native";
 import RenderIcon from "../ui/RenderIcon";
+import { getFlattenedMerchants } from "@/utils";
 const { height: screenHeight } = Dimensions.get("window");
 interface Service {
   id: string;
@@ -26,7 +27,7 @@ interface Service {
   }[];
 }
 
-const ServiceItem = ({
+export const ServiceItem = ({
   merchant,
   serviceType,
   serviceId,
@@ -55,7 +56,10 @@ const ServiceItem = ({
     }}
   >
     <View style={styles.iconContainer}>
-      <RenderIcon serviceType={serviceType} />
+      <RenderIcon
+        serviceType={serviceType}
+        commercialName={merchant.commercial_name}
+      />
       {/* <Ionicons name="flash" size={15} color="#ffffff" /> */}
     </View>
     <Text
@@ -114,16 +118,8 @@ const ServicesSection = () => {
     );
   }
 
-  const flattenedMerchants =
-    servicesData?.data.rows.flatMap((service: Service) =>
-      service.merchants.map(
-        (merchant: { merchant_id: string; commercial_name: string }) => ({
-          serviceId: service.id,
-          serviceType: service.service_type,
-          merchant,
-        })
-      )
-    ) || [];
+  const flattenedMerchants = getFlattenedMerchants(servicesData);
+  console.log(flattenedMerchants);
 
   return (
     <View style={styles.container}>
@@ -222,7 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   serviceName: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
     color: "#2c7075",

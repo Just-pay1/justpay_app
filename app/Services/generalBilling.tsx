@@ -18,9 +18,120 @@ const GeneralBilling = () => {
   console.log({ merchant_id, service_type, service_id, commercial_name });
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  // const whatService = () => {
+  //   if (service_type.includes("internet")) {
+  //     if (!code.startsWith("055") || code.length !== 10) {
+  //       return {
+  //         message: "your bill code must start with 055 and be 10 digits",
+  //         length: 10,
+  //       };
+  //     }
+  //   } else if (
+  //     String(service_type).toLowerCase().includes("mobile") ||
+  //     String(service_type).toLowerCase().includes("phone")
+  //   ) {
+  //     if (String(commercial_name).toLowerCase().includes("vodafone")) {
+  //       if (
+  //         !code.startsWith("010") ||
+  //         code.startsWith("011") ||
+  //         code.startsWith("012") ||
+  //         code.length !== 11
+  //       ) {
+  //         return {
+  //           message: "your bill code must start with 010 and be 11 digits",
+  //           length: 11,
+  //         };
+  //       }
+  //     } else if (String(commercial_name).toLowerCase().includes("orange")) {
+  //       if (
+  //         !code.startsWith("012") ||
+  //         code.startsWith("010") ||
+  //         code.startsWith("011") ||
+  //         code.length !== 11
+  //       ) {
+  //         return {
+  //           message: "your bill code must start with 012 and be 11 digits",
+  //           length: 11,
+  //         };
+  //       }
+  //     } else if (
+  //       String(commercial_name).toLowerCase().includes("eti") ||
+  //       String(commercial_name).toLowerCase().includes("itis")
+  //     ) {
+  //       if (
+  //         !code.startsWith("011") ||
+  //         code.startsWith("010") ||
+  //         code.startsWith("012") ||
+  //         code.length !== 11
+  //       ) {
+  //         return {
+  //           message: "your bill code must start with 011 and be 11 digits",
+  //           length: 11,
+  //         };
+  //       }
+  //     }
+  //   } else {
+  //     return {
+  //       message: "your bill code should be 4 digits",
+  //       length: 4,
+  //     };
+  //   }
+  // };
+  const whatService = () => {
+    if (service_type.includes("internet")) {
+      if (!code.startsWith("055") || code.length !== 10) {
+        return {
+          message: "your bill code must start with 055 and be 10 digits",
+          length: 10,
+        };
+      }
+    } else if (
+      String(service_type).toLowerCase().includes("mobile") ||
+      String(service_type).toLowerCase().includes("phone")
+    ) {
+      if (String(commercial_name).toLowerCase().includes("vodafone")) {
+        if (!code.startsWith("010") || code.length !== 11) {
+          return {
+            message: "your bill code must start with 010 and be 11 digits",
+            length: 11,
+          };
+        }
+      } else if (String(commercial_name).toLowerCase().includes("orange")) {
+        if (!code.startsWith("012") || code.length !== 11) {
+          return {
+            message: "your bill code must start with 012 and be 11 digits",
+            length: 11,
+          };
+        }
+      } else if (
+        String(commercial_name).toLowerCase().includes("eti") ||
+        String(commercial_name).toLowerCase().includes("itis")
+      ) {
+        if (!code.startsWith("011") || code.length !== 11) {
+          return {
+            message: "your bill code must start with 011 and be 11 digits",
+            length: 11,
+          };
+        }
+      }
+    } else {
+      if (code.length !== 4) {
+        return {
+          message: "your bill code should be 4 digits",
+          length: 4,
+        };
+      }
+    }
+    return null;
+  };
+
   const handleContinue = async () => {
-    if (code.length !== 4) {
-      Alert.alert("Invalid Code", "E-Payment Code must be 4 digits.");
+    const service = whatService();
+    console.log(service);
+
+    // Show error if validation failed
+    if (service) {
+      Alert.alert("Invalid Code", `${service.message}`);
       return;
     }
     try {
@@ -36,8 +147,18 @@ const GeneralBilling = () => {
       // const { data } = await apiBilling.get(
       //   `/bills/${url}?merchant_id=${merchant_id}&bill_code=BILL${code}`
       // );
+      let url = "";
+      if (
+        service_type.includes("internet") ||
+        service_type.includes("mobile") ||
+        service_type.includes("phone")
+      ) {
+        url = `${code}`;
+      } else {
+        url = `BILL${code}`;
+      }
       const { data } = await apiBilling.get(
-        `/bills/get-bill-details?merchant_id=${merchant_id}&bill_code=BILL${code}&service_id=${service_id}`
+        `/bills/get-bill-details?merchant_id=${merchant_id}&bill_code=${url}&service_id=${service_id}`
       );
 
       console.log(data.data);
@@ -53,6 +174,7 @@ const GeneralBilling = () => {
         },
       });
     } catch (error) {
+      console.log(error);
       CustomErrorToast(error);
     } finally {
       setLoading(false);
@@ -70,7 +192,11 @@ const GeneralBilling = () => {
           >
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <RenderIcon serviceType={service_type as string} size={50} />
+          <RenderIcon
+            serviceType={service_type as string}
+            size={50}
+            commercialName={commercial_name as string}
+          />
           <CustomText className="color-secondary text-4xl mt-2 ">
             {commercial_name}
           </CustomText>
@@ -83,10 +209,16 @@ const GeneralBilling = () => {
             E-Payment Code
           </CustomText>
           <CustomInput
-            placeholder="E-Payment Code (4 Digits)"
+            placeholder="E-Payment Code"
             keyboardType="numeric"
             inputMode="numeric"
-            maxLength={4}
+            maxLength={
+              service_type.includes("internet")
+                ? 10
+                : service_type.includes("mob") || service_type.includes("phone")
+                  ? 11
+                  : 4
+            }
             value={code}
             onChangeText={setCode}
             className="border-2 border-primary rounded-full px-4 py-3 text-primary"
