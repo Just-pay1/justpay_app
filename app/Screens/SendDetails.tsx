@@ -170,7 +170,7 @@ const SendDetails = () => {
             width="w-[90%]"
             className=" rounded-full"
             borderColor="border-primary"
-            disabled={!isLoading}
+            disabled={isLoading}
             style={[]}
             onPress={() => router.dismissTo("/(main)/home/wallet")}
           >

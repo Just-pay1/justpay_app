@@ -28,9 +28,8 @@ export const userRegisterSchema = Yup.object({
 
   phone: Yup.string()
     .required("Phone number is required")
-    .matches(/^[0-9]+$/, "Phone number must contain only digits")
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number cannot exceed 15 digits"),
+    .matches(/^01[0-9]{9}$/, "Phone number must be 11 digits and start with 01")
+    .length(11, "Phone number must be 11 digits"),
   city: Yup.string().required("City is required"),
 }).required();
 export type TFormInput = Yup.InferType<typeof userRegisterSchema>;
@@ -87,7 +86,7 @@ export const ForgotPasswordSchema = Yup.object().shape({
 export const UserNameSchema = Yup.object().shape({
   username: Yup.string()
     .required("Username is required")
-    .min(4, "Username must be at least 4 characters")
+    .min(3, "Username must be at least 3 characters")
     .max(15, "Username must not exceed 15 characters")
     .matches(
       /^[a-z0-9]+$/,
@@ -124,9 +123,8 @@ export const editInfoSchema = Yup.object({
     ),
   phone: Yup.string()
     .required("Phone number is required")
-    .matches(/^[0-9]+$/, "Phone number must contain only digits")
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number cannot exceed 15 digits"),
+    .matches(/^01[0-9]{9}$/, "Phone number must be 11 digits and start with 01")
+    .length(11, "Phone number must be 11 digits"),
 });
 export type TEditInfoForm = Yup.InferType<typeof editInfoSchema>;
 

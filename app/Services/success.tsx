@@ -105,7 +105,7 @@ const success = () => {
                     Amount
                   </CustomText>
                   <CustomText className="color-primary-foreground text-xl p-0">
-                    {amount}
+                    {Number(amount).toFixed(2)}
                   </CustomText>
                 </View>
               </View>
@@ -115,7 +115,7 @@ const success = () => {
                     Fee
                   </CustomText>
                   <CustomText className="color-primary-foreground text-xl p-0">
-                    {fee}
+                    {Number(fee).toFixed(2)}
                   </CustomText>
                 </View>
               </View>
@@ -125,13 +125,22 @@ const success = () => {
                     Total
                   </CustomText>
                   <CustomText className="color-primary text-xl p-0">
-                    {total}
+                    {Number(total).toFixed(2)}
                   </CustomText>
                 </View>
               </View>
             </View>
           </ScrollView>
         </View>
+        <PrimaryButton
+          width="w-[60%]"
+          bgColor="bg-transparent"
+          borderColor="border-white"
+          onPress={() => router.dismissTo("/")}
+          styled={{ marginTop: 20 }}
+        >
+          <CustomText className="text-primary text-lg">Done</CustomText>
+        </PrimaryButton>
       </LinearGradient>
     </ScrollView>
   );

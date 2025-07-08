@@ -18,11 +18,11 @@ const CheckoutDetailsFailed = () => {
     amount: `${amount} EGP`,
     from: {
       name: user.name,
-      email: `${user.username}@justppay.com`,
+      email: `${user.username}@justpay.com`,
     },
     to: {
       name: name,
-      email: `${username}@justppay.com`,
+      email: `${username}@justpay.com`,
     },
     reference: id,
     date: new Date().toLocaleString(),
@@ -134,7 +134,7 @@ const CheckoutDetailsFailed = () => {
           onPress={() => router.dismissTo("/")}
           styled={{ marginTop: 20 }}
         >
-          <CustomText className="text-white text-lg">Done</CustomText>
+          <CustomText className="text-primary text-lg">Done</CustomText>
         </PrimaryButton>
       </LinearGradient>
     </ScrollView>

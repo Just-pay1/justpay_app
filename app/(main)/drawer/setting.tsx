@@ -54,7 +54,7 @@ const SettingScreen = () => {
       phone: user.phone,
     },
     resolver: yupResolver(editInfoSchema),
-    mode: "onSubmit",
+    mode: "onChange",
   });
 
   const handleUpdate = async (fieldName: keyof TEditInfoForm) => {

@@ -27,11 +27,11 @@ const CheckoutDetailsSuccess = () => {
     amount: `${amount} EGP`,
     from: {
       name: user.name,
-      email: `${selectedTab === "phone" ? user.phone : `${user.username}@justppay.com`}`,
+      email: `${selectedTab === "phone" ? user.phone : `${user.username}@justpay.com`}`,
     },
     to: {
       name: name,
-      email: `${selectedTab === "phone" ? phone : `${username}@justppay.com`}`,
+      email: `${selectedTab === "phone" ? phone : `${username}@justpay.com`}`,
     },
     reference: id,
     date: date + " at " + time,
@@ -142,7 +142,7 @@ const CheckoutDetailsSuccess = () => {
           onPress={() => router.dismissTo("/")}
           styled={{ marginTop: 20 }}
         >
-          <CustomText className="text-white text-lg">Done</CustomText>
+          <CustomText className="text-primary text-lg">Done</CustomText>
         </PrimaryButton>
       </LinearGradient>
     </ScrollView>
