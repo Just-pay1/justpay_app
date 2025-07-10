@@ -42,8 +42,9 @@ const SuccessPage = () => {
         bgColor="bg-transparent"
         borderColor="border-primary"
         onPress={() => {
-          // router.dismissAll();
-          router.replace("/");
+          router.dismissAll();
+          router.dismissTo("/");
+          // router.replace("/");
         }}
       >
         <CustomText className="color-primary">Done</CustomText>

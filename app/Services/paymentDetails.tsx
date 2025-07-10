@@ -40,7 +40,6 @@ const PaymentDetails = () => {
   // );
 
   const handleConfirm = () => {
-    console.log("Opening modal...");
     setIsModalVisible(true);
   };
 
@@ -82,6 +81,7 @@ const PaymentDetails = () => {
             paymentData
           );
           queryClient.invalidateQueries({ queryKey: ["balance"] });
+          queryClient.invalidateQueries({ queryKey: ["transaction-history"] });
           router.replace({
             pathname: "/Services/success",
             params: {
@@ -89,7 +89,6 @@ const PaymentDetails = () => {
             },
           });
         } catch (error) {
-          // console.log(error.response.data);
           setIsOpen(true);
           if (error instanceof AxiosError) {
             setErrorMessage(error.response?.data?.message);

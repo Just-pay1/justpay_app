@@ -90,7 +90,6 @@ const ServicesSection = () => {
       refetchServices();
     }, [])
   );
-  console.log(servicesData?.data.rows[1]?.merchants[0]?.id);
   if (servicesLoading) {
     return (
       <View style={styles.container}>
@@ -119,7 +118,6 @@ const ServicesSection = () => {
   }
 
   const flattenedMerchants = getFlattenedMerchants(servicesData);
-  console.log(flattenedMerchants);
 
   return (
     <View style={styles.container}>
@@ -128,7 +126,6 @@ const ServicesSection = () => {
         data={flattenedMerchants}
         numColumns={4}
         keyExtractor={(item) => {
-          // console.log(item);
           return item.merchant.merchant_id + item.serviceId;
         }}
         renderItem={({ item }) => (

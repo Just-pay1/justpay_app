@@ -25,7 +25,6 @@ const RefnumBilling = () => {
       const { data } = await apiClient.get(
         `reference-number/api/billing/${code}`
       );
-      console.log(data.data);
       router.replace({
         pathname: "/Services/refnumPaymentDetails",
         params: {

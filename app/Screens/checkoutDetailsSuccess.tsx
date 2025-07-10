@@ -33,7 +33,7 @@ const CheckoutDetailsSuccess = () => {
       name: name,
       email: `${selectedTab === "phone" ? phone : `${username}@justpay.com`}`,
     },
-    reference: id,
+    // reference: id,
     date: date + " at " + time,
   };
 
@@ -109,10 +109,10 @@ const CheckoutDetailsSuccess = () => {
           </View>
 
           {/* Reference */}
-          <View className="flex-row justify-between mb-1">
+          {/* <View className="flex-row justify-between mb-1">
             <CustomText className="text-xl p-0">Reference</CustomText>
             <CustomText className="text-xl p-0">{data.reference}</CustomText>
-          </View>
+          </View> */}
           <View
             className="w-full border-t border-muted"
             style={{ borderStyle: "dashed" }}

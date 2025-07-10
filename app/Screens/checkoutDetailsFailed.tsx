@@ -10,7 +10,7 @@ import { getItem } from "expo-secure-store";
 
 const CheckoutDetailsFailed = () => {
   const { errorMessage, receiverData } = useLocalSearchParams();
-  const { name, username, amount, fees, id } = JSON.parse(
+  const { name, username, amount, selectedTab, phone } = JSON.parse(
     receiverData as string
   );
   const user = JSON.parse(getItem("user") as string);
@@ -18,14 +18,26 @@ const CheckoutDetailsFailed = () => {
     amount: `${amount} EGP`,
     from: {
       name: user.name,
-      email: `${user.username}@justpay.com`,
+      email: `${selectedTab === "phone" ? user.phone : `${user.username}@justpay.com`}`,
     },
     to: {
       name: name,
-      email: `${username}@justpay.com`,
+      email: `${selectedTab === "phone" ? phone : `${username}@justpay.com`}`,
     },
-    reference: id,
-    date: new Date().toLocaleString(),
+    // reference: id,
+    date:
+      new Date().toLocaleString("en-GB", {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      }) +
+      " at " +
+      new Date(Date.now()).toLocaleTimeString("en-US", {
+        hourCycle: "h23",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
   };
 
   return (
@@ -101,10 +113,10 @@ const CheckoutDetailsFailed = () => {
           </View>
 
           {/* Reference */}
-          <View className="flex-row justify-between mb-1">
+          {/* <View className="flex-row justify-between mb-1">
             <CustomText className="text-xl p-0">Reference</CustomText>
             <CustomText className="text-xl p-0">{data.reference}</CustomText>
-          </View>
+          </View> */}
           <View
             className="w-full border-t border-muted"
             style={{ borderStyle: "dashed" }}

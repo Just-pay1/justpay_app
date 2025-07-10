@@ -38,7 +38,6 @@ const RefnumBillingDetails = () => {
   // );
   const [isLoading, setIsLoading] = useState(false);
   const handleConfirm = () => {
-    console.log("Opening modal...");
     setIsModalVisible(true);
   };
 
@@ -73,7 +72,6 @@ const RefnumBillingDetails = () => {
             nonce: nonce,
             category: "reference_bill",
           };
-          console.log({ paymentData });
           const { data, status } = await apiClient.post(
             `/transactions/api/transaction/pay`,
             paymentData

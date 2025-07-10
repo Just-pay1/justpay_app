@@ -57,6 +57,7 @@ const SendDetails = () => {
             paymentData
           );
           queryClient.invalidateQueries({ queryKey: ["balance"] });
+          queryClient.invalidateQueries({ queryKey: ["transaction-history"] });
           router.replace({
             pathname: "/Screens/checkoutDetailsSuccess",
             params: {
@@ -78,8 +79,10 @@ const SendDetails = () => {
               receiverData: JSON.stringify({
                 name: name,
                 username: username,
+                phone: phone,
+                selectedTab,
                 amount: amount,
-                id: id,
+                // id: id,
               }),
             },
           });

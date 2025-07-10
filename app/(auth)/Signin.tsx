@@ -42,7 +42,8 @@ export default function Signin() {
         position: "bottom",
       });
       router.dismissAll();
-      router.replace("/");
+      // router.replace("/");
+      router.dismissTo("/");
     } catch (error) {
       CustomErrorToast(error);
     } finally {

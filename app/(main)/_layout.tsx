@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import { logoutThunk } from "@/store/authSlice";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { useSelector } from "react-redux";
+import * as SecureStore from "expo-secure-store";
 
 interface MenuItem {
   name: string;
@@ -30,7 +30,7 @@ const menuItems: MenuItem[] = [
 ];
 
 function CustomDrawerContent(props: DrawerContentComponentProps): JSX.Element {
-  const user = useAppSelector((state) => state.auth.data);
+  const user = JSON.parse(SecureStore.getItem("user") || "{}");
   const dispatch = useAppDispatch();
   const router = useRouter();
 

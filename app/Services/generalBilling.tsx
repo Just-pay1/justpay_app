@@ -15,7 +15,6 @@ import { Ionicons } from "@expo/vector-icons";
 const GeneralBilling = () => {
   const { merchant_id, service_type, service_id, commercial_name } =
     useLocalSearchParams();
-  console.log({ merchant_id, service_type, service_id, commercial_name });
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   // const whatService = () => {
@@ -79,9 +78,12 @@ const GeneralBilling = () => {
   // };
   const whatService = () => {
     if (service_type.includes("internet")) {
-      if (!code.startsWith("055") || code.length !== 10) {
+      if (
+        !code.startsWith("055") ||
+        (code.length !== 10 && code.length !== 11)
+      ) {
         return {
-          message: "your bill code must start with 055 and be 10 digits",
+          message: "your bill code must start with 055 and be 10 or 11 digits",
           length: 10,
         };
       }
@@ -113,6 +115,11 @@ const GeneralBilling = () => {
             length: 11,
           };
         }
+      } else {
+        return {
+          message: "your bill code must start with 01 and be 11 digits",
+          length: 11,
+        };
       }
     } else {
       if (code.length !== 4) {
@@ -127,8 +134,6 @@ const GeneralBilling = () => {
 
   const handleContinue = async () => {
     const service = whatService();
-    console.log(service);
-
     // Show error if validation failed
     if (service) {
       Alert.alert("Invalid Code", `${service.message}`);
@@ -160,8 +165,6 @@ const GeneralBilling = () => {
       const { data } = await apiBilling.get(
         `/bills/get-bill-details?merchant_id=${merchant_id}&bill_code=${url}&service_id=${service_id}`
       );
-
-      console.log(data.data);
       router.replace({
         pathname: "/Services/paymentDetails",
         params: {
@@ -174,7 +177,6 @@ const GeneralBilling = () => {
         },
       });
     } catch (error) {
-      console.log(error);
       CustomErrorToast(error);
     } finally {
       setLoading(false);
@@ -214,7 +216,7 @@ const GeneralBilling = () => {
             inputMode="numeric"
             maxLength={
               service_type.includes("internet")
-                ? 10
+                ? 11
                 : service_type.includes("mob") || service_type.includes("phone")
                   ? 11
                   : 4

@@ -181,7 +181,6 @@ export default function ChatBotPage() {
     setIsLoading(true);
     try {
       const apiResponse = await callChatbotAPI(userMessage);
-      console.log(apiResponse);
       const botMessage: Message = {
         id: Date.now() + 1,
         text: apiResponse.response,

@@ -16,7 +16,7 @@ const ConfirmPinCode = () => {
   const user = SecureStore.getItem("user");
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  console.log({ confirmPinCode: pin });
   const PinCodeHandler = async () => {
     try {
       setIsLoading(true);

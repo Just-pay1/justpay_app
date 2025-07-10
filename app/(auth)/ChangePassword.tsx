@@ -11,6 +11,7 @@ import AuthHeader from "@/components/auth/AuthHeader";
 import CustomText from "@/components/ui/CustomText";
 import CustomMsgError from "@/components/ui/CustomMsgError";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
+import { router } from "expo-router";
 
 export default function ChangePassword() {
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +33,7 @@ export default function ChangePassword() {
         text1: "Password changed successfully!",
         position: "bottom",
       });
+      router.dismissTo("/");
     } catch (error) {
       CustomErrorToast(error);
     } finally {
