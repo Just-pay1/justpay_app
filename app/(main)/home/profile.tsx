@@ -36,20 +36,17 @@ const Profile = () => {
       <View className="flex-1 mb-4">
         <View className="items-center mb-8 pb-4 ">
           <View className="relative">
-            <Image
+            {/* <Image
               source={{
                 uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
               }}
               className="w-36 h-36 rounded-full"
-            />
-            <Ionicons
-              name="add-circle"
-              size={40}
-              color="#2c7075"
-              style={{ position: "absolute", bottom: 0, right: 0 }}
-            />
+            /> */}
+            <Ionicons name="person-circle" size={120} color={"#bab6b6"} />
           </View>
-          <Text className="text-4xl font-semibold mt-2">{user.name}</Text>
+          <Text className="text-4xl font-semibold mt-2 text-primary capitalize">
+            {user.name}
+          </Text>
           <Text className="text-lg text-primary-foreground">{user.email}</Text>
           <Text className="text-lg text-primary-foreground">{user.phone}</Text>
         </View>

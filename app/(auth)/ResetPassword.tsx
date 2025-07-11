@@ -106,7 +106,7 @@ export default function ResetPassword() {
               <CustomText className="color-secondary ">Confirm</CustomText>
             </PrimaryButton>
             <PrimaryButton
-              onPress={() => router.push("/ForgotPassword")}
+              onPress={() => router.back()}
               width="w-[95%]"
               borderColor="border-primary"
               bgColor="bg-transparent"
