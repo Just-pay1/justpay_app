@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, ScrollView, Text, Modal, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, Text, BackHandler } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "@/components/ui/CustomText";
 import PrimaryButton from "@/components/ui/Custombutton";
 import { router, useLocalSearchParams } from "expo-router";
 import Elec from "@/assets/svg/elec.svg";
-import { apiClient } from "@/config/axios.config";
+import { apiBilling, apiClient } from "@/config/axios.config";
 import CustomErrorToast from "@/components/ui/CustomErrorToast";
 import ErrorModal from "@/components/ui/ErrorModal";
 import OTPModel from "@/components/ui/OTPModel";
@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { encryptData, getCurrentLocation } from "@/utils";
 import RenderIcon from "@/components/ui/RenderIcon";
+import Toast from "react-native-toast-message";
 
 const PaymentDetails = () => {
   const queryClient = useQueryClient();
@@ -29,7 +30,6 @@ const PaymentDetails = () => {
     commercial_name,
     category,
   } = Data;
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [pinCode, setPinCode] = useState("");
@@ -40,7 +40,6 @@ const PaymentDetails = () => {
   // );
 
   const handleConfirm = () => {
-    console.log("Opening modal...");
     setIsModalVisible(true);
   };
 
@@ -50,7 +49,10 @@ const PaymentDetails = () => {
     if (!currentLocation) {
       setIsLoading(false);
       setIsModalVisible(false);
-      CustomErrorToast(new Error("Location access is required to continue"));
+      Toast.show({
+        text1: "Location access is required to continue",
+        type: "error",
+      });
       return;
     }
     try {
@@ -79,6 +81,7 @@ const PaymentDetails = () => {
             paymentData
           );
           queryClient.invalidateQueries({ queryKey: ["balance"] });
+          queryClient.invalidateQueries({ queryKey: ["transaction-history"] });
           router.replace({
             pathname: "/Services/success",
             params: {
@@ -86,7 +89,6 @@ const PaymentDetails = () => {
             },
           });
         } catch (error) {
-          // console.log(error.response.data);
           setIsOpen(true);
           if (error instanceof AxiosError) {
             setErrorMessage(error.response?.data?.message);
@@ -101,6 +103,28 @@ const PaymentDetails = () => {
     }
   };
 
+  const handleCancel = async () => {
+    try {
+      apiBilling.post("/bills/delete-bill", {
+        bill_id: bill_id,
+      });
+    } catch (error) {
+      CustomErrorToast(error);
+    }
+    router.dismissTo("/");
+  };
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        console.log("Back button pressed");
+        handleCancel();
+        return true; // Prevent default back behavior
+      }
+    );
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <View className="flex-1 bg-secondary">
       <ErrorModal
@@ -111,7 +135,11 @@ const PaymentDetails = () => {
       {/* Header Section */}
       <LinearGradient colors={["#1A5A60", "#113E41", "#081C1C"]}>
         <View className="pb-28 pt-16 items-center -mx-5">
-          <RenderIcon serviceType={service_type} size={60} />
+          <RenderIcon
+            serviceType={service_type}
+            size={60}
+            commercialName={commercial_name}
+          />
           <CustomText className="color-secondary text-4xl mt-2 mx-4">
             {commercial_name}
           </CustomText>
@@ -185,14 +213,16 @@ const PaymentDetails = () => {
             <View className="border-t border-muted  ">
               <View className="flex-row justify-between p-1 my-1">
                 <Text className="color-primary-foreground  p-0 ">Fee</Text>
-                <Text className="color-primary-foreground p-0">{fee} EGP</Text>
+                <Text className="color-primary-foreground p-0">
+                  {amount === total_amount ? 0 : fee.toFixed(2)} EGP
+                </Text>
               </View>
             </View>
             <View className="border-t border-muted  ">
               <View className="flex-row justify-between p-1 my-1">
                 <Text className="color-primary-foreground  p-0 ">Total</Text>
                 <Text className="color-primary-foreground p-0">
-                  {total_amount} EGP
+                  {total_amount.toFixed(2)} EGP
                 </Text>
               </View>
             </View>
@@ -207,13 +237,13 @@ const PaymentDetails = () => {
             onPress={handleConfirm}
             loading={isLoading}
           >
-            <CustomText className="color-secondary">Confirm</CustomText>
+            <CustomText className="color-secondary">Pay</CustomText>
           </PrimaryButton>
 
           <PrimaryButton
             width="w-[70%] "
             bgColor="bg-secondary"
-            onPress={() => router.push("/(main)/home")}
+            onPress={handleCancel}
             disabled={isLoading}
             borderColor="border-primary"
             style={[]}
@@ -228,57 +258,6 @@ const PaymentDetails = () => {
           </Text>
         </View>
       </View>
-
-      {/* OTP Modal */}
-      {/* <Modal
-        visible={isModalVisible}
-        animationType="fade"
-        transparent
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View className="flex-1 justify-end">
-          <View className="bg-primary p-6 rounded-t-[40px] w-full h-[72%]">
-            <View className="items-center mb-6">
-              <View className="w-12 h-1 bg-gray-300 rounded-full mb-4" />
-              <CustomText className="text-secondary text-2xl mb-4 text-center">
-                Enter Your PIN Code
-              </CustomText>
-            </View>
-            <OTPInput otpCode={pinCode} setOtpCode={setPinCode} />
-            <View className="mt-6">
-              <PrimaryButton
-                width="w-full"
-                bgColor="bg-secondary"
-                disabled={pinCode.length !== 6 || isLoading}
-                loading={isLoading}
-                textLoading="verifying"
-                textLoadingColor="text-primary"
-                onPress={onVerifyHandler}
-                style={[
-                  (pinCode.length !== 6 || isLoading) && {
-                    backgroundColor: "rgba(159, 153, 153, 0.5)",
-                  },
-                ]}
-              >
-                <CustomText className="text-primary">Verify</CustomText>
-              </PrimaryButton>
-              <PrimaryButton
-                width="w-full mt-2"
-                bgColor="bg-transparent"
-                disabled={isLoading}
-                onPress={() => setIsModalVisible(false)}
-                style={[
-                  isLoading && {
-                    backgroundColor: "rgba(159, 153, 153, 0.5)",
-                  },
-                ]}
-              >
-                <CustomText className="text-primary">Close</CustomText>
-              </PrimaryButton>
-            </View>
-          </View>
-        </View>
-      </Modal> */}
       <OTPModel
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}

@@ -63,7 +63,6 @@ const SendMoney = () => {
         }
       }
     } catch (error) {
-      // console.log(error.response.data);
       CustomErrorToast(error);
     } finally {
       setIsLoading(false);

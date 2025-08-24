@@ -24,14 +24,11 @@ const success = () => {
         colors={["#1A5A60", "#113E41", "#081C1C"]}
         className="flex-1 justify-center items-center "
       >
-        <View className=" absolute top-4 flex-row items-center px-2 ">
-          <TouchableOpacity
-            onPress={() => router.dismissTo("/")}
-            className="absolute left-0"
-          >
-            <Ionicons name="chevron-back-outline" size={32} color="white" />
+        <View className="absolute top-4 left-0 right-0 flex-row items-center px-4 z-10">
+          <TouchableOpacity onPress={() => router.back()} className="p-2">
+            <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <CustomText className="color-secondary flex-1 text-2xl  mx-auto  ">
+          <CustomText className="color-secondary flex-1 text-2xl text-center">
             Payment Succeeded
           </CustomText>
         </View>
@@ -108,7 +105,7 @@ const success = () => {
                     Amount
                   </CustomText>
                   <CustomText className="color-primary-foreground text-xl p-0">
-                    {amount}
+                    {Number(amount).toFixed(2)}
                   </CustomText>
                 </View>
               </View>
@@ -118,7 +115,7 @@ const success = () => {
                     Fee
                   </CustomText>
                   <CustomText className="color-primary-foreground text-xl p-0">
-                    {fee}
+                    {Number(fee).toFixed(2)}
                   </CustomText>
                 </View>
               </View>
@@ -128,7 +125,7 @@ const success = () => {
                     Total
                   </CustomText>
                   <CustomText className="color-primary text-xl p-0">
-                    {total}
+                    {Number(total).toFixed(2)}
                   </CustomText>
                 </View>
               </View>
@@ -138,11 +135,11 @@ const success = () => {
         <PrimaryButton
           width="w-[60%]"
           bgColor="bg-transparent"
-          borderColor="border-primary"
-          onPress={() => router.push("/(main)/home")}
-          styled={{ marginTop: 10 }}
+          borderColor="border-white"
+          onPress={() => router.dismissTo("/")}
+          styled={{ marginTop: 20 }}
         >
-          <CustomText className="color-primary">Get PDF Receipt</CustomText>
+          <CustomText className="text-primary text-lg">Done</CustomText>
         </PrimaryButton>
       </LinearGradient>
     </ScrollView>

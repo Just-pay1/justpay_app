@@ -42,7 +42,8 @@ export default function Signin() {
         position: "bottom",
       });
       router.dismissAll();
-      router.replace("/");
+      // router.replace("/");
+      router.dismissTo("/");
     } catch (error) {
       CustomErrorToast(error);
     } finally {
@@ -92,17 +93,6 @@ export default function Signin() {
             >
               <CustomText className="color-secondary">log in</CustomText>
             </PrimaryButton>
-            <PrimaryButton
-              onPress={handleSubmit(onSubmit)}
-              width="w-full"
-              borderColor="border-primary"
-              bgColor="bg-transparent"
-            >
-              <CustomText className="color-primary">
-                login with fingerprint
-              </CustomText>
-            </PrimaryButton>
-
             <CustomText className="color-primary-foreground p-0">
               doesn't have an account?
               <Link href={"/Signup"} className="color-primary">

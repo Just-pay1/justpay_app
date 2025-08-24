@@ -50,16 +50,8 @@ export default function HomeLayout() {
         </View>
         <TouchableOpacity
           onPress={() => navigation.toggleDrawer()}
-          style={{ position: "absolute", top: 25, left: 20 }}
-        >
+          style={{ position: "absolute", top: 25, left: 20 }}>
           <Ionicons name="menu" size={30} color="#444444" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => router.push("/Screens/Notifications")}
-          style={{ position: "absolute", top: 30, right: 20 }}
-        >
-          <Ionicons name="notifications" size={30} color="#444444" />
         </TouchableOpacity>
       </View>
       <Tabs
@@ -73,8 +65,7 @@ export default function HomeLayout() {
                 paddingBottom: insets.bottom,
                 height: 65,
               },
-        }}
-      >
+        }}>
         <Tabs.Screen
           name="index"
           options={{

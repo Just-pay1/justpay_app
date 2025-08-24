@@ -5,24 +5,140 @@ import {
   Pressable,
   ScrollView,
   ActivityIndicator,
+  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import axios from "axios";
+import useCustomQuery from "@/config/useCustomQuery";
+import { getFlattenedMerchants, getServiceName } from "@/utils";
+import RenderIcon from "@/components/ui/RenderIcon";
+import { ServiceItem } from "@/components/services/ServicesSection";
 interface Message {
   id: number;
   text: string;
   from: "user" | "bot";
-  tool_calls?: any;
+  service?: string;
   showButtons?: boolean;
+  merchants?: Array<{
+    serviceId: string;
+    serviceType: string;
+    merchant: {
+      id: string;
+      commercial_name: string;
+    };
+  }>;
 }
 interface ApiResponse {
   response: string;
-  tool_calls: any;
+  Service: string;
 }
+
+const chatStyles = StyleSheet.create({
+  serviceCard: {
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    borderRadius: 12,
+    alignItems: "center",
+    margin: 4,
+    width: "40%", // 4 cards per row with spacing
+    shadowColor: "#535050",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 3,
+    minHeight: 100,
+    justifyContent: "center",
+  },
+  iconContainer: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    backgroundColor: "#2c7075",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  serviceName: {
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+    color: "#2c7075",
+  },
+});
+
 export default function ChatBotPage() {
+  const {
+    data: servicesData,
+    error: servicesError,
+    isLoading: servicesLoading,
+    refetch: refetchServices,
+  } = useCustomQuery({
+    queryKey: ["services"],
+    whichInstance: "apiBilling",
+    url: "/merchants/list-active-merchants?page=1",
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchServices();
+    }, [])
+  );
+  const flattenedMerchants = getFlattenedMerchants(servicesData);
   const router = useRouter();
+
+  // Custom ServiceItem component for chatbot with proper width
+  const ChatServiceItem = ({
+    merchant,
+    serviceType,
+    serviceId,
+  }: {
+    merchant: { id: string; commercial_name: string };
+    serviceType: string;
+    serviceId: string;
+  }) => (
+    <TouchableOpacity
+      activeOpacity={0.6}
+      style={chatStyles.serviceCard}
+      onPress={() => {
+        router.replace({
+          pathname: (serviceType === "reference bills" ||
+          serviceType.includes("ref")
+            ? "/Services/refnumBilling"
+            : "/Services/generalBilling") as any,
+          params: {
+            merchant_id: merchant.id,
+            commercial_name: merchant.commercial_name,
+            service_type: serviceType,
+            service_id: serviceId,
+          },
+        });
+      }}
+    >
+      <View style={chatStyles.iconContainer}>
+        <RenderIcon
+          serviceType={serviceType}
+          commercialName={merchant.commercial_name}
+        />
+      </View>
+      <Text
+        style={chatStyles.serviceName}
+        numberOfLines={2}
+        ellipsizeMode="tail"
+        adjustsFontSizeToFit={true}
+      >
+        {/* {merchant.commercial_name.split(" ").join("\n")} */}
+        {merchant.commercial_name}
+      </Text>
+    </TouchableOpacity>
+  );
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     { id: 1, text: "Hi! How can I help you?", from: "bot" },
@@ -31,28 +147,24 @@ export default function ChatBotPage() {
   const scrollRef = useRef<ScrollView>(null);
   const callChatbotAPI = async (userMessage: string): Promise<ApiResponse> => {
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "https://customer-chatbot-f4gxejfbana5hwfc.uaenorth-01.azurewebsites.net/chat",
         {
-          method: "POST",
+          message: userMessage,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            message: userMessage,
-          }),
         }
       );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return await response.json();
+      return response.data;
     } catch (error) {
       console.error("Error calling chatbot API:", error);
       return {
         response:
           "I'm sorry, I'm having trouble connecting right now. Please try again later.",
-        tool_calls: null,
+        Service: "",
       };
     }
   };
@@ -69,13 +181,12 @@ export default function ChatBotPage() {
     setIsLoading(true);
     try {
       const apiResponse = await callChatbotAPI(userMessage);
-      console.log(apiResponse);
       const botMessage: Message = {
         id: Date.now() + 1,
         text: apiResponse.response,
         from: "bot",
-        tool_calls: apiResponse.tool_calls,
-        showButtons: apiResponse.tool_calls !== null,
+        service: apiResponse.Service,
+        showButtons: apiResponse.Service !== "",
       };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
@@ -89,11 +200,20 @@ export default function ChatBotPage() {
       setIsLoading(false);
     }
   };
-  const handleNavigateToServices = (typeOfTransaction: string) => {
-    router.push({
-      pathname: "/(main)/home",
-      params: { typeOfTransaction },
-    });
+  const handleNavigateToServices = (ser: string, messageId: number) => {
+    const serviceName = getServiceName(ser);
+    const filteredMerchants = flattenedMerchants.filter(
+      (service: { serviceType: string }) => service.serviceType === serviceName
+    );
+
+    // Update the message to include the filtered merchants
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === messageId
+          ? { ...msg, merchants: filteredMerchants, showButtons: false }
+          : msg
+      )
+    );
   };
   const handleHideButtons = (messageId: number) => {
     setMessages((prev) =>
@@ -153,8 +273,8 @@ export default function ChatBotPage() {
                 </Text>
               </View>
 
-              {/* Navigation buttons for bot messages with tool_calls */}
-              {msg.from === "bot" && msg.showButtons && msg.tool_calls && (
+              {/* Navigation buttons for bot messages with service */}
+              {msg.from === "bot" && msg.showButtons && msg.service && (
                 <View className="mb-2 max-w-[80%] self-start">
                   <Text className="text-[16px] font-semibold color-primary mb-2 ml-2">
                     Do you want to navigate to pay the bill?
@@ -162,9 +282,7 @@ export default function ChatBotPage() {
                   <View className="flex-row gap-2 ml-2">
                     <Pressable
                       onPress={() =>
-                        handleNavigateToServices(
-                          msg.tool_calls.type_of_transaction
-                        )
+                        handleNavigateToServices(msg.service!, msg.id)
                       }
                       className="bg-[#2c7075] px-4 py-2 rounded-lg"
                     >
@@ -179,6 +297,27 @@ export default function ChatBotPage() {
                   </View>
                 </View>
               )}
+
+              {/* Merchant cards display */}
+              {msg.from === "bot" &&
+                msg.merchants &&
+                msg.merchants.length > 0 && (
+                  <View className="mb-2 w-full self-start">
+                    <Text className="text-[16px] font-semibold color-primary mb-2 ml-2">
+                      Please select a merchant to pay your bill:
+                    </Text>
+                    <View className="flex-row flex-wrap justify-around gap-y-3 w-full">
+                      {msg.merchants.map((merchant) => (
+                        <ChatServiceItem
+                          key={merchant.merchant.id}
+                          merchant={merchant.merchant}
+                          serviceType={merchant.serviceType}
+                          serviceId={merchant.serviceId}
+                        />
+                      ))}
+                    </View>
+                  </View>
+                )}
             </View>
           ))}
 

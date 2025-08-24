@@ -38,7 +38,8 @@ const History = () => {
     refetch,
   } = useCustomQuery({
     queryKey: ["transaction-history"],
-    url: "/api/transaction/history",
+    // url: "/api/transaction/history",
+    url: "/transactions/api/transaction/history",
   });
 
   const parsedTransactions = transactionData?.transactions || [];
@@ -51,7 +52,11 @@ const History = () => {
     setShowDatePicker(Platform.OS === "ios");
     if (date) {
       setSelectedDate(date);
-      const formatted = date.toLocaleDateString("en-CA");
+      const formatted = date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
 
       setSearchText(formatted);
     }
@@ -68,7 +73,8 @@ const History = () => {
       <View className="flex-row items-center justify-between  mb-2 px-4">
         <Pressable
           onPress={() => router.push("/home/wallet")}
-          style={{ paddingRight: 10 }}>
+          style={{ paddingRight: 10 }}
+        >
           {({ pressed }) => (
             <Ionicons
               name="chevron-back-outline"
@@ -102,7 +108,8 @@ const History = () => {
 
         <Pressable
           onPress={() => setShowDatePicker(true)}
-          style={{ position: "absolute", right: 30, top: 12 }}>
+          style={{ position: "absolute", right: 30, top: 12 }}
+        >
           <MaterialCommunityIcons
             name="calendar-month-outline"
             size={24}
@@ -127,7 +134,8 @@ const History = () => {
       ) : (
         <ScrollView
           className="flex-1"
-          contentContainerStyle={{ paddingBottom: 20 }}>
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
           {parsedTransactions.length > 0 ? (
             <TransactionList transactions={filteredTransactions} />
           ) : (

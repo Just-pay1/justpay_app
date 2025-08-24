@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, TextInputProps } from "react-native";
+import { View, TextInput, TextInputProps, StyleSheet } from "react-native";
 import { twMerge } from "tailwind-merge";
 
 interface Props extends TextInputProps {
@@ -26,6 +26,7 @@ const CustomInputWithSuffix = ({
           "flex-1 text-base text-primary font-Nunitosemi",
           inputClassName
         )}
+        style={[styles.textInput, rest.style]}
         placeholderTextColor="#9d9a9a"
         autoCapitalize="none"
         cursorColor="#444444"
@@ -35,5 +36,13 @@ const CustomInputWithSuffix = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  textInput: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    minHeight: 40,
+  },
+});
 
 export default CustomInputWithSuffix;

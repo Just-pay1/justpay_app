@@ -16,28 +16,32 @@ export function OTPInput({ otpCode, setOtpCode, hideText = false }: Iprops) {
   const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const inputRefs = useRef<(TextInput | null)[]>([]);
+  const currentOtpCountRef = useRef<number>(0);
+  useEffect(() => {
+    const filledDigits = otp.filter((digit) => digit !== "").length;
+    currentOtpCountRef.current = filledDigits;
+    console.log(currentOtpCountRef.current);
+    if (currentOtpCountRef.current === 6) {
+      inputRefs.current[activeIndex]?.blur();
+      inputRefs.current[activeIndex + 1]?.blur();
+    }
+  }, [otp]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     inputRefs.current[0]?.focus();
-  //   }, 100);
-
-  //   return () => clearTimeout(timer);
-  // }, []);
-
-  // useEffect(() => {
-  //   inputRefs.current[0]?.focus();
-  // }, []);
   const changehandler = (text: string, index: number) => {
+    setActiveIndex(index);
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
     if (newOtp[index] !== "") {
       inputRefs.current[index + 1]?.focus();
     }
-    if (index === 5 && newOtp[index] !== "" && otpCode.length === 5) {
-      inputRefs.current[index]?.blur();
-    }
+    // if (index === 5 && newOtp[index] !== "" && otpCode.length === 5) {
+    //   inputRefs.current[index]?.blur();
+    // }
+    // if ((index === 5 && otpCode.length === 5)) {
+    // if (currentOtpCountRef.current === 6) {
+    //   inputRefs.current[index]?.blur();
+    // }
     const otppCode = newOtp.join("");
     setOtpCode(otppCode);
   };
@@ -45,29 +49,60 @@ export function OTPInput({ otpCode, setOtpCode, hideText = false }: Iprops) {
     e: NativeSyntheticEvent<TextInputKeyPressEventData>,
     index: number
   ) => {
+    setActiveIndex(index);
     const key = e.nativeEvent.key;
     if (key === "Backspace") {
       if (otp[index] === "") {
+        console.log("iamempty");
         if (index > 0) {
           const newOtp = [...otp];
           newOtp[index - 1] = "";
           setOtp(newOtp);
           inputRefs.current[index - 1]?.focus();
+          setTimeout(() => {
+            inputRefs.current[index]?.focus();
+            inputRefs.current[index - 1]?.focus();
+          }, 50);
+        } else {
+          const newOtp = [...otp];
+          newOtp[index - 1] = "";
+          setOtp(newOtp);
+          inputRefs.current[index]?.focus();
+          setTimeout(() => {
+            inputRefs.current[index + 1]?.focus();
+            inputRefs.current[index]?.focus();
+          }, 50);
         }
       } else {
+        console.log("iammlyan");
+        console.log(index);
         // If input has a value, clear it
         const newOtp = [...otp];
         newOtp[index] = "";
         setOtp(newOtp);
+        if (index === 0) {
+          setTimeout(() => {
+            inputRefs.current[index + 1]?.focus();
+            inputRefs.current[index]?.focus();
+          }, 50);
+        } else {
+          setTimeout(() => {
+            inputRefs.current[index - 1]?.focus();
+            inputRefs.current[index]?.focus();
+          }, 50);
+        }
       }
     }
-    if (/^\d$/.test(key)) {
-      if (index < otp.length - 1) {
-        inputRefs.current[index + 1]?.focus();
-      } else if (index === otp.length - 1 && otpCode.length === 6) {
-        inputRefs.current[index]?.blur();
-      }
-    }
+    // if (/^\d$/.test(key)) {
+    //   if (index < otp.length - 1) {
+    //     inputRefs.current[index + 1]?.focus();
+    //   } else if (index === otp.length - 1 && otpCode.length === 6) {
+    //     inputRefs.current[index]?.blur();
+    //   }
+    // }
+    // if (currentOtpCountRef.current === 6) {
+    //   inputRefs.current[index]?.blur();
+    // }
   };
 
   return (

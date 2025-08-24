@@ -15,6 +15,7 @@ import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { encryptData, getCurrentLocation } from "@/utils";
 import RenderIcon from "@/components/ui/RenderIcon";
+import OTPModel from "@/components/ui/OTPModel";
 const RefnumBillingDetails = () => {
   const { dataWillBeShown } = useLocalSearchParams();
   const Data = JSON.parse((dataWillBeShown as string) || "{}");
@@ -37,7 +38,6 @@ const RefnumBillingDetails = () => {
   // );
   const [isLoading, setIsLoading] = useState(false);
   const handleConfirm = () => {
-    console.log("Opening modal...");
     setIsModalVisible(true);
   };
 
@@ -72,7 +72,6 @@ const RefnumBillingDetails = () => {
             nonce: nonce,
             category: "reference_bill",
           };
-          console.log({ paymentData });
           const { data, status } = await apiClient.post(
             `/transactions/api/transaction/pay`,
             paymentData
@@ -137,65 +136,84 @@ const RefnumBillingDetails = () => {
             <CustomText className="text-primary text-2xl  mb-1 text-left">
               Payment Details
             </CustomText>
-            <View className="border-t border-muted pt-2 ">
-              <View className="flex-row justify-between">
-                <CustomText className="color-primary-foreground">
+            <View className="border-t border-muted ">
+              <View className="flex-row justify-between p-1  my-1">
+                <CustomText className="color-primary-foreground p-0">
                   Id Number
                 </CustomText>
-                <CustomText className="color-primary-foreground text-sm">
+                <CustomText className="color-primary-foreground text-sm p-0">
                   {reference_number}
                 </CustomText>
               </View>
             </View>
 
-            <View className="flex-row justify-between">
-              <CustomText className="color-primary-foreground">Time</CustomText>
-              <CustomText className="color-primary-foreground">
-                {new Date(Date.now()).toLocaleTimeString("en-US", {
-                  hourCycle: "h23",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}
-              </CustomText>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1  my-1">
+                <CustomText className="color-primary-foreground p-0">
+                  Time
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  {new Date(Date.now()).toLocaleTimeString("en-US", {
+                    hourCycle: "h23",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })}
+                </CustomText>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <CustomText className="color-primary-foreground p-0">
+                  Date
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  {new Date(Date.now()).toLocaleDateString()}
+                </CustomText>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground p-0">Status</Text>
+                <Text className="color-primary-foreground p-0">{status}</Text>
+              </View>
+            </View>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <CustomText className="color-primary-foreground p-0">
+                  payment method
+                </CustomText>
+                <CustomText className="color-primary-foreground p-0">
+                  JustPay Wallet
+                </CustomText>
+              </View>
             </View>
 
-            <View className="flex-row justify-between">
-              <CustomText className="color-primary-foreground">Date</CustomText>
-              <CustomText className="color-primary-foreground">
-                {new Date(Date.now()).toLocaleDateString()}
-              </CustomText>
-            </View>
-            <View className="flex-row justify-between">
-              <CustomText className="color-primary-foreground">
-                payment method
-              </CustomText>
-              <CustomText className="color-primary-foreground">
-                creadit card
-              </CustomText>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Amount</Text>
+                <Text className="color-primary-foreground p-0">
+                  {amount.toFixed(2)} EGP
+                </Text>
+              </View>
             </View>
 
-            <View className="border-t border-muted  "></View>
-
-            <View className="flex-row justify-between mt-2">
-              <Text className="color-primary-foreground  text-xl ">Amount</Text>
-              <Text className="color-primary-foreground text-xl">
-                {amount} EGP
-              </Text>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Fee</Text>
+                <Text className="color-primary-foreground p-0">
+                  {fee.toFixed(2)} EGP
+                </Text>
+              </View>
             </View>
 
-            <View className="flex-row justify-between mt-2">
-              <Text className="color-primary-foreground  text-xl ">Fee</Text>
-              <Text className="color-primary-foreground text-xl">
-                {fee} EGP
-              </Text>
-            </View>
-
-            <View className="flex-row justify-between mt-2">
-              <Text className="color-primary-foreground  text-xl ">Total</Text>
-              <Text className="color-primary-foreground text-xl">
-                {total} EGP
-              </Text>
+            <View className="border-t border-muted  ">
+              <View className="flex-row justify-between p-1 my-1">
+                <Text className="color-primary-foreground  p-0 ">Total</Text>
+                <Text className="color-primary-foreground p-0">
+                  {total.toFixed(2)} EGP
+                </Text>
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -208,13 +226,13 @@ const RefnumBillingDetails = () => {
             onPress={handleConfirm}
             loading={isLoading}
           >
-            <CustomText className="color-secondary">Confirm</CustomText>
+            <CustomText className="color-secondary">Pay</CustomText>
           </PrimaryButton>
 
           <PrimaryButton
             width="w-[70%] "
             bgColor="bg-secondary"
-            onPress={() => router.push("/(main)/home")}
+            onPress={() => router.back()}
             disabled={isLoading}
             borderColor="border-primary"
             style={[]}
@@ -231,7 +249,7 @@ const RefnumBillingDetails = () => {
       </View>
 
       {/* OTP Modal */}
-      <Modal
+      {/* <Modal
         visible={isModalVisible}
         animationType="fade"
         transparent
@@ -279,7 +297,16 @@ const RefnumBillingDetails = () => {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
+      <OTPModel
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        pinCode={pinCode}
+        setPinCode={setPinCode}
+        isLoading={isLoading}
+        onVerifyHandler={onVerifyHandler}
+        hideText={true}
+      />
     </View>
   );
 };

@@ -26,7 +26,8 @@ const Home = () => {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 10,
-            }}>
+            }}
+          >
             <Image
               source={require("@/assets/images/1924a99473c91bfdac585c9cc9c2bc58.png")}
               style={{ width: 40, height: 40, marginRight: 2, marginLeft: 15 }}
@@ -43,33 +44,14 @@ const Home = () => {
             </View>
           </View>
 
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#f0f0f0",
-              marginTop: 30,
-            }}>
-            <CustomInput
-              placeholder="Search"
-              style={{
-                width: "90%",
-                height: 40,
-                borderColor: "#9d9a9a",
-                borderRadius: 10,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-              }}
-            />
-          </View>
-          <View style={{ marginTop: 30 }}>
+          <View style={{ marginTop: 10 }}>
             <ServicesSection />
             {/* <Services />*/}
           </View>
           <TouchableOpacity
             style={styles.floatingButton}
-            onPress={() => router.push("/Chat/chatbot")}>
+            onPress={() => router.push("/Chat/chatbot")}
+          >
             <ChatVector width={40} height={40} />
           </TouchableOpacity>
         </View>
@@ -81,7 +63,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   floatingButton: {
     position: "absolute",
-    bottom: 70,
+    bottom: 40,
     right: 20,
     backgroundColor: "#2c7075",
     width: 70,

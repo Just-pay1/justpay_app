@@ -76,6 +76,7 @@ export default function Otp() {
           router.dismissTo("/");
         } else {
           await SecureStore.setItemAsync("resetToken", data.resetToken);
+          console.log({ resetToken: data.resetToken });
           router.replace("/ResetPassword");
         }
       }

@@ -12,6 +12,7 @@ const PinCode = () => {
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const PinCodeHandler = async () => {
+    console.log({ pinCode: pin });
     try {
       setIsLoading(true);
       console.log(pin);
@@ -33,7 +34,7 @@ const PinCode = () => {
     >
       <View className="mt-16 mb-6">
         <Text className="color-secondary text-center font-Nunitosemi text-4xl ">
-          PIN Code
+          Set Pin Code
         </Text>
       </View>
       <View>

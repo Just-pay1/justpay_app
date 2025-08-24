@@ -58,7 +58,6 @@ const Wallet = () => {
     queryKey: ["transaction-history"],
     url: "/transactions/api/transaction/history",
   });
-  console.log("Transaction Data:", transactionData);
 
   useEffect(() => {
     if (transactionData?.transactions) {
@@ -108,6 +107,13 @@ const Wallet = () => {
         balanceError?.message ||
         transactionsError?.message,
     });
+    return (
+      <View className="flex-1 items-center justify-center">
+        <CustomText className="color-danger text-3xl font-bold ">
+          Error Check Your Connection and try again.
+        </CustomText>
+      </View>
+    );
   }
   const storedId = getItem("userId");
   const storedUser = getItem("user");
